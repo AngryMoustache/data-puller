@@ -3,6 +3,7 @@
 namespace Api\Entities;
 
 use App\Enums\Origin;
+use App\Models\Origin as ModelsOrigin;
 use App\Models\Pull;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -11,16 +12,16 @@ class Pullable
 {
     public string $name;
     public string $source;
-    public Origin $origin;
 
     public Media|Collection $media;
 
-    public function save()
+    public function save(ModelsOrigin $origin)
     {
         // Create or update the pull
         $pull = Pull::updateOrCreate(['source_url' => $this->source], [
             'name' => $this->name,
-            'origin' => $this->origin,
+            'origin' => $origin->type,
+            'origin_id' => $origin->id,
         ]);
 
         // Don't save the media if it was not created now

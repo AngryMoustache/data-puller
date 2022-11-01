@@ -3,6 +3,7 @@
 namespace Api\Clients;
 
 use Api\Entities\Tweet;
+use App\Models\Origin;
 use Illuminate\Support\Facades\Http;
 
 class Twitter
@@ -11,16 +12,14 @@ class Twitter
     public string $baseUrl;
     public string $apiKey;
     public string $secretKey;
-    public string $userId;
     public string $bearerToken;
 
-    public function __construct()
+    public function __construct(public Origin $origin)
     {
         $this->baseUrl = 'https://api.twitter.com/2';
         $this->apiKey = config('clients.twitter.api_key');
         $this->secretKey = config('clients.twitter.secret_key');
         $this->bearerToken = config('clients.twitter.bearer_token');
-        $this->userId = config('clients.twitter.user_id');
 
         $this->options = [
             'media.fields' => 'media_key,duration_ms,width,height,preview_image_url,type,url,alt_text,variants',
@@ -30,22 +29,23 @@ class Twitter
         ];
     }
 
-    public function call($url)
+    public function call($url, $options = null)
     {
-        $url = str_replace('/:id/', "/{$this->userId}/", $url);
-
         return Http::withToken($this->bearerToken)
             ->baseUrl($this->baseUrl)
-            ->get($url, $this->options)
+            ->get($url, $options ?? $this->options)
             ->json();
     }
 
     public function likes($page = 1)
     {
+        // Get the user ID
+        $id = $this->call("/users/by/username/{$this->origin->api_target}", [])['data']['id'];
+
         // Get the Twitter API data
         for ($i = 0; $i < $page; $i++) {
             if ($this->options['pagination_token'] ?? null || $i === 0) {
-                $tweets = $this->call('/users/:id/liked_tweets');
+                $tweets = $this->call("/users/{$id}/liked_tweets");
                 $this->options['pagination_token'] = $tweets['meta']['next_token'] ?? null;
             }
         }

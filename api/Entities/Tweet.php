@@ -6,8 +6,6 @@ use App\Enums\Origin;
 
 class Tweet extends Pullable
 {
-    public Origin $origin = Origin::TWITTER;
-
     public function __construct($pull)
     {
         $this->name = $pull['id'];

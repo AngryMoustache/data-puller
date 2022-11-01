@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Pull extends Model
 {
     protected $fillable = [
+        'origin_id',
         'name',
         'slug',
         'source_url',
@@ -24,6 +25,11 @@ class Pull extends Model
         'status' => Enums\Status::class,
         'verdict_at' => 'datetime',
     ];
+
+    public function origin()
+    {
+        return $this->belongsTo(Origin::class);
+    }
 
     public function tags()
     {

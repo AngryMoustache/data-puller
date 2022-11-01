@@ -6,8 +6,6 @@ use App\Enums\Origin;
 
 class Deviantion extends Pullable
 {
-    public Origin $origin = Origin::DEVIANTART;
-
     public function __construct($pull)
     {
         $this->name = $pull['title'];
