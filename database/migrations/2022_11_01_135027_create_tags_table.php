@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('parent_id')->nullable()->constrained('tags')->nullOnDelete();
             $table->string('name');
             $table->string('slug');
-            $table->string('color');
+            $table->string('color')->nullable();
             $table->timestamps();
         });
 

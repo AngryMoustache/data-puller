@@ -1,12 +1,9 @@
 <div {{ $attributes->except('origin')->merge([
-    'class' => 'flex border border-white rounded-3xl p-1 items-center text-white'
+    'class' => '
+        flex gap-3 border border-white rounded-3xl py-1 px-4 items-center text-white cursor-pointer
+        hover:shadow-lg
+    '
 ]) }}>
-    <img
-        src="{{ $origin->attachment->format('thumb') }}"
-        class="rounded-3xl w-6"
-    >
-
-    <span class="px-2">
-        {{ $origin->name }}
-    </span>
+    <i class="{{ $origin->type->icon() }}"></i>
+    {{ $origin->name }}
 </div>

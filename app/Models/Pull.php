@@ -14,14 +14,12 @@ class Pull extends Model
         'name',
         'slug',
         'source_url',
-        'origin',
         'status',
         'views',
         'verdict_at',
     ];
 
     public $casts = [
-        'origin' => Enums\Origin::class,
         'status' => Enums\Status::class,
         'verdict_at' => 'datetime',
     ];
@@ -33,7 +31,8 @@ class Pull extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class)
+            ->withPivot('data');
     }
 
     public function attachments()

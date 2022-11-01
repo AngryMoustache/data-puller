@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug');
             $table->string('source_url');
-            $table->string('origin');
             $table->string('status')->default(Status::PENDING->value);
             $table->string('views')->default(0);
             $table->dateTime('verdict_at')->nullable();
