@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import 'modals';
+
+.bg-gradient {
+    background: linear-gradient(35deg, #1f82d3, #9dd3ff);
+}
+
+.notification::after {
+    content: ' ';
+    width: .5rem;
+    height: .5rem;
+    background: rgb(208, 60, 60);
+    position: absolute;
+    border-radius: 50%;
+
+    transform: translateX(.5rem);
+}
