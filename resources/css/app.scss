@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import 'modals';
+@import 'loading';
 
 .bg-gradient {
     background: linear-gradient(35deg, #2c92e5, #0059a2);
@@ -17,4 +18,8 @@
     border-radius: 50%;
 
     transform: translateX(.5rem);
+}
+
+.aspect-video {
+    aspect-ratio: 16 / 9;
 }

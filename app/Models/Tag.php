@@ -28,4 +28,13 @@ class Tag extends Model
         return $this->belongsToMany(Pull::class)
             ->withPivot('data');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('sorted', function ($query) {
+            return $query->orderBy('name');
+        });
+    }
 }

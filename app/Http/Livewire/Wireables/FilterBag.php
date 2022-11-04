@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Wireables;
 
+use App\Enums\Status;
 use App\Models\Pull;
 use Illuminate\Support\Collection;
 use Livewire\Wireable;
@@ -20,7 +21,8 @@ class FilterBag extends CollectionBag implements Wireable
 
     public function pulls()
     {
-        return Pull::with('tags', 'origin')
+        return Pull::online()
+            ->with('tags', 'origin')
             ->orderBy('id', 'desc')
             // Origin filter
             ->when(count($this->filters['origins'] ?? []), function ($query) {

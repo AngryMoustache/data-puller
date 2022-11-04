@@ -30,6 +30,16 @@ class Origin extends Model
         return $this->belongsTo(Attachment::class);
     }
 
+    public function pulls()
+    {
+        return $this->hasMany(Pull::class);
+    }
+
+    public function pendingPulls()
+    {
+        return $this->hasMany(Pull::class)->pending();
+    }
+
     public function pull()
     {
         $id = $this->api_target;

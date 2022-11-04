@@ -27,6 +27,6 @@ class Video extends Model
 
     public function path()
     {
-        return Storage::path("public/videos/{$this->id}/{$this->original_name}");
+        return Storage::url("public/videos/{$this->id}/{$this->filename}");
     }
 }
