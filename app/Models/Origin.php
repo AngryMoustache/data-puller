@@ -7,6 +7,7 @@ use Api\Clients;
 use Api\Entities\Pullable;
 use App\Enums;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 
 class Origin extends Model
 {
@@ -38,6 +39,18 @@ class Origin extends Model
         };
 
         $items->each(fn (Pullable $pull) => $pull->save($this));
+    }
+
+    public function getIconNameAttribute()
+    {
+        return new HtmlString(sprintf(
+            '<span class="tag" style="%s">
+                <i class="fab fa-%s" style="margin-right: .5rem;"></i> %s
+            </span>',
+            $this->type->style(),
+            $this->type->icon(),
+            $this->name
+        ));
     }
 
     public static function boot()

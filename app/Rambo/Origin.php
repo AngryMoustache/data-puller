@@ -9,7 +9,10 @@ use App\Rambo\Fields\EnumSelectField;
 
 class Origin extends Resource
 {
-    public $displayName = 'name';
+    public function displayNameField()
+    {
+        return 'iconName';
+    }
 
     public function fields()
     {

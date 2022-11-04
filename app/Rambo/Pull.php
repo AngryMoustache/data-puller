@@ -4,6 +4,7 @@ namespace App\Rambo;
 
 use AngryMoustache\Rambo\Fields;
 use AngryMoustache\Rambo\Fields\HabtmField;
+use AngryMoustache\Rambo\Fields\SelectField;
 use AngryMoustache\Rambo\Resource;
 use App\Enums;
 use App\Rambo\Fields\EnumSelectField;
@@ -29,9 +30,8 @@ class Pull extends Resource
             Fields\ManyAttachmentField::make('attachments')
                 ->sortField('sort_order'),
 
-            EnumSelectField::make('origin')
-                ->nullable()
-                ->options(Enums\Origin::list())
+            SelectField::make('origin_id', 'Origin')
+                ->resource(Origin::class)
                 ->sortable()
                 ->rules('required'),
 

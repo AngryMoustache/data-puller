@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Wireables;
 
-use App\Http\Resources\PullResource;
 use App\Models\Pull;
 use Illuminate\Support\Collection;
 use Livewire\Wireable;
@@ -21,11 +20,8 @@ class FilterBag extends CollectionBag implements Wireable
 
     public function pulls()
     {
-        $tags = collect($this->filters['tags'] ?? [])->map(function ($tag) {
-            return explode('=', $tag);
-        });
-
         return Pull::with('tags', 'origin')
+            ->orderBy('id', 'desc')
             // Origin filter
             ->when(count($this->filters['origins'] ?? []), function ($query) {
                 $query->whereHas('origin', function ($query) {
@@ -33,7 +29,10 @@ class FilterBag extends CollectionBag implements Wireable
                 });
             })
             // Tags filter
-            ->when(count($this->filters['tags'] ?? []), function ($query) use ($tags) {
+            ->when(count($this->filters['tags'] ?? []), function ($query) {
+                // Some tags have a special extra tag, like a color: shirt=red
+                $tags = collect($this->filters['tags'] ?? [])->map(fn ($tag) => explode('=', $tag));
+
                 foreach ($tags as $tag) {
                     $query->whereHas('tags', function ($query) use ($tag) {
                         $query->where([
