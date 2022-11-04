@@ -3,7 +3,7 @@
         {{ $slot }}
     </div>
 
-    <div wire:loading.flex {{ $attributes->only('wire:target') }} class="justify-center w-full py-6">
+    <div wire:loading.flex {{ $attributes->only('wire:target') }}>
         <x-loading />
     </div>
 </x-card>

@@ -1,7 +1,4 @@
-<div
-    {{ $attributes->only('class')->merge(['class' => 'modal']) }}
-    :class="{ 'modal-open': open, 'modal-closed': ! open }"
->
+<div {{ $attributes->merge(['class' => 'modal']) }}>
     <x-container>
         <x-card>
             @isset($header)

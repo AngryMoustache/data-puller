@@ -30,21 +30,17 @@ class Feed extends Component
 
     public function nextPull()
     {
-        if (! $this->active) {
-            return;
-        }
+        if ($this->active) {
+            $this->origins = Origin::query()->whereHas('pendingPulls')->orderBy('name', 'asc')->get();
+            $this->active = $this->active->refresh();
 
-        $this->origins = Origin::query()->whereHas('pendingPulls')->orderBy('name', 'asc')->get();
-        $this->active = $this->active->refresh();
-
-        if ($this->active->pendingPulls->isEmpty()) {
-            $this->active = $this->origins->first();
-            return $this->nextPull();
-        }
-
-        if ($this->active->pendingPulls->isNotEmpty()) {
-            $this->pull = $this->active->pendingPulls->first();
-            $this->selections = $this->pull->tags->mapWithKeys(fn ($tag) => [$tag->id => true])->toArray();
+            if ($this->active->pendingPulls->isEmpty()) {
+                $this->active = $this->origins->first();
+                $this->nextPull();
+            } else {
+                $this->pull = $this->active->pendingPulls->first();
+                $this->selections = $this->pull->tags->mapWithKeys(fn ($tag) => [$tag->id => true])->toArray();
+            }
         }
     }
 
@@ -74,9 +70,17 @@ class Feed extends Component
             return true;
         });
 
+
         // Save tags on the pull and move on to the next
         $this->pull->tags()->sync($tags->pluck('id')->toArray());
         $this->savePull(Status::ONLINE);
+    }
+
+    public function updateTagName($id, $name)
+    {
+        $tag = Tag::find($id);
+        $tag->name = $name;
+        $tag->save();
     }
 
     public function updateName($name)

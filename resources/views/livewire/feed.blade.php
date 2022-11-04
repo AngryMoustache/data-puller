@@ -7,14 +7,18 @@
         @if ($active)
             <x-tabs.list
                 wire:loading.remove
-                wire:target="savePull, saveSelections"
+                wire:target="savePull, saveSelections, changeOrigin"
                 :tabs="$origins"
                 :active="$active->id"
                 type="origin"
                 click="changeOrigin"
             />
 
-            <x-loading-card wire:target="savePull, saveSelections" class="flex gap-6 p-6" wire:key="pull_{{ $pull->id }}">
+            <x-loading-card
+                wire:target="savePull, saveSelections, changeOrigin"
+                class="flex gap-6 p-6"
+                wire:key="pull_{{ $pull->id }}"
+            >
                 <div class="w-1/2 flex flex-col gap-4">
                     @foreach ($pull->attachments as $image)
                         <x-image :src="$image->path()" />
