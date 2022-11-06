@@ -11,7 +11,7 @@ class Origin extends Resource
 {
     public function displayNameField()
     {
-        return 'iconName';
+        return 'name';
     }
 
     public function fields()

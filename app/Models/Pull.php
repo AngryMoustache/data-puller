@@ -58,6 +58,14 @@ class Pull extends Model
         })->get();
     }
 
+    public function getJsonAttachmentsAttribute()
+    {
+        return $this->attachments->map(fn ($attachment) => [
+            'id' => $attachment->id,
+            'path' => $attachment->format('thumb')
+        ])->toArray();
+    }
+
     public function getImageAttribute()
     {
         return $this->attachments->first() ?? $this->videos->first()->preview;

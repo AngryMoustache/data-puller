@@ -10,7 +10,49 @@
                 class="flex gap-6 p-6"
                 wire:key="pull_{{ $pull->id }}"
             >
-                <div class="w-1/2 flex flex-col gap-4">
+                <div class="w-1/2 flex flex-col gap-4" x-data="{
+                    media: @js($pull->jsonAttachments),
+                    removeAttachment (id) {
+                        this.media = this.media.filter((item) => item.id !== id)
+                    },
+                }">
+                    {{-- Controls --}}
+                    <x-collapse title="Media controls">
+                        <div class="w-full" wire:loading>
+                            <x-loading />
+                        </div>
+
+                        <div wire:loading.remove>
+                            <ul class="grid grid-cols-3 gap-4 p-4">
+                                <template x-for="item in media">
+                                    <li class="flex items-center relative" :key="item.path">
+                                        <div class="w-full flex gap-2 absolute top-2 left-2" x-show="media.length > 1">
+                                            <x-form.button class="w-8">
+                                                <i class=" fas fa-arrows-alt"></i>
+                                            </x-form.button>
+
+                                            <x-form.button class="w-8" x-on:click="removeAttachment(item.id)">
+                                                <i class=" fas fa-trash"></i>
+                                            </x-form.button>
+                                        </div>
+
+                                        <img
+                                            class="w-full border rounded-lg shadow-sm"
+                                            :src="item.path"
+                                        >
+                                    </li>
+                                </template>
+                            </ul>
+
+                            <div class="p-4 pt-0">
+                                <x-form.button-secondary x-on:click="$wire.updateAttachments(media)">
+                                    <i class=" fas fa-save"></i>
+                                    Save changes
+                                </x-form.button-secondary>
+                            </div>
+                        </div>
+                    </x-collapse>
+
                     @foreach ($pull->attachments as $image)
                         <x-image :src="$image->path()" />
                     @endforeach

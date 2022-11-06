@@ -1,4 +1,9 @@
-<div class="border rounded-lg overflow-hidden" x-data="{ open: false }">
+@props([
+    'open' => false,
+    'title' => '',
+])
+
+<div class="border rounded-lg overflow-hidden" x-data="{ open: @js($open) }">
     <div
         x-on:click="open = ! open"
         {{ $attributes->only('class')->merge([
@@ -11,11 +16,11 @@
     >
         {{ $title }}
 
-        <i x-show="open" class="fas fa-chevron-down"></i>
-        <i x-show="! open" class="fas fa-chevron-up"></i>
+        <i @if ($open) style="display: none" @endif x-show="open" class="fas fa-chevron-down"></i>
+        <i @if (! $open) style="display: none" @endif x-show="! open" class="fas fa-chevron-up"></i>
     </div>
 
-    <div style="display: none" x-show="open" x-transition>
+    <div style="display: none" x-show="open">
         {{ $slot }}
     </div>
 </div>

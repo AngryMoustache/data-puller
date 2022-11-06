@@ -81,6 +81,15 @@ class Feed extends Component
         $this->pull->saveQuietly();
     }
 
+    public function updateAttachments($media)
+    {
+        $this->pull->attachments()->sync(collect($media)->mapWithKeys(function ($item, $key) {
+            return [$item['id'] => ['sort_order' => 1000 + $key]];
+        })->toArray());
+
+        $this->pull = $this->pull->refresh();
+    }
+
     public function savePull($status)
     {
         $this->pull->status = $status;
