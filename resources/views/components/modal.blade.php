@@ -1,6 +1,6 @@
-<div {{ $attributes->merge(['class' => 'modal']) }}>
+<div class="modal">
     <x-container>
-        <x-card>
+        <x-card {{ $attributes->only('class') }}>
             @isset($header)
                 <div class="modal-header">
                     {{ $header }}

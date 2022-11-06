@@ -47,15 +47,20 @@ class Pull extends Model
         return $this->morphedByMany(Video::class, 'media', 'media_pull');
     }
 
-    public function getImageAttribute()
+    public function getSuggestedTagsAttribute()
     {
-        return $this->attachments->first()
-            ?? $this->videos->first()->preview;
+        $similar = collect(explode(' ', $this->name))
+            ->map(fn ($part) => ['soundex', 'LIKE', soundex($part) . '%'])
+            ->filter();
+
+        return Tag::where(function ($query) use ($similar) {
+            $similar->each(fn ($i) => $query->orWhere(...$i));
+        })->get();
     }
 
-    public function getRelatedAttribute()
+    public function getImageAttribute()
     {
-        return $this->tags->pluck('pulls')->flatten()->unique()->where('id', '!=', $this->id);
+        return $this->attachments->first() ?? $this->videos->first()->preview;
     }
 
     public function getPulledWhenAttribute()

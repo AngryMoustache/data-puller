@@ -3,84 +3,76 @@
 namespace App\Http\Livewire;
 
 use App\Enums\Status;
-use App\Models\Origin;
 use App\Models\Pull;
 use App\Models\Tag;
+use App\Resources\JsonTag;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Feed extends Component
 {
-    public Collection $origins;
+    public Collection $pulls;
     public Collection $tags;
+    public Collection $selections;
 
-    public ?Origin $active;
     public ?Pull $pull;
-
-    public array $selections = [];
 
     public function mount()
     {
-        $this->tags = Tag::whereDoesntHave('parent')->get();
-        $this->origins = Origin::query()->whereHas('pendingPulls')->orderBy('name', 'asc')->get();
-        $this->active = $this->origins->first();
-
         $this->nextPull();
     }
 
     public function nextPull()
     {
-        if ($this->active) {
-            $this->origins = Origin::query()->whereHas('pendingPulls')->orderBy('name', 'asc')->get();
-            $this->active = $this->active->refresh();
+        $this->tags = JsonTag::collection(
+            Pull::get()
+                ->pluck('tags')
+                ->flatten()
+                ->unique(fn ($item) => $item->id . $item?->pivot?->data)
+                ->values()
+        );
 
-            if ($this->active->pendingPulls->isEmpty()) {
-                $this->active = $this->origins->first();
-                $this->nextPull();
-            } else {
-                $this->pull = $this->active->pendingPulls->first();
-                $this->selections = $this->pull->tags->mapWithKeys(fn ($tag) => [$tag->id => true])->toArray();
-            }
+        $this->pulls = Pull::pending()->pluck('id');
+
+        // Do not use 'return' this function
+        if ($this->pulls->isNotEmpty()) {
+            $this->pull = Pull::find($this->pulls)->first();
+
+            $this->selections = JsonTag::collection(
+                $this->pull->tags->concat($this->pull->suggestedTags)
+            );
         }
     }
 
-    public function changeOrigin($id)
+    public function saveSelections($selections)
     {
-        $this->active = $this->origins->where('id', $id)->first();
-        $this->pull = $this->active->pendingPulls->first();
-    }
+        $selections = collect($selections);
 
-    public function saveSelections()
-    {
-        // Filter out tags from unselected parents
-        $ids = collect($this->selections)->filter()->keys()->toArray();
-        $tags = Tag::whereIn('id', $ids)->with('children')->get();
-        $ids += $this->tags->pluck('id')->toArray();
+        // Save any new tags
+        $selections = $selections->map(function ($selection) {
+            $tag = Tag::updateOrCreate(
+                ['slug' => Str::slug($selection['name'])],
+                ['name' => $selection['name']]
+            );
 
-        $tags = $tags->filter(function ($tag) use ($ids) {
-            $parent = $tag->parent;
-            while ($parent) {
-                if (! in_array($parent?->id, $ids)) {
-                    return false;
-                }
-
-                $parent = $parent->parent;
-            }
-
-            return true;
+            $selection['id'] = $tag->id;
+            return $selection;
         });
 
+        // Get tags and save them with the extra data
+        $selections = $selections->mapWithKeys(function ($selection) {
+            return [$selection['id'] => [
+                'data' => collect(explode(',', $selection['extra'] ?? ''))
+                    ->map(fn ($i) => trim($i))
+                    ->filter()
+                    ->toJson(),
+            ]];
+        });
 
         // Save tags on the pull and move on to the next
-        $this->pull->tags()->sync($tags->pluck('id')->toArray());
+        $this->pull->tags()->sync($selections->toArray());
         $this->savePull(Status::ONLINE);
-    }
-
-    public function updateTagName($id, $name)
-    {
-        $tag = Tag::find($id);
-        $tag->name = $name;
-        $tag->save();
     }
 
     public function updateName($name)

@@ -4,16 +4,7 @@
     </x-header>
 
     <x-container>
-        @if ($active)
-            <x-tabs.list
-                wire:loading.remove
-                wire:target="savePull, saveSelections, changeOrigin"
-                :tabs="$origins"
-                :active="$active->id"
-                type="origin"
-                click="changeOrigin"
-            />
-
+        @if ($pull)
             <x-loading-card
                 wire:target="savePull, saveSelections, changeOrigin"
                 class="flex gap-6 p-6"
@@ -30,12 +21,48 @@
                 </div>
 
                 <div class="w-1/2" x-data="{
-                    selections: @entangle('selections').defer,
+                    {{-- Name updating --}}
                     name: @js($pull->name),
                     oldName: @js($pull->name),
                     updateName () {
                         $wire.updateName(this.name)
                         this.oldName = this.name
+                    },
+
+                    {{-- Tag selection --}}
+                    query: '',
+                    tags: @js($tags),
+                    selections: @js($selections),
+                    toggle (tag) {
+                        if (this.selections.includes(tag)) {
+                            this.selections = this.selections.filter(t => t !== tag)
+                        } else {
+                            this.selections.push(tag)
+                        }
+                    },
+                    filteredTags () {
+                        return this.tags.filter((tag) => {
+                            return ! this.selections.includes(tag)
+                                && (tag.name + tag.extra).toLowerCase().includes(this.query.toLowerCase())
+                        }).slice(0, 20)
+                    },
+                    newTag () {
+                        this.selections.push({ name: this.query, extra: null })
+                        this.query = ''
+                    },
+                    autoSelect () {
+                        if (this.filteredTags().length > 0) {
+                            this.toggle(this.filteredTags()[0])
+                        } else {
+                            this.newTag()
+                        }
+
+                        this.query = ''
+                    },
+
+                    {{-- Save data --}}
+                    saveSelections () {
+                        @this.call('saveSelections', this.selections)
                     }
                 }">
                     <x-headers.h3 class="pb-0 flex items-center">
@@ -56,23 +83,17 @@
                     <div class="w-full mt-3 mb-6 border-t"></div>
 
                     <div class="flex flex-col gap-4">
-                        @foreach ($tags as $tag)
-                            <x-collapse :title="$tag->name">
-                                <div class="my-4">
-                                    <x-tags.tree :tags="$tag->children" />
-                                </div>
-                            </x-collapse>
-                        @endforeach
+                        <x-tag-selector :$tags :$selections />
 
                         <div class="w-full my-4 border-t"></div>
 
                         <div class="flex gap-4 w-full">
                             <x-form.button-secondary x-on:click="$wire.savePull('offline')">
                                 <i class="fa fa-times"></i>
-                                Ignore pull
+                                Archive pull
                             </x-form.button-secondary>
 
-                            <x-form.button x-on:click="$wire.saveSelections()">
+                            <x-form.button x-on:click="saveSelections()">
                                 <i class="far fa-save"></i>
                                 Save and pull
                             </x-form.button>
