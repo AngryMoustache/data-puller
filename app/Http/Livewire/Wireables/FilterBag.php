@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Wireables;
 
-use App\Enums\Status;
 use App\Models\Pull;
 use Illuminate\Support\Collection;
 use Livewire\Wireable;
@@ -17,6 +16,18 @@ class FilterBag extends CollectionBag implements Wireable
             ->map(fn ($filter) => explode(':', $filter))
             ->filter(fn ($filter) => count($filter) > 1)
             ->mapWithKeys(fn ($filter) => [$filter[0] => explode(',', $filter[1] ?? null)]);
+    }
+
+    public function tags()
+    {
+        return [];
+    }
+
+    public function updateTags($selections)
+    {
+        $this->filters['tags'] = collect($selections)->map(function ($tag) {
+            return $tag['slug'] . (empty($tag['extra']) ? '' : "={$tag['extra']}");
+        });
     }
 
     public function pulls()

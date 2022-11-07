@@ -50,7 +50,7 @@
                 ">
                     <i class="fa fa-tag text-sm text-black-800 mr-2"></i>
                     <span x-text="tag.name"></span>
-                    <span x-text="'- ' + tag.extra"></span>
+                    <span x-show="tag.extra !== ''" x-text="'- ' + tag.extra"></span>
                 </span>
             </li>
         </template>

@@ -24,6 +24,10 @@ class Pull extends Model
         'verdict_at' => 'datetime',
     ];
 
+    public $with = [
+        'attachments',
+    ];
+
     public function origin()
     {
         return $this->belongsTo(Origin::class);
