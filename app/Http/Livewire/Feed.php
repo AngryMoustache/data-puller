@@ -25,15 +25,8 @@ class Feed extends Component
 
     public function nextPull()
     {
-        $this->tags = JsonTag::collection(
-            Pull::get()
-                ->pluck('tags')
-                ->flatten()
-                ->unique(fn ($item) => $item->id . $item?->pivot?->data)
-                ->values()
-        );
-
         $this->pulls = Pull::pending()->pluck('id');
+        $this->tags = Tag::fullTagList();
 
         // Do not use 'return' this function
         if ($this->pulls->isNotEmpty()) {
@@ -62,11 +55,13 @@ class Feed extends Component
 
         // Get tags and save them with the extra data
         $selections = $selections->mapWithKeys(function ($selection) {
+            $extras = collect(explode(',', $selection['extra'] ?? ''))
+                ->map(fn ($i) => trim($i))
+                ->filter()
+                ->mapWithKeys(fn ($i) => [Str::slug($i) => $i]);
+
             return [$selection['id'] => [
-                'data' => collect(explode(',', $selection['extra'] ?? ''))
-                    ->map(fn ($i) => trim($i))
-                    ->filter()
-                    ->toJson(),
+                'data' => $extras->toJson(),
             ]];
         });
 

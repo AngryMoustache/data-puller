@@ -42,10 +42,9 @@ class Origin extends Model
 
     public function pull()
     {
-        $id = $this->api_target;
         $items = match ($this->type) {
-            Enums\Origin::TWITTER => (new Clients\Twitter($this, $id))->likes(),
-            Enums\Origin::DEVIANTART => (new Clients\DeviantArt($this, $id))->favorites(),
+            Enums\Origin::TWITTER => (new Clients\Twitter($this))->likes(),
+            Enums\Origin::DEVIANTART => (new Clients\DeviantArt($this))->favorites(),
         };
 
         $items->each(fn (Pullable $pull) => $pull->save($this));

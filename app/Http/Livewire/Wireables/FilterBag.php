@@ -2,59 +2,101 @@
 
 namespace App\Http\Livewire\Wireables;
 
+use App\Enums\Sorting;
 use App\Models\Pull;
+use App\Models\Tag;
+use App\Resources\JsonTag;
 use Illuminate\Support\Collection;
 use Livewire\Wireable;
 
-class FilterBag extends CollectionBag implements Wireable
+class FilterBag implements Wireable
 {
     public Collection $filters;
 
+    public Sorting $sort = Sorting::POPULAR;
+
     public function __construct($filters = '')
     {
+        $tags = Tag::fullTagList();
+
         $this->filters = collect(explode('/', $filters))
             ->map(fn ($filter) => explode(':', $filter))
             ->filter(fn ($filter) => count($filter) > 1)
-            ->mapWithKeys(fn ($filter) => [$filter[0] => explode(',', $filter[1] ?? null)]);
+            ->mapWithKeys(function ($filter) use ($tags) {
+                if ($filter[0] === 'tags') {
+                    $value = collect(explode(',', $filter[1]))
+                        ->map(fn ($tag) => $tags->where('fullSlug', $tag)->first())
+                        ->filter(fn ($tag) => $tag->id)
+                        ->values();
+                }
+
+                $value ??= explode(',', $filter[1] ?? null);
+
+                return [$filter[0] => $value];
+            });
+
+        // Filter defaults
+        $this->filters = $this->filters->union([
+            'tags' => collect(),
+        ]);
     }
 
     public function tags()
     {
-        return [];
+        return collect($this->filters['tags'] ?? []);
     }
 
-    public function updateTags($selections)
+    public function toggleTag($newTag)
     {
-        $this->filters['tags'] = collect($selections)->map(function ($tag) {
-            return $tag['slug'] . (empty($tag['extra']) ? '' : "={$tag['extra']}");
-        });
+        $newTag = (object) $newTag;
+
+        if ($this->filters['tags']->contains('fullSlug', $newTag->fullSlug)) {
+            $this->filters['tags'] = $this->filters['tags']->reject(function ($tag) use ($newTag) {
+                return $tag->fullSlug === $newTag->fullSlug;
+            });
+        } else {
+            $this->filters['tags']->push($newTag);
+        }
     }
 
     public function pulls()
     {
-        return Pull::online()
-            ->with('tags', 'origin')
-            ->orderBy('id', 'desc')
-            // Origin filter
-            ->when(count($this->filters['origins'] ?? []), function ($query) {
-                $query->whereHas('origin', function ($query) {
-                    $query->whereIn('slug', $this->filters['origins']);
-                });
-            })
-            // Tags filter
-            ->when(count($this->filters['tags'] ?? []), function ($query) {
-                // Some tags have a special extra tag, like a color: shirt=red
-                $tags = collect($this->filters['tags'] ?? [])->map(fn ($tag) => explode('=', $tag));
-
-                foreach ($tags as $tag) {
+        return Pull::with('tags')
+            ->online()
+            ->when($this->filters['tags']->isNotEmpty(), function ($query) {
+                // Tags filter
+                foreach ($this->filters['tags'] as $tag) {
                     $query->whereHas('tags', function ($query) use ($tag) {
-                        $query->where([
-                            ['tags.slug', $tag[0]],
-                            ['data', 'LIKE', '%' . ($tag[1] ?? '') . '%'],
-                        ]);
+                        // Some tags have a special extra tag, like a color: shirt=red
+                        $query->where('tags.slug', $tag->slug);
+                        if (! empty($tag->extraSlug)) {
+                            $query->where('data', 'LIKE', '%"' . $tag->extraSlug . '":%');
+                        }
                     });
                 }
             })
-            ->get();
+            ->get()
+            ->when($this->sort, function ($items) {
+                // Sorting
+                return $this->sort->sortCollection($items);
+            });
+    }
+
+    public function toQueryString()
+    {
+        return $this->filters
+            ->reject(fn ($item) => optional($item)->isEmpty() || empty($item))
+            ->map(fn ($value, $key) => $key . ':' . collect($value)->pluck('fullSlug')->join(','))
+            ->implode('/');
+    }
+
+    public static function fromLivewire($value)
+    {
+        return new static($value);
+    }
+
+    public function toLivewire()
+    {
+        return $this->toQueryString();
     }
 }

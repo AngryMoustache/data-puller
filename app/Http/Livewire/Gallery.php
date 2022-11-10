@@ -18,13 +18,18 @@ class Gallery extends Component
         $this->tags = Tag::fullTagList();
     }
 
-    public function updateTags($selections)
+    public function toggleTag($tag)
     {
-        $this->bag->updateTags($selections);
+        $this->bag->toggleTag($tag);
     }
 
     public function render()
     {
+        $this->dispatchBrowserEvent(
+            'update-browser-url',
+            route('gallery.filter', $this->bag->toQueryString())
+        );
+
         return view('livewire.gallery', [
             'pulls' => $this->bag->pulls(),
         ]);

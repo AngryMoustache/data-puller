@@ -38,8 +38,10 @@
     >
         <template x-for="(tag, key) in filteredTags()">
             <li
+                tabindex="0"
                 :key="tag.id"
                 x-on:click="toggle(tag)"
+                x-on:keydown.enter="toggle(tag)"
             >
                 <span class="
                     inline-block px-3 py-1 rounded-lg text-secondary flex items-center
@@ -56,8 +58,10 @@
         </template>
 
         <li
+            tabindex="0"
             key="new-tag"
             x-on:click="newTag()"
+            x-on:keydown.enter="newTag()"
         >
             <span class="
                 inline-block px-3 py-1 rounded-lg text-secondary flex items-center

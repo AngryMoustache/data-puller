@@ -20,19 +20,27 @@ class Tag extends Model
 
     public static function fullTagList()
     {
-        return self::with('pulls')->get()->map(function ($tag) {
-            return $tag->pulls->pluck('pivot.data')
-                ->map(fn ($i) => json_decode($i))
-                ->flatten()
-                ->unique()
-                ->map(function ($extra) use ($tag) {
-                    $json = JsonTag::single($tag);
-                    $json->extra = $extra;
+        $tags = Pull::get()
+            ->pluck('tags')
+            ->flatten()
+            ->unique(fn ($item) => $item->id . $item?->pivot?->data)
+            ->values();
 
-                    return $json;
-                })
-                ->prepend(JsonTag::single($tag));
-        })->flatten(1);
+        return JsonTag::collection($tags)
+            ->groupBy('id')
+            ->map(function ($group) {
+                if (empty($group->first()?->extra)) {
+                    return $group;
+                }
+
+                $new = clone $group->first();
+                $new->fullSlug = $new->slug;
+                $new->extraSlug = '';
+                $new->extra = '';
+
+                return $group->prepend($new);
+            })
+            ->flatten();
     }
 
     public static function boot()

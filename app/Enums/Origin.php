@@ -2,6 +2,8 @@
 
 namespace App\Enums;
 
+use Api\Clients;
+
 enum Origin: string
 {
     case TWITTER = 'twitter';

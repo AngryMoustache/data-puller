@@ -107,7 +107,7 @@ class Media
         // Save the file on the disk
         $path = "public/videos/{$video->id}/";
         Storage::putFileAs($path, $this->video_src, (string) $filename);
-        $video->size = filesize($video->path());
+        $video->size = filesize($video->fullPath());
         $video->saveQuietly();
 
         return $video;

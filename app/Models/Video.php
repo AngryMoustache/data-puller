@@ -25,6 +25,11 @@ class Video extends Model
         return $this->belongsTo(Attachment::class);
     }
 
+    public function fullPath()
+    {
+        return Storage::path("public/videos/{$this->id}/{$this->filename}");
+    }
+
     public function path()
     {
         return Storage::url("public/videos/{$this->id}/{$this->filename}");
