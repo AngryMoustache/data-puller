@@ -3,10 +3,10 @@
 namespace Api\Entities;
 
 use Api\Entities\Media\Media;
-use App\Models\Origin as ModelsOrigin;
-use App\Models\Pull;
+use Api\Jobs\SyncPull;
+use App\Models\Origin;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class Pullable
 {
@@ -14,32 +14,21 @@ class Pullable
     public string $source;
 
     public Media|Collection $media;
+    public Origin $origin;
 
-    public function save(ModelsOrigin $origin)
+    public function save(Origin $origin)
     {
-        // Create or update the pull
-        $pull = Pull::updateOrCreate(['source_url' => $this->source], [
-            'name' => $this->name,
-            'origin' => $origin->type,
-            'origin_id' => $origin->id,
-        ]);
+        $this->origin = $origin;
 
-        // Don't save the media if it was not created now
-        if (! $pull->wasRecentlyCreated && ! $pull->attachment) {
-            return $pull;
+        SyncPull::dispatch($this);
+    }
+
+    public function checkJapanese($value, $fallback = null)
+    {
+        if (empty($value) || mb_detect_encoding($value) !== 'ASCII') {
+            $value = $fallback ?? rand(10000, 99999);
         }
 
-        // Save the media
-        $this->media = Collection::wrap($this->media)->map->save();
-
-        // Attach the media to the pull
-        $this->media->filter()->each(function ($item) use ($pull) {
-            DB::insert(
-                'INSERT INTO media_pull (media_type, media_id, pull_id) values (?, ?, ?)',
-                [get_class($item), $item->id, $pull->id]
-            );
-        });
-
-        return $pull;
+        return Str::of($value)->trim();
     }
 }

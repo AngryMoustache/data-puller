@@ -32,7 +32,7 @@ class Pull extends Resource
 
             SelectField::make('origin_id', 'Origin')
                 ->resource(Origin::class)
-                ->sortable()
+                ->hideFrom(['index'])
                 ->rules('required'),
 
             Fields\TextField::make('source_url')
@@ -40,7 +40,7 @@ class Pull extends Resource
 
             Fields\HabtmField::make('videos')
                 ->resource(Video::class)
-                ->hideFrom(['index']),
+                ->hideFrom([]),
 
             EnumSelectField::make('status')
                 ->nullable()

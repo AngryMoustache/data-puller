@@ -21,7 +21,7 @@ class Video extends Media
     public function save()
     {
         // Create the video itself and link the thumbnail
-        $filename = Str::of($this->video_src)->before('?')->afterLast('/');
+        $filename = Str::of($this->src)->before('?')->afterLast('/');
         $name = $filename->before('.');
         $extension = $filename->afterLast('.');
 
@@ -39,7 +39,7 @@ class Video extends Media
 
         // Save the file on the disk
         $path = "public/videos/{$video->id}/";
-        Storage::putFileAs($path, $this->video_src, (string) $filename);
+        Storage::putFileAs($path, $this->src, (string) $filename);
         $video->size = filesize($video->fullPath());
         $video->saveQuietly();
 

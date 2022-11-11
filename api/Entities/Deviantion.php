@@ -8,7 +8,7 @@ class Deviantion extends Pullable
 {
     public function __construct($pull)
     {
-        $this->name = $pull['title'];
+        $this->name = $this->checkJapanese($pull['title'])->limit(50);
         $this->source = $pull['url'];
 
         $this->media = Image::make()

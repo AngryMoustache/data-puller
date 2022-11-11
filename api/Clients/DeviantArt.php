@@ -41,11 +41,12 @@ class DeviantArt
                     'offset' => $offset,
                     'mature_content' => true,
                 ])->json();
+
+                foreach ($response['results'] as $result) {
+                    $items[] = $result;
+                }
             }
 
-            foreach ($response['results'] as $result) {
-                $items[] = $result;
-            }
         }
 
         return collect($items)

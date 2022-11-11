@@ -18,7 +18,6 @@ return [
     'navigation' => [
         'General' => [
             Administrator::class,
-            Attachment::class,
         ],
         'Media' => [
             Attachment::class,

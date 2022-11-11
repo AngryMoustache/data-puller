@@ -36,9 +36,9 @@ class Pixiv
     {
         $this->token = $this->refresh();
 
+        $items = collect();
         $url = "{$this->url}user/bookmarks/illust?user_id={$this->origin->api_target}&restrict=public";
         $results = collect(['next_url' => $url]);
-        $items = collect();
 
         while ($results['next_url']) {
             $url = $results['next_url'];
@@ -46,6 +46,6 @@ class Pixiv
             $items = $items->merge($results['illusts']);
         }
 
-        return $items->mapInto(PixivIllust::class);
+        return $items->take(50)->mapInto(PixivIllust::class);
     }
 }
