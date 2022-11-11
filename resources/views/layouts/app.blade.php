@@ -8,7 +8,9 @@
         <livewire:styles />
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
     </head>
-    <body>
+    <body class="pb-32">
+        <div class="background"></div>
+
         <x-container class="flex items-center justify-between w-full py-8">
             <x-headers.h1>
                 Mobile<span class="text-primary">Art</span>

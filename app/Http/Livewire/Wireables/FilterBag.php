@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Wireables;
 
+use App\Enums\Display;
 use App\Enums\Sorting;
 use App\Models\Pull;
 use App\Models\Tag;
-use App\Resources\JsonTag;
 use Illuminate\Support\Collection;
 use Livewire\Wireable;
 
@@ -14,6 +14,7 @@ class FilterBag implements Wireable
     public Collection $filters;
 
     public Sorting $sort = Sorting::POPULAR;
+    public Display $display = Display::CARD;
 
     public function __construct($filters = '')
     {
@@ -62,7 +63,7 @@ class FilterBag implements Wireable
     public function pulls()
     {
         return Pull::with('tags')
-            ->online()
+            // ->online()
             ->when($this->filters['tags']->isNotEmpty(), function ($query) {
                 // Tags filter
                 foreach ($this->filters['tags'] as $tag) {

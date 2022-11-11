@@ -22,12 +22,19 @@
 html {
     font-family: 'Alegreya Sans', sans-serif;
     color: var(--color-text);
-    background: linear-gradient(35deg, var(--color-surface-light), var(--color-surface-dark));
     min-height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Merriweather Sans', sans-serif;
+}
+
+.background {
+    position: fixed;
+    top: 0; bottom: 0;
+    left: 0; right: 0;
+    z-index: -100;
+    background: linear-gradient(35deg, var(--color-surface-light), var(--color-surface-dark));
 }
 
 .bg-gradient {

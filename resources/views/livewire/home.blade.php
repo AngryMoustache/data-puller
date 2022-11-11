@@ -12,23 +12,23 @@
             </p>
 
             <div class="flex gap-4">
-                <x-form.button label="Full gallery" :route="route('gallery.index')" />
-                <x-form.button-secondary label="Pull more content" :route="route('feed.index')" />
+                <x-form.button label="Full gallery" :href="route('gallery.index')" />
+                <x-form.button-secondary label="Pull more content" :href="route('feed.index')" />
             </div>
         </div>
 
         <div class="w-2/5">
-            <x-cards.pull :pull="$highlight" />
+            <x-card.pull :pull="$highlight" />
         </div>
     </div>
 
     <div class="flex flex-col gap-32 py-32">
         <x-section title="Latest pulls" :route="route('gallery.index')">
-            <x-grid.pull-small :pulls="$latest" />
+            <x-grid.pulls-small :pulls="$latest" />
         </x-section>
 
         <x-section title="Popular pulls" :route="route('gallery.index')">
-            <x-grid.pull-small :pulls="$popular" />
+            <x-grid.pulls-small :pulls="$popular" />
         </x-section>
     </div>
 </x-container>
