@@ -1,9 +1,7 @@
-<h3 {{ $attributes->merge([
-    'class' => 'font-bold text-2xl',
-]) }}>
+<strong class="text-primary">
     @if (isset($text))
         {{ $text }}
     @else
         {{ $slot }}
     @endif
-</h3>
+</strong>

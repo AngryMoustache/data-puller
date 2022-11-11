@@ -1,3 +1,3 @@
 <img {{ $attributes->merge([
-    'class' => 'w-full'
+    'class' => 'w-full bg-surface'
 ]) }}>

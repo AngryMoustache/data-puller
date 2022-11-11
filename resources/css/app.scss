@@ -2,11 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
-@import 'modals';
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans&family=Alegreya+Sans&display=swap');
+
+:root {
+    --color-primary: #db2769;
+    --color-primary-light: #FF5C8D;
+    --color-primary-dark: #A00037;
+    --color-primary-super-dark: #6A0020;
+    --color-background: #121212;
+    --color-text: #D3D3D3;
+    --color-surface: #151515;
+    --color-surface-light: #2c2c2c;
+    --color-surface-dark: #121212;
+    --color-error: #B00020;
+}
+
 @import 'loading';
 
+html {
+    font-family: 'Alegreya Sans', sans-serif;
+    color: var(--color-text);
+    background: linear-gradient(35deg, var(--color-surface-light), var(--color-surface-dark));
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
 .bg-gradient {
-    background: linear-gradient(35deg, #2c92e5, #0059a2);
+    background: linear-gradient(120deg, var(--color-primary-light), var(--color-primary-dark));
+}
+
+.bg-gradient-dark {
+    background: linear-gradient(120deg, var(--color-primary-dark), var(--color-primary-super-dark));
 }
 
 .notification::after {

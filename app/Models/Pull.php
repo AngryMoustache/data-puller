@@ -80,6 +80,11 @@ class Pull extends Model
         return ($this->verdict_at ?? $this->created_at)->isoFormat('lll');
     }
 
+    public function getFormattedViewsAttribute()
+    {
+        return number_format($this->views);
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', Status::PENDING);

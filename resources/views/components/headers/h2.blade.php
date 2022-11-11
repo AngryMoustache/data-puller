@@ -1,5 +1,9 @@
 <h2 {{ $attributes->merge([
-    'class' => 'text-white font-bold text-lg pb-4',
+    'class' => 'font-bold text-2xl',
 ]) }}>
-    {{ $slot }}
+    @if (isset($text))
+        {{ $text }}
+    @else
+        {{ $slot }}
+    @endif
 </h2>

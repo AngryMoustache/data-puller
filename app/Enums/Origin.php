@@ -38,7 +38,7 @@ enum Origin: string
     public function style()
     {
         return match ($this) {
-            self::DEVIANTART => 'background: #00e59b !important; color: #3b3b3b !important;',
+            self::DEVIANTART => 'background: #00e59b !important; color: #000 !important;',
             self::TWITTER => 'background: #1da1f2 !important; color: #fff !important;',
             self::PIXIV => 'background: #166392 !important; color: #fff !important;',
         };

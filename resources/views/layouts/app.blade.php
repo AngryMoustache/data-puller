@@ -8,7 +8,19 @@
         <livewire:styles />
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
     </head>
-    <body class="bg-slate-100">
+    <body>
+        <x-container class="flex items-center justify-between w-full py-8">
+            <x-headers.h1>
+                Mobile<span class="text-primary">Art</span>
+            </x-headers.h1>
+
+            <ul class="flex gap-4">
+                <x-nav.item label="Gallery" :route="route('gallery.index')" />
+                <x-nav.item label="Tags" :route="route('tag-manager.index')" />
+                <x-nav.item-border label="Feed" :route="route('feed.index')" />
+            </ul>
+        </x-container>
+
         {{ $slot }}
 
         <livewire:scripts />
