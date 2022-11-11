@@ -45,6 +45,9 @@ class Image extends Media
             Storage::putFileAs($folder, $this->src, $filename);
         }
 
+        // Generate thumb format
+        $attachment->format('thumb');
+
         // Fill in some extra data
         $filesize = getimagesize($attachment->path());
         $response = Storage::response("${folder}/{$filename}");

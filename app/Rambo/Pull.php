@@ -7,6 +7,7 @@ use AngryMoustache\Rambo\Fields\HabtmField;
 use AngryMoustache\Rambo\Fields\SelectField;
 use AngryMoustache\Rambo\Resource;
 use App\Enums;
+use App\Rambo\Actions\RePull;
 use App\Rambo\Fields\EnumSelectField;
 
 class Pull extends Resource

@@ -20,27 +20,27 @@ enum Origin: string
         };
     }
 
-    public function icon()
-    {
-        return match ($this) {
-            self::TWITTER => 'fab fa-twitter',
-            self::DEVIANTART => 'fab fa-deviantart',
-            self::PIXIV => 'fab fa-pintrest',
-        };
-    }
-
     public static function list()
     {
         return collect(self::cases())
             ->mapWithKeys(fn ($value) => [$value->value => $value->name]);
     }
 
+    public function icon()
+    {
+        return match ($this) {
+            self::TWITTER => 'fab fa-twitter',
+            self::DEVIANTART => 'fab fa-deviantart',
+            self::PIXIV => 'fab fa-pinterest-p',
+        };
+    }
+
     public function style()
     {
         return match ($this) {
             self::DEVIANTART => 'background: #00e59b !important; color: #3b3b3b !important;',
-            self::TWITTER => 'background: #1da1f2 !important;',
-            self::PIXIV => 'background: #166392 !important;',
+            self::TWITTER => 'background: #1da1f2 !important; color: #fff !important;',
+            self::PIXIV => 'background: #166392 !important; color: #fff !important;',
         };
     }
 
