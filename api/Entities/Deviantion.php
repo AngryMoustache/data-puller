@@ -2,7 +2,7 @@
 
 namespace Api\Entities;
 
-use App\Enums\Origin;
+use Api\Entities\Media\Image;
 
 class Deviantion extends Pullable
 {
@@ -11,11 +11,8 @@ class Deviantion extends Pullable
         $this->name = $pull['title'];
         $this->source = $pull['url'];
 
-        $this->media = new Media([
-            'url' => $pull['content']['src'],
-            'width' => $pull['content']['width'],
-            'height' => $pull['content']['height'],
-            'type' => 'image',
-        ]);
+        $this->media = Image::make()
+            ->source($pull['content']['src'])
+            ->size($pull['content']['width'], $pull['content']['height']);
     }
 }

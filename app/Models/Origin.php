@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use AngryMoustache\Media\Models\Attachment;
-use Api\Clients;
 use Api\Entities\Pullable;
 use App\Enums;
 use Illuminate\Database\Eloquent\Model;
@@ -42,12 +41,9 @@ class Origin extends Model
 
     public function pull()
     {
-        $items = match ($this->type) {
-            Enums\Origin::TWITTER => (new Clients\Twitter($this))->likes(),
-            Enums\Origin::DEVIANTART => (new Clients\DeviantArt($this))->favorites(),
-        };
-
-        $items->each(fn (Pullable $pull) => $pull->save($this));
+        $this->type->pull($this)->each(function (Pullable $pull) {
+            $pull->save($this);
+        });
     }
 
     public function getIconNameAttribute()

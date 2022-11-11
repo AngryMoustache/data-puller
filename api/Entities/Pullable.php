@@ -2,7 +2,7 @@
 
 namespace Api\Entities;
 
-use App\Enums\Origin;
+use Api\Entities\Media\Media;
 use App\Models\Origin as ModelsOrigin;
 use App\Models\Pull;
 use Illuminate\Support\Collection;

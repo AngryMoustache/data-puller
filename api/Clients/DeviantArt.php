@@ -16,8 +16,8 @@ class DeviantArt
         $this->url = 'https://www.deviantart.com/api/v1/oauth2';
         $this->token = Http::get('https://www.deviantart.com/oauth2/token', [
             'grant_type' => 'client_credentials',
-            'client_id' => config('clients.deviant-art.client-id'),
-            'client_secret' => config('clients.deviant-art.client-secret'),
+            'client_id' => config('clients.deviant_art.client_id'),
+            'client_secret' => config('clients.deviant_art.client_secret'),
         ])->json()['access_token'] ?? null;
     }
 

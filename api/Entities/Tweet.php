@@ -2,7 +2,8 @@
 
 namespace Api\Entities;
 
-use App\Enums\Origin;
+use Api\Entities\Media\Image;
+use Api\Entities\Media\Video;
 
 class Tweet extends Pullable
 {
@@ -13,14 +14,30 @@ class Tweet extends Pullable
         $this->media = $pull['attachments'];
 
         $this->media = $this->media->map(function ($media, $key) {
-            $item = new Media($media);
-            $item->name = $this->name;
-
+            $name = $this->name;
             if ($this->media->count() > 1) {
-                $item->name .= ' - ' . ($key + 1);
+                $name .= ' - ' . ($key + 1);
             }
 
-            return $item;
-        });
+            if (in_array(($media['type'] ?? null), ['video', 'animated_gif'])) {
+                $video = collect($media)
+                    ->where('content_type', 'video/mp4')
+                    ->where('bit_rate', '<', 1000000)
+                    ->first()['url'] ?? null;
+
+                if (! $video) {
+                    return null;
+                }
+
+                return Video::make()
+                    ->previewImage(Image::make()->source($media['preview_image_url']))
+                    ->source($video);
+            }
+
+            return Image::make()
+                ->source($media['url'] ?? dd($media))
+                ->size($media['width'], $media['height'])
+                ->name($name);
+        })->filter();
     }
 }
