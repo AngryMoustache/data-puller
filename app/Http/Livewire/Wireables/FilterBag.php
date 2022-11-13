@@ -13,9 +13,6 @@ class FilterBag implements Wireable
 {
     public Collection $filters;
 
-    public Sorting $sort = Sorting::POPULAR;
-    public Display $display = Display::CARD;
-
     public function __construct($filters = '')
     {
         $tags = Tag::fullTagList();
@@ -38,6 +35,7 @@ class FilterBag implements Wireable
 
         // Filter defaults
         $this->filters = $this->filters->union([
+            'query' => '',
             'tags' => collect(),
         ]);
     }
@@ -76,11 +74,7 @@ class FilterBag implements Wireable
                     });
                 }
             })
-            ->get()
-            ->when($this->sort, function ($items) {
-                // Sorting
-                return $this->sort->sortCollection($items);
-            });
+            ->get();
     }
 
     public function toQueryString()
@@ -89,6 +83,21 @@ class FilterBag implements Wireable
             ->reject(fn ($item) => optional($item)->isEmpty() || empty($item))
             ->map(fn ($value, $key) => $key . ':' . collect($value)->pluck('fullSlug')->join(','))
             ->implode('/');
+    }
+
+    public function hasAdvanced()
+    {
+        return true;
+    }
+
+    public function sortOptions()
+    {
+        return Sorting::list();
+    }
+
+    public function displayOptions()
+    {
+        return Display::list();
     }
 
     public static function fromLivewire($value)
