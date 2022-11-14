@@ -1,13 +1,12 @@
 @props([
-    'value' => '',
     'label',
 ])
 
-<x-form.reactive-label :$value :$label>
+<x-form.reactive-label :$label>
     <input
-        x-model="value"
-        x-on:focus="activated = true"
-        x-on:blur="activated = !! value"
+        data-label-target
+        x-on:focus="setLabelStatus(true)"
+        x-on:blur="setLabelStatus()"
         {{ $attributes->merge([
             'class' => 'bg-background px-4 py-2 text-lg rounded-lg w-full outline-none',
         ]) }}

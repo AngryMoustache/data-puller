@@ -11,9 +11,12 @@ class Gallery extends Component
 {
     public FilterBag $bag;
 
-    public Sorting $sort = Sorting::POPULAR;
+    public int $randomizer;
 
+    public Sorting $sort = Sorting::POPULAR;
     public Display $display = Display::CARD;
+
+    public int $pagination = 12;
 
     public $loaded = false;
 
@@ -26,7 +29,9 @@ class Gallery extends Component
 
     public function ready()
     {
+        $this->resetRandomizer();
         $this->bag = new FilterBag;
+
         $this->loaded = true;
     }
 
@@ -36,9 +41,32 @@ class Gallery extends Component
             return view('livewire.pre-load');
         }
 
+        // Set the randomizer seed
+        srand($this->randomizer);
+
         return view('livewire.gallery', [
             'pulls' => $this->bag->pulls()
-                ->when($this->sort, fn ($items) => $this->sort->sortCollection($items)),
+                ->when($this->sort, fn ($items) => $this->sort->sortCollection($items))
+                ->take($this->pagination),
         ]);
+    }
+
+    public function updatingSort(&$value)
+    {
+        $value = Sorting::from($value);
+
+        if ($value->isRandomizer()) {
+            $this->resetRandomizer();
+        }
+    }
+
+    public function updatingDisplay(&$value)
+    {
+        $value = Display::from($value);
+    }
+
+    public function resetRandomizer()
+    {
+        $this->randomizer = now()->timestamp;
     }
 }

@@ -1,11 +1,21 @@
 @props([
-    'value' => '',
     'label' => null,
 ])
 
 <div
     class="relative w-full"
-    x-data="{ value: @js($value), activated: @js(! empty($value)) }"
+    x-data="{
+        input: null,
+        activated: false,
+        init () {
+            this.input = this.$el.querySelector('[data-label-target]')
+            this.setLabelStatus()
+        },
+        setLabelStatus (activated = null) {
+            this.value = this.input.value
+            this.activated = (activated === null) ? !! this.input.value : activated
+        }
+    }"
 >
     @if ($label)
         <label

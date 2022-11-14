@@ -1,5 +1,4 @@
 <x-container>
-    {{-- FILTERS --}}
     <div
         class="py-16"
         x-data="{
@@ -23,29 +22,24 @@
             class="py-4 flex gap-4 w-full"
             x-transition
         >
-            {{--  SORTING --}}
             <x-form.select
                 label="Sort order"
                 :options="$bag->sortOptions()"
-                :value="$sort"
                 x-model="sort"
             />
 
-            {{--  DISPLAY --}}
             <x-form.select
                 label="Display type"
                 :options="$bag->displayOptions()"
-                :value="$display"
+                x-model="display"
             />
         </div>
     </div>
 
-    {{-- LOADER --}}
     <div wire:loading class="w-full">
         <x-loading />
     </div>
 
-    {{-- RESULTS --}}
     <div wire:loading.remove>
         <x-grid.pulls :$display :$pulls />
     </div>

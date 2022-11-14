@@ -13,10 +13,10 @@ enum Sorting: string
     public function label()
     {
         return match ($this) {
-            self::NEWEST => 'Newest',
-            self::OLDEST => 'Oldest',
-            self::POPULAR => 'Most Viewed',
-            self::UNPOPULAR => 'Least Viewed',
+            self::NEWEST => 'Newest first',
+            self::OLDEST => 'Oldest first',
+            self::POPULAR => 'Most Viewed first',
+            self::UNPOPULAR => 'Least Viewed first',
             self::RANDOM => 'Randomized',
         };
     }
@@ -26,9 +26,17 @@ enum Sorting: string
         return match ($this) {
             self::NEWEST => $collection->sortBy('verdict_at'),
             self::OLDEST => $collection->sortByDesc('verdict_at'),
-            self::POPULAR => $collection->sortBy('views'),
-            self::UNPOPULAR => $collection->sortByDesc('views'),
+            self::UNPOPULAR => $collection->sortBy('views'),
+            self::POPULAR => $collection->sortByDesc('views'),
             self::RANDOM => $collection->shuffle(),
+        };
+    }
+
+    public function isRandomizer()
+    {
+        return match ($this) {
+            self::RANDOM => true,
+            default => false,
         };
     }
 
