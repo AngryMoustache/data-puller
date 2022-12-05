@@ -1,6 +1,6 @@
 <a {{ $attributes->merge([
     'class' => '
-        inline-block px-10 py-3 bg-gradient-dark rounded-xl text-lg font-bold cursor-pointer
+        inline-block text-no-wrap px-10 py-3 bg-gradient-dark rounded-xl text-lg font-bold cursor-pointer
         transition-all hover:scale-105
     ',
 ]) }}>

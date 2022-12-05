@@ -24,10 +24,10 @@ enum Sorting: string
     public function sortCollection($collection)
     {
         return match ($this) {
-            self::NEWEST => $collection->sortBy('verdict_at'),
-            self::OLDEST => $collection->sortByDesc('verdict_at'),
-            self::UNPOPULAR => $collection->sortBy('views'),
+            self::NEWEST => $collection->sortByDesc('verdict_at'),
+            self::OLDEST => $collection->sortBy('verdict_at'),
             self::POPULAR => $collection->sortByDesc('views'),
+            self::UNPOPULAR => $collection->sortBy('views'),
             self::RANDOM => $collection->shuffle(),
         };
     }

@@ -1,5 +1,5 @@
 <div {{ $attributes->only('class')->merge([
-    'class' => 'flex flex-col bg-surface rounded-xl overflow-hidden hover:scale-105 transition-all',
+    'class' => 'flex flex-col bg-surface bg-top rounded-xl overflow-hidden hover:scale-105 transition-all',
 ]) }}>
     <div class="w-full p-4 pb-0">
         <x-image class="rounded-xl aspect-square" :src="$pull->image->format('thumb')"/>
