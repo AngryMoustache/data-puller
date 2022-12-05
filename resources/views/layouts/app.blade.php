@@ -13,7 +13,9 @@
 
         <x-container class="flex items-center justify-between w-full py-8">
             <x-headers.h1>
-                Mobile<span class="text-primary">Art</span>
+                <a href="/">
+                    Mobile<span class="text-primary">Art</span>
+                </a>
             </x-headers.h1>
 
             <ul class="flex gap-4">

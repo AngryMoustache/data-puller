@@ -12,13 +12,16 @@ class Gallery extends Component
     public FilterBag $bag;
 
     public int $randomizer;
+    public int $pagination = 24;
+
+    public bool $loaded = false;
 
     public Sorting $sort = Sorting::POPULAR;
-    public Display $display = Display::CARD;
+    public Display $display = Display::COMPACT;
 
-    public int $pagination = 12;
-
-    public $loaded = false;
+    protected $listeners = [
+        'infinite-scroll-trigger' => 'addPage',
+    ];
 
     public function mount()
     {
@@ -41,28 +44,34 @@ class Gallery extends Component
             return view('livewire.pre-load');
         }
 
-        // Set the randomizer seed
-        srand($this->randomizer);
+        srand($this->randomizer); // Set the randomizer seed
+
+        $pulls = $this->bag->pulls()
+            ->when($this->sort, fn ($items) => $this->sort->sortCollection($items));
 
         return view('livewire.gallery', [
-            'pulls' => $this->bag->pulls()
-                ->when($this->sort, fn ($items) => $this->sort->sortCollection($items))
-                ->take($this->pagination),
+            'pulls' => $pulls->take($this->pagination),
+            'maxPulls' => $pulls->count(),
         ]);
     }
 
-    public function updatingSort(&$value)
+    public function addPage()
     {
-        $value = Sorting::from($value);
+        $this->pagination += 24;
+    }
 
-        if ($value->isRandomizer()) {
+    public function setSort($value)
+    {
+        $this->sort = Sorting::from($value);
+
+        if ($this->sort->isRandomizer()) {
             $this->resetRandomizer();
         }
     }
 
-    public function updatingDisplay(&$value)
+    public function setDisplay($value)
     {
-        $value = Display::from($value);
+        $this->display = Display::from($value);
     }
 
     public function resetRandomizer()

@@ -2,9 +2,18 @@
     <div
         class="py-16"
         x-data="{
+            sort: @js($sort),
+            display: @js($display),
             advanced: @js($bag->hasAdvanced()),
-            sort: @entangle('sort'),
-            display: @entangle('display'),
+            init () {
+                this.$watch('sort', (value) => {
+                    @this.setSort(value)
+                })
+
+                this.$watch('display', (value) => {
+                    @this.setDisplay(value)
+                })
+            },
         }"
     >
         <div class="flex justify-between gap-4 items-center">
@@ -36,11 +45,11 @@
         </div>
     </div>
 
-    <div wire:loading class="w-full">
-        <x-loading />
-    </div>
-
-    <div wire:loading.remove>
+    <x-loading-section wire:target="setSort, setDisplay">
         <x-grid.pulls :$display :$pulls />
-    </div>
+    </x-loading-section>
+
+    <x-loading-section class="mt-16" wire:target="addPage">
+        <x-triggers.infinite-scroll :stopped="$maxPulls <= $pulls->count()" />
+    </x-loading-section>
 </x-container>

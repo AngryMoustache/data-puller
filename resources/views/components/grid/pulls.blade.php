@@ -7,23 +7,15 @@
 
     <div class="grid grid-cols-6 gap-4">
         @foreach ($pulls as $pull)
-            <x-compact.pull :$pull />
+            <x-pull.compact :$pull />
         @endforeach
     </div>
-{{--
-@elseif ($display === \App\Enums\Display::LIST)
-
-    <div class="grid grid-cols-4 gap-4">
-        @foreach ($pulls as $pull)
-            <x-card.pull :$pull />
-        @endforeach
-    </div> --}}
 
 @else
 
     <div class="grid grid-cols-4 gap-4">
         @foreach ($pulls as $pull)
-            <x-card.pull :$pull />
+            <x-pull.card :$pull />
         @endforeach
     </div>
 

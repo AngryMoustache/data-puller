@@ -18,17 +18,17 @@
         </div>
 
         <div class="w-2/5">
-            <x-card.pull :pull="$highlight" />
+            <x-pull.card :pull="$highlight" />
         </div>
     </div>
 
     <div class="flex flex-col gap-32 py-32">
         <x-section title="Latest pulls" :route="route('gallery.index')">
-            <x-grid.pulls-small :pulls="$latest" />
+            <x-grid.pulls :pulls="$latest" />
         </x-section>
 
         <x-section title="Popular pulls" :route="route('gallery.index')">
-            <x-grid.pulls-small :pulls="$popular" />
+            <x-grid.pulls :pulls="$popular" />
         </x-section>
     </div>
 </x-container>
