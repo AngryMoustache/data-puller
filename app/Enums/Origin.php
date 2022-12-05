@@ -10,6 +10,7 @@ enum Origin: string
     case TWITTER = 'twitter';
     case DEVIANTART = 'deviant-art';
     case PIXIV = 'pixiv';
+    case EXTERNAL = 'external';
 
     public function label()
     {
@@ -17,6 +18,7 @@ enum Origin: string
             self::TWITTER => 'Twitter',
             self::DEVIANTART => 'DeviantArt',
             self::PIXIV => 'Pixiv',
+            self::EXTERNAL => 'External',
         };
     }
 
@@ -32,6 +34,7 @@ enum Origin: string
             self::TWITTER => 'fab fa-twitter',
             self::DEVIANTART => 'fab fa-deviantart',
             self::PIXIV => 'fab fa-pinterest-p',
+            self::EXTERNAL => 'fas fa-external-link-alt',
         };
     }
 
@@ -41,6 +44,7 @@ enum Origin: string
             self::DEVIANTART => 'background: #00e59b !important; color: #000 !important;',
             self::TWITTER => 'background: #1da1f2 !important; color: #fff !important;',
             self::PIXIV => 'background: #166392 !important; color: #fff !important;',
+            self::EXTERNAL => 'background: #921616 !important; color: #fff !important;',
         };
     }
 
@@ -50,6 +54,7 @@ enum Origin: string
             self::TWITTER => (new Clients\Twitter($origin))->likes(),
             self::DEVIANTART => (new Clients\DeviantArt($origin))->favorites(),
             self::PIXIV => (new Clients\Pixiv($origin))->bookmarks(),
+            default => null,
         };
     }
 }

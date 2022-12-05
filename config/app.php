@@ -212,4 +212,5 @@ return [
         'Display' => App\Enums\Display::class,
     ])->toArray(),
 
+    'api_token' => env('API_TOKEN'),
 ];
