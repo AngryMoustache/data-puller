@@ -9,7 +9,7 @@ use Livewire\Component;
 
 class Gallery extends Component
 {
-    public int $randomizer;
+    public int $randomizer = 0;
     public int $pagination = 24;
 
     public bool $loaded = false;
@@ -30,17 +30,13 @@ class Gallery extends Component
             ->mapWithKeys(fn ($filter) => [$filter[0] => $filter[1]]);
 
         $this->query = $filters->get('query', '');
+        $this->randomizer = $filters->get('randomizer', 0);
         $this->sort = Sorting::tryFrom($filters['sort'] ?? '') ?? Sorting::POPULAR;
         $this->display = Display::tryFrom($filters['display'] ?? '') ?? Display::COMPACT;
-
-        if ($this->loaded) {
-            $this->ready();
-        }
     }
 
     public function ready()
     {
-        $this->resetRandomizer();
         $this->loaded = true;
     }
 
@@ -86,6 +82,8 @@ class Gallery extends Component
 
         if ($this->sort->isRandomizer()) {
             $this->resetRandomizer();
+        } else {
+            $this->randomizer = 0;
         }
     }
 
@@ -104,6 +102,7 @@ class Gallery extends Component
         return collect([
             'query' => $this->query,
             'sort' => $this->sort->value,
+            'randomizer' => $this->randomizer,
             'display' => $this->display->value,
         ])
             ->filter()

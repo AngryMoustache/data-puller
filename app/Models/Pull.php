@@ -86,6 +86,17 @@ class Pull extends Model
         return number_format($this->views);
     }
 
+    public function getGridSizeAttribute()
+    {
+        $ratioX = round($this->image->width / $this->image->height);
+        $ratioY = round($this->image->height / $this->image->width);
+
+        return collect((object) [
+            'columns' => ($ratioX > $ratioY) ? 2 : 1,
+            'rows' => ($ratioX < $ratioY) ? 2 : 1,
+        ]);
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', Status::PENDING);

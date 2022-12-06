@@ -5,7 +5,7 @@
         window.setTimeout(() => window.onscroll = function(ev) {
             if (
                 ! window.timeout &&
-                document.body.offsetHeight > 500 &&
+                document.body.offsetHeight > 750 &&
                 (window.innerHeight + window.scrollY) >= document.body.offsetHeight
             ) {
                 window.timeout = true

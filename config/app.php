@@ -211,6 +211,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Display' => App\Enums\Display::class,
         'Sorting' => App\Enums\Sorting::class,
+        'GridBuilder' => App\GridBuilder::class,
     ])->toArray(),
 
     'api_token' => env('API_TOKEN'),

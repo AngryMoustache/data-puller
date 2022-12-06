@@ -54,8 +54,8 @@ class Image extends Media
 
         $attachment->size = $response->headers->get('content-length');
         $attachment->mime_type = $filesize['mime'];
-        $attachment->width = $this->width ?? $filesize[0];
-        $attachment->height = $this->height ?? $filesize[1];
+        $attachment->width = empty($this->width) ? $filesize[0] : $this->width;
+        $attachment->height = empty($this->height) ? $filesize[1] : $this->height;
         $attachment->saveQuietly();
 
         return $attachment;
