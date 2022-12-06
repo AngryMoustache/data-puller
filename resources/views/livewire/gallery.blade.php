@@ -5,10 +5,12 @@
         x-data="{
             sort: @js($sort),
             display: @js($display),
+            origin: @js($origin?->slug),
             query: @entangle('query').defer,
             search () {
                 @this.setSort(this.sort)
                 @this.setDisplay(this.display)
+                @this.setOrigin(this.origin)
             },
         }"
     >
@@ -22,6 +24,14 @@
         </div>
 
         <div class="py-4 flex gap-4 w-full">
+            <x-form.select
+                nullable
+                label="Origin"
+                :options="$origins"
+                :value="$origin?->slug"
+                x-model="origin"
+            />
+
             <x-form.select
                 label="Sort order"
                 :options="Sorting::list()"

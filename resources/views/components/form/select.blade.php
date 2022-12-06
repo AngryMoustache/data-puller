@@ -2,6 +2,7 @@
     'label' => null,
     'options' => collect(),
     'nullable' => false,
+    'value' => null,
 ])
 
 <x-form.reactive-label :$label>
@@ -16,9 +17,12 @@
             <option value=""></option>
         @endif
 
-        @foreach ($options as $key => $value)
-            <option value="{{ $key }}">
-                {{ $value}}
+        @foreach ($options as $key => $label)
+            <option
+                value="{{ $key }}"
+                @if($key === $value) selected="selected" @endif
+            >
+                {{ $label}}
             </option>
         @endforeach
     </select>

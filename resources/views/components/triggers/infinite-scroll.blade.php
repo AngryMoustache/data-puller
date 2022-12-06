@@ -1,4 +1,9 @@
 @if ($stopped)
+    <x-headers.h3
+        text="You have reached the end!"
+        class="w-full text-center opacity-50 font-normal italic"
+    />
+
     <script wire:key="infinite-stopped"> window.onscroll = undefined </script>
 @else
     <script wire:key="infinite-running" wire:loading.remove>

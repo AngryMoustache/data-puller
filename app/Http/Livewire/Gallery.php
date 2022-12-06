@@ -4,17 +4,19 @@ namespace App\Http\Livewire;
 
 use App\Enums\Display;
 use App\Enums\Sorting;
+use App\Models\Origin;
 use App\Models\Pull;
 use Livewire\Component;
 
 class Gallery extends Component
 {
     public int $randomizer = 0;
-    public int $pagination = 24;
+    public int $pagination = 48;
 
     public bool $loaded = false;
 
     public string $query = '';
+    public ?Origin $origin = null;
     public Sorting $sort = Sorting::POPULAR;
     public Display $display = Display::COMPACT;
 
@@ -31,6 +33,7 @@ class Gallery extends Component
 
         $this->query = $filters->get('query', '');
         $this->randomizer = $filters->get('randomizer', 0);
+        $this->origin = Origin::whereSlug($filters->get('origin'))->first();
         $this->sort = Sorting::tryFrom($filters['sort'] ?? '') ?? Sorting::POPULAR;
         $this->display = Display::tryFrom($filters['display'] ?? '') ?? Display::COMPACT;
     }
@@ -58,9 +61,13 @@ class Gallery extends Component
         $pulls = Pull::online()
             ->with('tags', 'origin')
             ->when($this->query !== '', function ($query) {
-                return $query
-                    ->where('name', 'LIKE', "%{$this->query}%")
-                    ->orWhereHas('tags', fn ($q) => $q->where('name', 'LIKE', "%{$this->query}%"));
+                return $query->where(function ($subQuery) {
+                    $subQuery->where('name', 'LIKE', "%{$this->query}%")
+                        ->orWhereHas('tags', fn ($q) => $q->where('name', 'LIKE', "%{$this->query}%"));
+                });
+            })
+            ->when($this->origin, function ($query) {
+                return $query->whereHas('origin', fn ($q) => $q->where('slug', $this->origin->slug));
             })
             ->get()
             ->when($this->sort, fn ($items) => $this->sort->sortCollection($items));
@@ -68,12 +75,13 @@ class Gallery extends Component
         return view('livewire.gallery', [
             'pulls' => $pulls->take($this->pagination),
             'maxPulls' => $pulls->count(),
+            'origins' => Origin::pluck('name', 'slug')->sort(),
         ]);
     }
 
     public function addPage()
     {
-        $this->pagination += 24;
+        $this->pagination += 48;
     }
 
     public function setSort($value)
@@ -92,6 +100,11 @@ class Gallery extends Component
         $this->display = Display::from($value);
     }
 
+    public function setOrigin($value)
+    {
+        $this->origin = Origin::whereSlug($value)->first();
+    }
+
     public function resetRandomizer()
     {
         $this->randomizer = now()->timestamp;
@@ -104,6 +117,7 @@ class Gallery extends Component
             'sort' => $this->sort->value,
             'randomizer' => $this->randomizer,
             'display' => $this->display->value,
+            'origin' => $this->origin?->slug,
         ])
             ->filter()
             ->map(fn ($value, $key) => "{$key}:{$value}")
