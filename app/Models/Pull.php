@@ -97,6 +97,11 @@ class Pull extends Model
         ]);
     }
 
+    public function getRelatedAttribute()
+    {
+        return self::get()->shuffle()->take(24);
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', Status::PENDING);

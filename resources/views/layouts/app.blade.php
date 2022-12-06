@@ -10,6 +10,7 @@
     </head>
     <body class="pb-32">
         <div class="background"></div>
+        <livewire:modal-controller />
 
         <x-container class="flex items-center justify-between w-full py-8">
             <x-headers.h1>

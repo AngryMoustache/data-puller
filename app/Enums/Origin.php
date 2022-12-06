@@ -34,7 +34,7 @@ enum Origin: string
             self::TWITTER => 'fab fa-twitter',
             self::DEVIANTART => 'fab fa-deviantart',
             self::PIXIV => 'fab fa-pinterest-p',
-            self::EXTERNAL => 'fas fa-external-link-alt',
+            self::EXTERNAL => 'fas fa-robot',
         };
     }
 

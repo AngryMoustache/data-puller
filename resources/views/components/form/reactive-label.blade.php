@@ -3,7 +3,7 @@
 ])
 
 <div
-    class="relative w-full"
+    class="relative z-0 w-full"
     x-data="{
         input: null,
         activated: false,

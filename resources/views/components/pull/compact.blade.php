@@ -1,5 +1,7 @@
 <div
-    class="flex p-2 hover:p-1 transition-all"
+    x-data="{}"
+    x-on:click="$wire.emit('openModal', 'pull-detail', {{ $pull->id }})"
+    class="flex p-2 hover:p-1 transition-all cursor-pointer"
     style="
         grid-column: span {{ $pull->columns }};
         grid-row: span {{ $pull->rows }};
