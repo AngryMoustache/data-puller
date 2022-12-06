@@ -10,7 +10,7 @@ Route::get('/gallery/{filters?}', Livewire\Gallery::class)
     ->where('filters', '.*')
     ->name('gallery.index');
 
-Route::get('/feed', Livewire\Home::class)->name('feed.index');
+Route::get('/feed', Livewire\Feed::class)->name('feed.index');
 
 Route::get('/tag-manager', Livewire\Home::class)->name('tag-manager.index');
 

@@ -13,6 +13,7 @@ class Pull extends Model
         'origin_id',
         'name',
         'slug',
+        'artist',
         'source_url',
         'status',
         'views',

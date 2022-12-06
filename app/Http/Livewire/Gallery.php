@@ -59,8 +59,8 @@ class Gallery extends Component
         ]);
 
         // Get the pulls
-        $pulls = Pull::with('tags', 'origin')
-            ->online()
+        $pulls = Pull::online()
+            ->with('tags', 'origin')
             ->when($this->query !== '', function ($query) {
                 return $query
                     ->where('name', 'LIKE', "%{$this->query}%")
