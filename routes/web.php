@@ -12,7 +12,5 @@ Route::get('/gallery/{filters?}', Livewire\Gallery::class)
 
 Route::get('/feed', Livewire\Feed::class)->name('feed.index');
 
-Route::get('/tag-manager', Livewire\Home::class)->name('tag-manager.index');
-
 Route::post('/api/v1/upload', [ApiController::class, 'store'])
     ->name('api.store');

@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Enums\Status;
 use App\Models\Pull;
 use App\Models\Tag;
+use App\Models\TagGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -15,8 +16,12 @@ class Feed extends Component
 
     public array $fields = [];
 
-    public ?Pull $pull;
-    public Collection $tags;
+    public ?Pull $pull = null;
+    public Collection $tagGroups;
+
+    protected $listeners = [
+        'refreshComponent' => '$refresh',
+    ];
 
     public function mount()
     {
@@ -29,13 +34,13 @@ class Feed extends Component
     {
         $this->loaded = true;
 
-        $this->tags = Tag::get();
+        $this->tagGroups = TagGroup::with('tags')->get();
         $this->nextPull();
     }
 
     public function render()
     {
-        if (! $this->loaded) {
+        if (! $this->loaded || ! $this->pull) {
             return view('livewire.pre-load');
         }
 
@@ -45,6 +50,9 @@ class Feed extends Component
     public function nextPull()
     {
         $this->pull = Pull::pending()->first();
+        if (! $this->pull) {
+            return;
+        }
 
         $this->fields = [
             'name' => $this->pull->name,
@@ -58,15 +66,9 @@ class Feed extends Component
         $this->pull->name = $this->fields['name'];
         $this->pull->artist = $this->fields['artist'];
 
-       $tags = collect(explode(',', $this->fields['tags']))->map(function ($tag) {
-            $tag = Str::of($tag)->trim()->lower();
-            return Tag::updateOrCreate([
-                'name' => $tag,
-                'slug' => $tag->slug(),
-            ]);
-       });
+       $tags = collect($this->fields['tags'])->filter()->keys();
 
-        $this->pull->tags()->sync($tags->pluck('id'));
+        $this->pull->tags()->sync($tags);
         $this->pull->status = Status::from($status);
         $this->pull->save();
 

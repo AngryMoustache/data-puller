@@ -1,6 +1,6 @@
 @props([
-    'label',
-    'value',
+    'label' => '',
+    'value' => null,
 ])
 
 <x-form.reactive-label :$label>

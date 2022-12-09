@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>{{ env('APP_NAME') }}</title>
         <script src="https://kit.fontawesome.com/989b502037.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
         <livewire:styles />
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
     </head>
@@ -21,7 +22,7 @@
 
             <ul class="flex gap-4">
                 <x-nav.item label="Gallery" :route="route('gallery.index')" />
-                <x-nav.item label="Tags" :route="route('tag-manager.index')" />
+                {{-- <x-nav.item label="Tags" :route="route('tag-manager.index')" /> --}}
                 <x-nav.item-border label="Feed" :route="route('feed.index')" />
             </ul>
         </x-container>

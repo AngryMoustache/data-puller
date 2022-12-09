@@ -21,4 +21,9 @@ enum Display: string
             $value->value => $value->label(),
         ]);
     }
+
+    public static function default()
+    {
+        return self::COMPACT;
+    }
 }

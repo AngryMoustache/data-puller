@@ -1,3 +1,6 @@
-<iframe {{ $attributes->merge([
-    'class' => 'w-full aspect-video'
-]) }} frameborder="0"></iframe>
+<video
+    {{ $attributes->merge(['class' => 'w-full']) }}
+    autoplay="false"
+    controls
+    loop
+></video>

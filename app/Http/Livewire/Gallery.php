@@ -17,7 +17,7 @@ class Gallery extends Component
 
     public string $query = '';
     public ?Origin $origin = null;
-    public Sorting $sort = Sorting::POPULAR;
+    public Sorting $sort = Sorting::NEWEST;
     public Display $display = Display::COMPACT;
 
     protected $listeners = [
@@ -34,8 +34,8 @@ class Gallery extends Component
         $this->query = $filters->get('query', '');
         $this->randomizer = $filters->get('randomizer', 0);
         $this->origin = Origin::whereSlug($filters->get('origin'))->first();
-        $this->sort = Sorting::tryFrom($filters['sort'] ?? '') ?? Sorting::POPULAR;
-        $this->display = Display::tryFrom($filters['display'] ?? '') ?? Display::COMPACT;
+        $this->sort = Sorting::tryFrom($filters['sort'] ?? '') ?? Sorting::default();
+        $this->display = Display::tryFrom($filters['display'] ?? '') ?? Display::default();
     }
 
     public function ready()
@@ -120,6 +120,11 @@ class Gallery extends Component
             'origin' => $this->origin?->slug,
         ])
             ->filter()
+            ->reject(fn ($value) => in_array($value, [
+                // Default values
+                Sorting::default()->value,
+                Display::default()->value,
+            ]))
             ->map(fn ($value, $key) => "{$key}:{$value}")
             ->implode('/');
     }

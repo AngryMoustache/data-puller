@@ -27,6 +27,7 @@ class Pull extends Model
 
     public $with = [
         'attachments',
+        'tags',
     ];
 
     public function origin()
@@ -99,7 +100,9 @@ class Pull extends Model
 
     public function getRelatedAttribute()
     {
-        return self::get()->shuffle()->take(24);
+        return self::where('id', '!=', $this->id)->get()
+            ->sortByDesc(fn ($pull) => $pull->tags->intersect($this->tags)->count())
+            ->take(100);
     }
 
     public function scopePending($query)

@@ -1,5 +1,4 @@
 @tailwind base;
-@tailwind components;
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans&family=Alegreya+Sans&display=swap');
@@ -42,6 +41,7 @@ h1, h2, h3, h4, h5, h6 {
     background: linear-gradient(120deg, var(--color-primary-light), var(--color-primary-dark));
 }
 
+input[type="checkbox"]:checked ~ label::before,
 .bg-gradient-dark {
     background: linear-gradient(120deg, var(--color-primary-dark), var(--color-primary-super-dark));
 }
@@ -59,4 +59,25 @@ h1, h2, h3, h4, h5, h6 {
 
 .aspect-video {
     aspect-ratio: 16 / 9;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-label {
+    padding-left: 2rem;
+
+    &::before {
+        border: thin solid var(--color-primary-dark);
+        border-radius: 0.2rem;
+        content: "";
+        cursor: pointer;
+        height: 1.2rem;
+        width: 1.2rem;
+        position: absolute;
+        left: 0;
+        top: 0.3rem;
+        z-index: 1;
+    }
 }

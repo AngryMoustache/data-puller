@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tag extends Model
 {
     protected $fillable = [
+        'tag_group_id',
         'name',
         'slug',
     ];
@@ -15,6 +16,11 @@ class Tag extends Model
     {
         return $this->belongsToMany(Pull::class)
             ->withPivot('data');
+    }
+
+    public function tagGroup()
+    {
+        return $this->belongsTo(TagGroup::class);
     }
 
     public static function boot()

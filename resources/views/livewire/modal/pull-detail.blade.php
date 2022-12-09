@@ -1,15 +1,25 @@
 <x-modal class="flex flex-col gap-8">
+    <x-surface class="p-0">
+        <x-pull.info name-length="100" :$pull />
+
+        @if ($pull->tags->isNotEmpty())
+            <div class="p-4 flex flex-wrap gap-4">
+                @foreach ($pull->tags as $tag)
+                    <x-tag :$tag />
+                @endforeach
+            </div>
+        @endif
+    </x-surface>
+
     <div class="w-full flex flex-col gap-4">
+        @foreach ($pull->videos as $video)
+            <x-video src="{{ $video->path() }}" />
+        @endforeach
+
         @foreach ($pull->attachments as $image)
             <x-image class="w-full rounded-lg overflow-hidden" src="{{ $image->path() }}" />
         @endforeach
     </div>
 
-    <div class="bg-surface rounded-lg">
-        <x-pull.info :$pull />
-    </div>
-
-    <div>
-        <x-grid.pulls-compact :pulls="$pull->related" size="5" />
-    </div>
+    <x-grid.pulls-compact :pulls="$pull->related" size="5" />
 </x-modal>

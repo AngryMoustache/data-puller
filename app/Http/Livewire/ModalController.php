@@ -15,7 +15,7 @@ class ModalController extends Component
         'closeModal',
     ];
 
-    public function openModal($modal, $params)
+    public function openModal($modal, $params = [])
     {
         $this->modal = $modal;
         $this->params = Arr::wrap($params);

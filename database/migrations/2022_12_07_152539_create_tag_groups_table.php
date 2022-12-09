@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\Status;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,15 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('pulls', function (Blueprint $table) {
+        Schema::create('tag_groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('slug');
-            $table->string('source_url');
-            $table->string('status')->default(Status::PENDING->value);
-            $table->integer('views')->default(0);
-            $table->dateTime('verdict_at')->nullable();
+            $table->string('description')->nullable();
+            $table->string('color')->nullable();
             $table->timestamps();
+        });
+
+        Schema::create('tag_tag_group', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('tag_group_id')->constrained()->cascadeOnDelete();
         });
     }
 
@@ -33,6 +36,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pulls');
+        Schema::dropIfExists('tag_tag_group');
+        Schema::dropIfExists('tag_groups');
     }
 };

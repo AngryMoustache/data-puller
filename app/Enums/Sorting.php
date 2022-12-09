@@ -46,4 +46,9 @@ enum Sorting: string
             $value->value => $value->label()
         ]);
     }
+
+    public static function default()
+    {
+        return self::NEWEST;
+    }
 }
