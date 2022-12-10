@@ -63,6 +63,7 @@ class Feed extends Component
 
     public function save($status)
     {
+        dd($this->fields);
         $this->pull->name = $this->fields['name'];
         $this->pull->artist = $this->fields['artist'];
 

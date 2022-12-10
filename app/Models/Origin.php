@@ -41,7 +41,7 @@ class Origin extends Model
 
     public function pull()
     {
-        $this->type->pull($this)->each(function (Pullable $pull) {
+        $this->type->pull($this)?->each(function (Pullable $pull) {
             $pull->save($this);
         });
     }

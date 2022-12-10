@@ -1,6 +1,6 @@
 <div
     wire:loading
-    {{ $attributes->only(['wire:target', 'class'])->merge([
+    {{ $attributes->only(['wire:target'])->merge([
         'class' => 'w-full',
     ]) }}
 >
