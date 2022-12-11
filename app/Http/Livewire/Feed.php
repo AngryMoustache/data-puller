@@ -4,10 +4,8 @@ namespace App\Http\Livewire;
 
 use App\Enums\Status;
 use App\Models\Pull;
-use App\Models\Tag;
 use App\Models\TagGroup;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Feed extends Component
@@ -63,7 +61,6 @@ class Feed extends Component
 
     public function save($status)
     {
-        dd($this->fields);
         $this->pull->name = $this->fields['name'];
         $this->pull->artist = $this->fields['artist'];
 
