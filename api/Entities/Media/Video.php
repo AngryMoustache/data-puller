@@ -2,18 +2,17 @@
 
 namespace Api\Entities\Media;
 
-use AngryMoustache\Media\Models\Attachment;
 use App\Models\Video as ModelsVideo;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Video extends Media
 {
-    public ?Attachment $preview = null;
+    public ?Image $preview = null;
 
     public function previewImage(Image $image)
     {
-        $this->preview = $image->save();
+        $this->preview = $image;
 
         return $this;
     }
@@ -26,7 +25,7 @@ class Video extends Media
         $extension = $filename->afterLast('.');
 
         $video = ModelsVideo::firstOrCreate([
-            'preview_id' => $this->preview?->id,
+            'preview_id' => $this->image->save()?->id,
             'name' => (string) $name,
             'filename' => (string) $filename,
             'extension' => (string) $extension,

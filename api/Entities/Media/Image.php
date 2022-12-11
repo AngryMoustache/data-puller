@@ -49,7 +49,7 @@ class Image extends Media
         $attachment->format('thumb');
 
         // Fill in some extra data
-        $filesize = getimagesize($attachment->path());
+        $filesize = getimagesize(Storage::path("{$folder}/{$filename}"));
         $response = Storage::response("${folder}/{$filename}");
 
         $attachment->size = $response->headers->get('content-length');
