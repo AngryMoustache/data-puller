@@ -12,5 +12,8 @@ Route::get('/gallery/{filters?}', Livewire\Gallery::class)
 
 Route::get('/feed', Livewire\Feed::class)->name('feed.index');
 
+Route::get('/folders', Livewire\Folders::class)->name('folders.index');
+Route::get('/folders/{folder}', Livewire\FolderDetail::class)->name('folders.show');
+
 Route::post('/api/v1/upload', [ApiController::class, 'store'])
     ->name('api.store');

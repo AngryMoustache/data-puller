@@ -15,63 +15,32 @@
             x-data="{
                 name: @entangle('fields.name').defer,
                 artist: @entangle('fields.artist').defer,
-                tags: @entangle('fields.tags').defer,
+                folders: @entangle('fields.folders').defer,
             }"
         >
             <x-form.input :value="$fields['name']" x-model="name" label="Name" />
             <x-form.input :value="$fields['artist']" x-model="artist" label="Artist name" />
 
-            <div
-                x-data="{ open: {{ $tagGroups->keys()->first() }} }"
-                class="flex flex-col gap-4"
-            >
-                <div class="flex justify-between items-end">
-                    <ul class="flex gap-2">
-                        @foreach ($tagGroups as $key => $group)
-                            <li
-                                x-on:click="open = {{ $key }}"
-                                :class="{ 'bg-gradient-dark': open === @js($key) }"
-                                class="
-                                    inline-block text-no-wrap px-4 py-2 rounded-xl text-sm
-                                    cursor-pointer transition-all hover:scale-105
-                                "
-                            >
-                                {{ $group->name }}
-                            </li>
-                        @endforeach
-                    </ul>
+            <x-surface>
+                <div class="flex w-full flex-col gap-2">
+                    @foreach ($folders as $folder)
+                        <x-form.checkbox
+                            wire:model.defer="fields.folders.{{ $folder->id }}"
+                            :label="$folder->name"
+                            class="text-lg"
+                        />
+                    @endforeach
+                </div>
 
+                <div class="mt-8">
                     <x-form.button-icon
                         class="text-sm"
-                        x-on:click="$wire.emit('openModal', 'new-tag-group')"
-                        text="New tag group"
+                        x-on:click="$wire.emit('openModal', 'new-folder')"
+                        text="New folder"
                         icon="fas fa-plus"
                     />
                 </div>
-
-                @foreach ($tagGroups as $key => $group)
-                    <div x-show="open === {{ $key }}">
-                        <x-surface class="flex flex-col gap-4">
-                            @foreach ($group->tags as $tag)
-                                <x-form.checkbox
-                                    wire:model.defer="fields.tags.{{ $tag->id }}"
-                                    :label="$tag->name"
-                                    class="text-lg"
-                                />
-                            @endforeach
-
-                            <div class="mt-4">
-                                <x-form.button-icon
-                                    class="text-sm"
-                                    x-on:click="$wire.emit('openModal', 'new-tag', {{ $group->id }})"
-                                    text="Add tag"
-                                    icon="fas fa-plus"
-                                />
-                            </div>
-                        </x-surface>
-                    </div>
-                @endforeach
-            </div>
+            </x-surface>
 
             <div class="flex gap-4 justify-end">
                 <x-form.button-secondary class="flex justify-center items-center gap-3" wire:click="save('offline')">

@@ -22,7 +22,7 @@
 
             <ul class="flex gap-4">
                 <x-nav.item label="Gallery" :route="route('gallery.index')" />
-                {{-- <x-nav.item label="Tags" :route="route('tag-manager.index')" /> --}}
+                <x-nav.item label="Folders" :route="route('folders.index')" />
                 <x-nav.item-border label="Feed" :route="route('feed.index')" />
             </ul>
         </x-container>

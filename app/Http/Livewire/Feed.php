@@ -3,8 +3,8 @@
 namespace App\Http\Livewire;
 
 use App\Enums\Status;
+use App\Models\Folder;
 use App\Models\Pull;
-use App\Models\TagGroup;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
@@ -13,9 +13,9 @@ class Feed extends Component
     public bool $loaded = false;
 
     public array $fields = [];
+    public Collection $folders;
 
     public ?Pull $pull = null;
-    public Collection $tagGroups;
 
     protected $listeners = [
         'refreshComponent' => '$refresh',
@@ -30,9 +30,9 @@ class Feed extends Component
 
     public function ready()
     {
-        $this->loaded = true;
+        $this->folders = Folder::get();
 
-        $this->tagGroups = TagGroup::with('tags')->get();
+        $this->loaded = true;
         $this->nextPull();
     }
 
@@ -55,14 +55,13 @@ class Feed extends Component
         $this->fields = [
             'name' => $this->pull->name,
             'artist' => $this->pull->artist,
-            'tags' => $this->pull->tags->pluck('name')->join(', '),
         ];
     }
 
     public function save($status)
     {
-        $tags = collect($this->fields['tags'])->filter()->keys();
-        $this->pull->tags()->sync($tags);
+        $folders = collect($this->fields['folders'])->filter()->keys();
+        $this->pull->folders()->sync($folders);
 
         $this->pull->name = $this->fields['name'];
         $this->pull->artist = $this->fields['artist'];

@@ -1,5 +1,5 @@
 <h4 {{ $attributes->merge([
-    'class' => 'font-bold text-2xl',
+    'class' => 'text-2xl',
 ]) }}>
     @if (isset($text))
         {{ $text }}

@@ -2,10 +2,10 @@
     <x-surface class="p-0">
         <x-pull.info name-length="100" :$pull />
 
-        @if ($pull->tags->isNotEmpty())
+        @if ($pull->folders->isNotEmpty())
             <div class="p-4 flex flex-wrap gap-4">
-                @foreach ($pull->tags as $tag)
-                    <x-tag :$tag />
+                @foreach ($pull->folders as $folder)
+                    <x-folder :$folder />
                 @endforeach
             </div>
         @endif

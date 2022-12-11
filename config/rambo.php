@@ -12,7 +12,6 @@ return [
         Administrator::class,
         Rambo\Pull::class,
         Rambo\Origin::class,
-        Rambo\Tag::class,
         Rambo\Video::class,
     ],
     'navigation' => [
@@ -25,7 +24,6 @@ return [
         ],
         Rambo\Origin::class,
         Rambo\Pull::class,
-        Rambo\Tag::class,
     ],
     'cropper' => [
         'formats' => [

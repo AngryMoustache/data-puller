@@ -27,7 +27,6 @@ class Pull extends Model
 
     public $with = [
         'attachments',
-        'tags',
     ];
 
     public function origin()
@@ -35,10 +34,9 @@ class Pull extends Model
         return $this->belongsTo(Origin::class);
     }
 
-    public function tags()
+    public function folders()
     {
-        return $this->belongsToMany(Tag::class)
-            ->withPivot('data');
+        return $this->belongsToMany(Folder::class);
     }
 
     public function attachments()
@@ -51,25 +49,6 @@ class Pull extends Model
     public function videos()
     {
         return $this->morphedByMany(Video::class, 'media', 'media_pull');
-    }
-
-    public function getSuggestedTagsAttribute()
-    {
-        $similar = collect(explode(' ', $this->name))
-            ->map(fn ($part) => ['soundex', 'LIKE', soundex($part) . '%'])
-            ->filter();
-
-        return Tag::where(function ($query) use ($similar) {
-            $similar->each(fn ($i) => $query->orWhere(...$i));
-        })->get();
-    }
-
-    public function getJsonAttachmentsAttribute()
-    {
-        return $this->attachments->map(fn ($attachment) => [
-            'id' => $attachment->id,
-            'path' => $attachment->format('thumb')
-        ])->toArray();
     }
 
     public function getImageAttribute()
@@ -101,9 +80,10 @@ class Pull extends Model
     public function getRelatedAttribute()
     {
         return self::where('id', '!=', $this->id)
+            ->with('folders')
             ->online()
             ->get()
-            ->sortByDesc(fn ($pull) => $pull->tags->intersect($this->tags)->count())
+            ->sortByDesc(fn ($pull) => $pull->folders->intersect($this->folders)->count())
             ->take(100);
     }
 

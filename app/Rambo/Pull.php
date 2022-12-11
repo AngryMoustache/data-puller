@@ -47,10 +47,6 @@ class Pull extends Resource
                 ->nullable()
                 ->options(Enums\Status::list())
                 ->sortable(),
-
-            HabtmField::make('tags')
-                ->resource(Tag::class)
-                ->hideFrom(['index']),
         ];
     }
 }

@@ -2,11 +2,11 @@
 
 namespace App\Http\Livewire\Modal;
 
-use App\Models\TagGroup;
+use App\Models\Folder;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
-class NewTagGroup extends Component
+class NewFolder extends Component
 {
     public string $name = '';
     public string $description = '';
@@ -17,7 +17,7 @@ class NewTagGroup extends Component
             return;
         }
 
-        $group = new TagGroup;
+        $group = new Folder;
         $group->name = $this->name;
         $group->slug = Str::slug($this->name);
         $group->description = $this->description;
