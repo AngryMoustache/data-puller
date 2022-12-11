@@ -13,14 +13,20 @@
         <div class="background"></div>
         <livewire:modal-controller />
 
-        <x-container class="flex items-center justify-between w-full py-8">
+        <x-container class="
+            flex items-center justify-between w-full py-8
+            flex-col sm:flex-row
+        ">
             <x-headers.h1>
                 <a href="/">
                     Mobile<span class="text-primary">Art</span>
                 </a>
             </x-headers.h1>
 
-            <ul class="flex gap-4">
+            <ul class="
+                flex gap-4 pt-8 sm:py-0
+                flex-col sm:flex-row items-center
+            ">
                 <x-nav.item label="Gallery" :route="route('gallery.index')" />
                 <x-nav.item label="Folders" :route="route('folders.index')" />
                 <x-nav.item-border label="Feed" :route="route('feed.index')" />

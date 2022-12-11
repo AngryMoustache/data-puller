@@ -1,5 +1,5 @@
 <x-container>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         @foreach ($folders as $folder)
             <a href="{{ $folder->route() }}">
                 <x-surface class="flex gap-4 items-center">

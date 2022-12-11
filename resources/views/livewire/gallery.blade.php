@@ -23,7 +23,11 @@
             </div>
         </div>
 
-        <div class="py-4 flex gap-4 w-full">
+        <div class="
+            flex
+            flex-col sm:flex-row
+            gap-4 py-4 w-full
+        ">
             <x-form.select
                 nullable
                 label="Origin"
@@ -44,7 +48,11 @@
                 x-model="display"
             />
 
-            <x-form.button class="px-4 py-2 text-sm" x-on:click="search()">
+            <x-form.button
+                x-on:click="search()"
+                class="px-4 py-2 text-sm flex gap-2 justify-center items-center"
+            >
+                <span class="inline sm:hidden">Search</span>
                 <i class="fas fa-search"></i>
             </x-form.button>
         </div>
