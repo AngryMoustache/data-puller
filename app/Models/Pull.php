@@ -100,7 +100,9 @@ class Pull extends Model
 
     public function getRelatedAttribute()
     {
-        return self::where('id', '!=', $this->id)->get()
+        return self::where('id', '!=', $this->id)
+            ->online()
+            ->get()
             ->sortByDesc(fn ($pull) => $pull->tags->intersect($this->tags)->count())
             ->take(100);
     }

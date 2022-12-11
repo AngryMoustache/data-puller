@@ -50,7 +50,7 @@
                 </div>
 
                 @foreach ($tagGroups as $key => $group)
-                    <template x-if="open === {{ $key }}">
+                    <div x-show="open === {{ $key }}">
                         <x-surface class="flex flex-col gap-4">
                             @foreach ($group->tags as $tag)
                                 <x-form.checkbox
@@ -69,7 +69,7 @@
                                 />
                             </div>
                         </x-surface>
-                    </template>
+                    </div>
                 @endforeach
             </div>
 
