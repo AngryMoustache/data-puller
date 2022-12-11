@@ -12,6 +12,7 @@ class Pullable
 {
     public string $name;
     public string $source;
+    public string $artist = '';
 
     public Media|Collection $media;
     public Origin $origin;

@@ -61,13 +61,13 @@ class Feed extends Component
 
     public function save($status)
     {
+        $tags = collect($this->fields['tags'])->filter()->keys();
+        $this->pull->tags()->sync($tags);
+
         $this->pull->name = $this->fields['name'];
         $this->pull->artist = $this->fields['artist'];
-
-       $tags = collect($this->fields['tags'])->filter()->keys();
-
-        $this->pull->tags()->sync($tags);
         $this->pull->status = Status::from($status);
+        $this->pull->verdict_at = now();
         $this->pull->save();
 
         $this->nextPull();

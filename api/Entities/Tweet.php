@@ -17,6 +17,7 @@ class Tweet extends Pullable
 
         $this->source = $pull['entities']['urls'][0]['url'];
         $this->media = $pull['attachments'];
+        $this->artist = $pull['author_id'] ?? '';
 
         $this->media = $this->media->map(function ($media, $key) {
             $name = $this->name;

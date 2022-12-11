@@ -4,7 +4,6 @@ namespace Api\Clients;
 
 use Api\Entities\PixivIllust;
 use App\Models\Origin;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
 class Pixiv
