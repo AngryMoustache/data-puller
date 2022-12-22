@@ -2,22 +2,27 @@
 
 namespace App\Http\Livewire;
 
+use AngryMoustache\Rambo\Http\Livewire\Crud\ResourceComponent;
 use App\Enums\Status;
-use App\Models\Folder;
+use App\Http\Livewire\Traits\HandleSteps;
+use App\Models\Tag;
 use App\Models\Pull;
+use App\Rambo\Pull as RamboPull;
 use Illuminate\Support\Collection;
-use Livewire\Component;
 
-class Feed extends Component
+class Feed extends ResourceComponent
 {
+    use HandleSteps;
+
     public bool $loaded = false;
-
     public array $fields = [];
-    public Collection $folders;
-
     public ?Pull $pull = null;
 
-    protected $listeners = [
+    public int $maxSteps;
+    public Collection $tags;
+
+    public $listeners = [
+        'changed-value' => 'fieldUpdated',
         'refreshComponent' => '$refresh',
     ];
 
@@ -30,10 +35,12 @@ class Feed extends Component
 
     public function ready()
     {
-        $this->folders = Folder::get();
-
+        $this->tags = Tag::whereDoesntHave('parent')->get();
+        $this->maxSteps = $this->tags->count() + 2;
         $this->loaded = true;
+
         $this->nextPull();
+        $this->resource = (new RamboPull())->item($this->pull);
     }
 
     public function render()
@@ -42,33 +49,26 @@ class Feed extends Component
             return view('livewire.pre-load');
         }
 
-        return view('livewire.feed');
+        return view('livewire.feed', [
+            'mediaForm' => $this->mediaForm(),
+        ]);
     }
 
-    public function nextPull()
+    public function save()
     {
-        $this->pull = Pull::pending()->first();
-        if (! $this->pull) {
-            return;
-        }
-
-        $this->fields = [
-            'name' => $this->pull->name,
-            'artist' => $this->pull->artist,
-        ];
+        $this->finish(Status::ONLINE);
     }
 
-    public function save($status)
+    public function archive()
     {
-        $folders = collect($this->fields['folders'])->filter()->keys();
-        $this->pull->folders()->sync($folders);
+        $this->finish(Status::OFFLINE);
+    }
 
-        $this->pull->name = $this->fields['name'];
-        $this->pull->artist = $this->fields['artist'];
-        $this->pull->status = Status::from($status);
+    public function finish($status)
+    {
+        $this->pull->status = $status;
         $this->pull->verdict_at = now();
-        $this->pull->save();
-
+        $this->saveStep();
         $this->nextPull();
     }
 }

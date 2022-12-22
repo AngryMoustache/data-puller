@@ -1,0 +1,123 @@
+.feed {
+    &-steps {
+        display: flex;
+        gap: 1rem;
+
+        li {
+            display: flex;
+            padding: .5rem 1rem;
+            border-radius: 0.5rem;
+            background: var(--color-primary-dark);
+        }
+    }
+
+    &-tag-list li:has(> div input[type="checkbox"]:checked) > ul {
+        display: flex;
+        padding-top: 1rem;
+    }
+}
+
+
+
+
+
+.attachment-picker {
+    &-selection {
+        position: relative;
+        width: 13rem;
+        height: 13rem;
+        background-position: center;
+        background-size: cover;
+
+        .button {
+            display: none;
+            margin: .5rem .5rem .5rem 0;
+            padding: .5rem .6rem;
+        }
+
+        .button:first-of-type {
+            margin-left: .5rem;
+        }
+
+        &:hover .button {
+            display: inline-block;
+        }
+    }
+
+    &-many {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    &-many &-selection {
+        margin-bottom: 1rem;
+        margin-right: 1rem;
+        width: 10rem;
+        height: 10rem;
+    }
+
+    &-actions {
+        .button {
+            margin-right: 1rem;
+        }
+    }
+
+    &-grid {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        grid-gap: 1rem;
+        gap: 1rem;
+
+        div {
+            padding-top: 100%;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+
+            &:hover {
+                opacity: .5;
+            }
+        }
+    }
+}
+
+.attachment-cropper-modal {
+    min-height: 40vh;
+}
+
+.attachment-cropper {
+    position: relative;
+    width: 100%;
+
+    &-buttons {
+        display: flex;
+        width: 100%;
+
+        .button {
+            margin-left: 1rem;
+        }
+    }
+
+    &-canvas {
+        max-width: 100%;
+        max-height: 75vh;
+        margin-top: 1rem;
+
+        img {
+            display: block;
+            max-width: 100%;
+            max-height: 75vh;
+            margin-top: 0;
+        }
+    }
+
+    &-loading {
+        display: flex;
+        background: rgba(white, .8);
+        position: absolute;
+        top: -1rem; bottom: -1rem;
+        left: -1rem; right: -1rem;
+        z-index: 1000;
+        align-items: center;
+    }
+}

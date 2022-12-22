@@ -4,7 +4,7 @@
     <label
          for="{{ $id }}"
         {{ $attributes->only('class')->merge([
-            'class' => 'checkbox-label cursor-pointer',
+            'class' => 'checkbox-label cursor-pointer text-lg',
         ]) }}
     >
         {{ $label }}

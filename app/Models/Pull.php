@@ -16,16 +16,20 @@ class Pull extends Model
         'artist',
         'source_url',
         'status',
+        'preview_id',
+        'comic',
         'views',
         'verdict_at',
     ];
 
     public $casts = [
         'status' => Enums\Status::class,
+        'comic' => 'boolean',
         'verdict_at' => 'datetime',
     ];
 
     public $with = [
+        'preview',
         'attachments',
     ];
 
@@ -34,9 +38,14 @@ class Pull extends Model
         return $this->belongsTo(Origin::class);
     }
 
-    public function folders()
+    public function tags()
     {
-        return $this->belongsToMany(Folder::class);
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function preview()
+    {
+        return $this->belongsTo(Attachment::class);
     }
 
     public function attachments()
@@ -80,10 +89,10 @@ class Pull extends Model
     public function getRelatedAttribute()
     {
         return self::where('id', '!=', $this->id)
-            ->with('folders')
+            ->with('tags')
             ->online()
             ->get()
-            ->sortByDesc(fn ($pull) => $pull->folders->intersect($this->folders)->count())
+            ->sortByDesc(fn ($pull) => $pull->tags->intersect($this->tags)->count())
             ->take(100);
     }
 

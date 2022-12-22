@@ -13,18 +13,21 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('folders', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('parent_id')->nullable()->constrained('tags')->setNullOnDelete();
             $table->string('name');
             $table->string('slug');
-            $table->string('description')->nullable();
+            $table->string('long_name');
+            $table->string('color');
+            $table->boolean('hidden')->default(0);
             $table->timestamps();
         });
 
-        Schema::create('folder_pull', function (Blueprint $table) {
+        Schema::create('pull_tag', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('folder_id')->constrained()->cascadeOnDelete();
             $table->foreignId('pull_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
         });
     }
 
@@ -35,7 +38,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('folder_pull');
-        Schema::dropIfExists('folders');
+        Schema::dropIfExists('tag_pull');
+        Schema::dropIfExists('tags');
     }
 };

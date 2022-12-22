@@ -1,6 +1,6 @@
 @props([
     'pulls' => [],
-    'display' => \App\Enums\Display::COMPACT,
+    'display' => \App\Enums\Display::CARD,
 ])
 
 @if($display === \App\Enums\Display::COMPACT)

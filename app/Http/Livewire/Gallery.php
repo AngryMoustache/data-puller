@@ -59,11 +59,11 @@ class Gallery extends Component
 
         // Get the pulls
         $pulls = Pull::online()
-            ->with('origin', 'folders')
+            ->with('origin', 'tags')
             ->when($this->query !== '', function ($query) {
                 return $query->where(function ($subQuery) {
                     $subQuery->where('name', 'LIKE', "%{$this->query}%")
-                        ->orWhereHas('folders', fn ($q) => $q->where('name', 'LIKE', "%{$this->query}%"));
+                        ->orWhereHas('tags', fn ($q) => $q->where('name', 'LIKE', "%{$this->query}%"));
                 });
             })
             ->when($this->origin, function ($query) {

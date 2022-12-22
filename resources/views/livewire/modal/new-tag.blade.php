@@ -2,15 +2,16 @@
     <x-surface class="flex flex-col gap-4">
         <x-headers.h3 text="New tag" class="p-2" />
 
+        <x-form.select
+            nullable
+            wire:model.defer="parent"
+            label="Parent tag (optional)"
+            :options="$tags"
+        />
+
         <x-form.input
             wire:model.defer="name"
             label="Name"
-        />
-
-        <x-form.textarea
-            wire:model.defer="description"
-            label="Description (optional)"
-            class="h-64"
         />
 
         <div class="flex w-full mt-4 justify-end">

@@ -28,7 +28,6 @@
                 flex-col sm:flex-row items-center
             ">
                 <x-nav.item label="Gallery" :route="route('gallery.index')" />
-                <x-nav.item label="Folders" :route="route('folders.index')" />
                 <x-nav.item-border label="Feed" :route="route('feed.index')" />
             </ul>
         </x-container>
@@ -36,5 +35,7 @@
         {{ $slot }}
 
         <livewire:scripts />
+        <script src="{{ asset('vendor/rambo/js/index.js') }}"></script>
+        @stack('rambo-scripts')
     </body>
 </html>
