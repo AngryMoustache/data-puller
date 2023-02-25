@@ -33,13 +33,6 @@
                             wire:model.defer="fields.artist"
                         />
                     </div>
-
-                    <div class="ml-2 pt-4">
-                        <x-form.checkbox
-                            wire:model.defer="fields.comic"
-                            label="Is a comic"
-                        />
-                    </div>
                 @elseif ($currentStep === 2)
                     @foreach ($mediaForm as $field)
                         <x-rambo::crud.fields.form

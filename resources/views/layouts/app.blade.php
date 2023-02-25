@@ -35,7 +35,5 @@
         {{ $slot }}
 
         <livewire:scripts />
-        <script src="{{ asset('vendor/rambo/js/index.js') }}"></script>
-        @stack('rambo-scripts')
     </body>
 </html>

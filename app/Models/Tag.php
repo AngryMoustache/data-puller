@@ -8,14 +8,11 @@ use Illuminate\Support\Str;
 class Tag extends Model
 {
     protected $fillable = [
+        'parent_id',
         'name',
         'slug',
-        'description',
-    ];
-
-    public $with = [
-        'pulls',
-        'children',
+        'long_name',
+        'hidden',
     ];
 
     public function pulls()
@@ -31,11 +28,6 @@ class Tag extends Model
     public function children()
     {
         return $this->hasMany(Tag::class, 'parent_id');
-    }
-
-    public function getImageAttribute()
-    {
-        return $this->pulls->last()?->image;
     }
 
     public function getNameWithCountAttribute()

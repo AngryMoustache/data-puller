@@ -59,7 +59,6 @@ trait HandleSteps
         $this->pull->name = $this->fields['name'];
         $this->pull->artist = $this->fields['artist'];
         $this->pull->attachments()->sync($this->fields['attachments']);
-        $this->pull->preview_id = $this->fields['preview_id'];
         $this->pull->tags()->sync($tags);
 
         $this->pull->saveQuietly();

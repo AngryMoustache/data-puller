@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use AngryMoustache\Media\Models\Attachment;
+use AngryMoustache\Predator\Facades\Predator;
 use App\Enums;
 use App\Enums\Status;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Pull extends Model
 {
@@ -17,15 +19,11 @@ class Pull extends Model
         'source_url',
         'status',
         'preview_id',
-        'comic',
         'views',
-        'verdict_at',
     ];
 
     public $casts = [
         'status' => Enums\Status::class,
-        'comic' => 'boolean',
-        'verdict_at' => 'datetime',
     ];
 
     public $with = [
@@ -62,7 +60,7 @@ class Pull extends Model
 
     public function getImageAttribute()
     {
-        return $this->attachments->first() ?? $this->videos->first()->preview;
+        return $this->attachments->first() ?? $this->videos->first()->preview ?? dd($this->videos);
     }
 
     public function getPulledWhenAttribute()
@@ -77,6 +75,13 @@ class Pull extends Model
 
     public function getGridSizeAttribute()
     {
+        if (in_array($this->image->width, [0, null])) {
+            return collect((object) [
+                'columns' => 1,
+                'rows' => 1,
+            ]);
+        }
+
         $ratioX = round($this->image->width / $this->image->height);
         $ratioY = round($this->image->height / $this->image->width);
 

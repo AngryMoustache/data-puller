@@ -84,25 +84,19 @@ class Gallery extends Component
         $this->pagination += 48;
     }
 
-    public function setSort($value)
+    public function setFilterValues($sort, $display, $origin)
     {
-        $this->sort = Sorting::from($value);
+        $this->sort = Sorting::from($sort);
 
         if ($this->sort->isRandomizer()) {
             $this->resetRandomizer();
         } else {
             $this->randomizer = 0;
         }
-    }
 
-    public function setDisplay($value)
-    {
-        $this->display = Display::from($value);
-    }
+        $this->display = Display::from($display);
 
-    public function setOrigin($value)
-    {
-        $this->origin = Origin::whereSlug($value)->first();
+        $this->origin = Origin::whereSlug($origin)->first();
     }
 
     public function resetRandomizer()

@@ -7,27 +7,17 @@
             display: @js($display),
             origin: @js($origin?->slug),
             query: @entangle('query').defer,
+            init () {
+                $watch('sort', () => this.search())
+                $watch('display', () => this.search())
+                $watch('origin', () => this.search())
+            },
             search () {
-                @this.setSort(this.sort)
-                @this.setDisplay(this.display)
-                @this.setOrigin(this.origin)
+                $wire.setFilterValues(this.sort, this.display, this.origin)
             },
         }"
     >
-        <div class="flex justify-between gap-4 items-center">
-            <div class="w-full">
-                <x-filter.query
-                    :value="$query"
-                    x-model="query"
-                />
-            </div>
-        </div>
-
-        <div class="
-            flex
-            flex-col sm:flex-row
-            gap-4 py-4 w-full
-        ">
+        <div class=" flex flex-col sm:flex-row gap-4 py-4 w-full">
             <x-form.select
                 nullable
                 label="Origin"
@@ -47,23 +37,22 @@
                 :options="Display::list()"
                 x-model="display"
             />
+        </div>
 
-            <x-form.button
-                x-on:click="search()"
-                class="px-4 py-2 text-sm flex gap-2 justify-center items-center"
-            >
-                <span class="inline sm:hidden">Search</span>
-                <i class="fas fa-search"></i>
-            </x-form.button>
+        <div class="flex justify-between gap-4 items-center">
+            <x-filter.query
+                :value="$query"
+                x-model="query"
+            />
         </div>
     </form>
 
-    <x-loading-section wire:target="setSort, setDisplay">
+    <x-loading-section wire:target="setFilterValues">
         <x-grid.pulls :$display :$pulls />
-    </x-loading-section>
 
-    <x-loading-section class="mt-16" wire:target="addPage">
-        <x-triggers.infinite-scroll :stopped="$maxPulls <= $pulls->count()" />
+        <x-loading-section class="mt-16" wire:target="addPage">
+            <x-triggers.infinite-scroll :stopped="$maxPulls <= $pulls->count()" />
+        </x-loading-section>
     </x-loading-section>
 
     <script>

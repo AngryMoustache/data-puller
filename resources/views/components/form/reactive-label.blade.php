@@ -3,7 +3,7 @@
 ])
 
 <div
-    class="relative z-0 w-full"
+    class="relative z-10 w-full"
     x-data="{
         input: null,
         activated: false,
@@ -20,7 +20,7 @@
     @if ($label)
         <label
             class="absolute top-0.5 left-0 pointer-events-none transition-all px-4 py-2"
-            :class="{ '!-top-4 text-xs' : activated }"
+            :class="{ '!-top-4 text-xs' : activated, 'opacity-50': ! activated }"
         >
             {{ $label }}
         </label>
