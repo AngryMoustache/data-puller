@@ -3,11 +3,9 @@
 namespace App\Models;
 
 use AngryMoustache\Media\Models\Attachment;
-use AngryMoustache\Predator\Facades\Predator;
 use App\Enums;
 use App\Enums\Status;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 
 class Pull extends Model
 {
@@ -28,6 +26,7 @@ class Pull extends Model
 
     public $with = [
         'preview',
+        'origin',
         'attachments',
     ];
 
@@ -56,6 +55,22 @@ class Pull extends Model
     public function videos()
     {
         return $this->morphedByMany(Video::class, 'media', 'media_pull');
+    }
+
+    public function url()
+    {
+        return route('pull.show', $this->slug);
+    }
+
+    public function tagList()
+    {
+        $tags = $this->tags()->with(['parent', 'children'])->get();
+
+        return $tags
+            ->reject(fn ($tag) => ! $tag->parent_id)
+            ->reject(fn ($tag) => $tag->children->pluck('id')->intersect($tags->pluck('id'))->count() > 0)
+            ->sortBy('slug')
+            ->values();
     }
 
     public function getImageAttribute()

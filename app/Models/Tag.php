@@ -30,6 +30,11 @@ class Tag extends Model
         return $this->hasMany(Tag::class, 'parent_id');
     }
 
+    public function url()
+    {
+        return route('gallery.index', ['filters' => "tags:{$this->slug}"]);
+    }
+
     public function getNameWithCountAttribute()
     {
         if ($this->children->isNotEmpty()) {

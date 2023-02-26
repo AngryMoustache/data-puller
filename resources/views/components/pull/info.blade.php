@@ -3,7 +3,7 @@
     'nameLength' => 25,
 ])
 
-<div class="flex justify-between items-center p-4 px-6  gap-4">
+<div class="flex justify-between items-center p-4 px-6 gap-4">
     <div class="flex flex-col w-full">
         <div class="flex gap-2">
             <p>{{ Str::limit($pull->name, $nameLength) }}</p>

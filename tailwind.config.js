@@ -13,8 +13,9 @@ module.exports = {
         'super-dark': 'var(--color-primary-super-dark)',
         background: 'var(--color-background)',
         text: 'var(--color-text)',
-        surface: 'var(--color-surface)',
+        surface: '#151515',
         'surface-light': 'var(--color-surface-light)',
+        'surface-dark': 'var(--color-surface-dark)',
         error: 'var(--color-error)',
         gradient: 'linear-gradient(120deg, var(--color-primary-light), var(--color-primary-dark))'
       }

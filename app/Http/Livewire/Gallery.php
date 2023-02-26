@@ -16,6 +16,7 @@ class Gallery extends Component
     public bool $loaded = false;
 
     public string $query = '';
+    public array $selectedTags = [];
     public ?Origin $origin = null;
     public Sorting $sort = Sorting::NEWEST;
     public Display $display = Display::COMPACT;
@@ -36,6 +37,7 @@ class Gallery extends Component
         $this->origin = Origin::whereSlug($filters->get('origin'))->first();
         $this->sort = Sorting::tryFrom($filters['sort'] ?? '') ?? Sorting::default();
         $this->display = Display::tryFrom($filters['display'] ?? '') ?? Display::default();
+        $this->selectedTags = explode(',', $filters->get('tags', ''));
     }
 
     public function ready()
@@ -65,6 +67,9 @@ class Gallery extends Component
                     $subQuery->where('name', 'LIKE', "%{$this->query}%")
                         ->orWhereHas('tags', fn ($q) => $q->where('name', 'LIKE', "%{$this->query}%"));
                 });
+            })
+            ->when($this->selectedTags !== [], function ($query) {
+                return $query->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
             })
             ->when($this->origin, function ($query) {
                 return $query->whereHas('origin', fn ($q) => $q->where('slug', $this->origin->slug));
@@ -112,6 +117,7 @@ class Gallery extends Component
             'randomizer' => $this->randomizer,
             'display' => $this->display->value,
             'origin' => $this->origin?->slug,
+            'tags' => implode(',', $this->selectedTags),
         ])
             ->filter()
             ->reject(fn ($value) => in_array($value, [

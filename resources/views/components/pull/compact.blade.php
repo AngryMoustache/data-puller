@@ -1,6 +1,5 @@
-<div
-    x-data="{}"
-    x-on:click="$wire.emit('openModal', 'pull-detail', {{ $pull->id }})"
+<a
+    href="{{ $pull->url() }}"
     class="flex p-2 hover:p-3 transition-all cursor-pointer"
     style="
         grid-column: span {{ $pull->columns }};
@@ -15,4 +14,4 @@
             bg-surface bg-cover bg-center
         ']) }}
     ></div>
-</div>
+</a>

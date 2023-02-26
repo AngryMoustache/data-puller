@@ -10,6 +10,8 @@ Route::get('/gallery/{filters?}', Livewire\Gallery::class)
     ->where('filters', '.*')
     ->name('gallery.index');
 
+Route::get('/pull/{pull:slug}', Livewire\Detail::class)->name('pull.show');
+
 Route::get('/feed', Livewire\Feed::class)->name('feed.index');
 
 Route::post('/api/v1/upload', [ApiController::class, 'store'])
