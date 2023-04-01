@@ -23,6 +23,13 @@ trait HasPreLoading
         ]);
     }
 
+    public function renderLoadingGridContainer(int $size = 5)
+    {
+        return view('livewire.loading.grid-container', [
+            'size' => $size,
+        ]);
+    }
+
     public function renderLoadingList(int $size = 5)
     {
         return view('livewire.loading.list', [

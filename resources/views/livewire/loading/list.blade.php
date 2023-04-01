@@ -6,7 +6,7 @@
                 style="aspect-ratio: 3/2.5"
             ></div>
 
-            <div class="w-full flex flex-col gap-4 pt-3">
+            <div class="w-full flex flex-col gap-4 p-3">
                 <span class="h-5 w-1/3 bg-text opacity-10"></span>
                 <span class="h-5 w-2/3 bg-text opacity-10"></span>
 

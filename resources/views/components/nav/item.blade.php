@@ -9,13 +9,13 @@
 <a
     href="{{ $route }}"
     @class([
-        'flex items-center gap-4 p-4 text-title hover:text-primary',
+        'flex items-center gap-4 p-4 text-title hover:text-primary w-full select-none transition-colors',
         'text-primary' => $active,
     ])
 >
     <x-dynamic-component
         :component="$active ? $activeIcon : $icon"
-        class="w-6 h-6"
+        class="w-8 h-6"
     />
 
     <span x-show="open" style="display: none">

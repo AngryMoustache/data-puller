@@ -17,7 +17,7 @@ class Recommendations extends Component
             return $this->renderLoadingGrid(15);
         }
 
-        $history = History::limit(20)
+        $history = History::limit(5)
             ->orderBy('last_viewed_at', 'desc')
             ->pluck('pull_id');
 

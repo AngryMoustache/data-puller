@@ -8,7 +8,6 @@
             img.src = this.source
             img.onload = () => {
                 this.loaded = true
-                console.log('beep')
             }
         }
     }"
