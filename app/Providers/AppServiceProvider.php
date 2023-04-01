@@ -10,9 +10,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->singleton(\App\PullCache::class, function () {
-            return new \App\PullCache;
-        });
+        //
     }
 
     public function boot()

@@ -1,17 +1,19 @@
 <?php
 
-namespace App\Http\Livewire;
+namespace App\Http\Livewire\Pull;
 
+use App\Models\History;
 use App\Models\Pull;
 use Livewire\Component;
 
-class PullDetail extends Component
+class Show extends Component
 {
     public Pull $pull;
 
     public function mount(Pull $pull)
     {
         $this->pull = $pull;
-        $this->pull->increment('views');
+
+        History::add($pull);
     }
 }

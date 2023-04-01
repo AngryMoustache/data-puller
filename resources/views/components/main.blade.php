@@ -1,4 +1,4 @@
-<div class="relative w-screen h-screen overflow-hidden flex gap-4 w-full">
+<div class="relative h-screen overflow-hidden flex w-full">
     <x-nav.column />
 
     <div class="h-screen overflow-y-auto w-full">

@@ -14,10 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('pulls', function (Blueprint $table) {
-            $table->after('status', function (Blueprint $table) {
-                $table->foreignId('preview_id')->nullable()->constrained('attachments')->onDelete('set null');
-                $table->boolean('comic')->default(false);
-            });
+            $table->dateTime('verdict_at')->nullable()->after('views');
         });
     }
 
@@ -29,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('pulls', function (Blueprint $table) {
-            //
+            $table->dropColumn('verdict_at');
         });
     }
 };

@@ -5,7 +5,9 @@ namespace App\Models;
 use AngryMoustache\Media\Models\Attachment;
 use App\Enums;
 use App\Enums\Status;
+use App\Pulls;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Pull extends Model
 {
@@ -28,7 +30,6 @@ class Pull extends Model
     public $with = [
         'origin',
         'attachments',
-        'tags',
     ];
 
     public function origin()
@@ -77,6 +78,14 @@ class Pull extends Model
     public function getViewsAttribute($value)
     {
         return number_format($value);
+    }
+
+    public function getListInfoAttribute()
+    {
+        return collect([
+            $this->artist,
+            $this->views . ' ' . Str::plural('view', $this->views)
+        ])->filter()->join(' - ');
     }
 
     public function scopePending($query)

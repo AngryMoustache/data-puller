@@ -2,7 +2,10 @@
 @tailwind utilities;
 @tailwind components;
 
-@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans&family=Alegreya+Sans&display=swap');
+@font-face {
+    font-family: 'Outfit';
+    src: url('./fonts/outfit.ttf');
+}
 
 :root {
     --color-primary-light: #FF5C8D;
@@ -19,13 +22,9 @@
 @import 'modal';
 
 html {
-    font-family: 'Alegreya Sans', sans-serif;
+    font-family: 'Outfit', sans-serif;
     color: var(--color-text);
     min-height: 100vh;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Merriweather Sans', sans-serif;
 }
 
 .background {

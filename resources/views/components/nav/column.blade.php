@@ -5,7 +5,7 @@
     }
 }">
     <div
-        class="h-screen border-border border-r mr-4 p-4 transition-all"
+        class="h-screen border-border border-r p-4 transition-all"
         x-bind:class="{
             'w-64': open,
         }"
@@ -39,8 +39,8 @@
             @endif
 
             <x-nav.item
-                :route="route('pull.index')"
-                :active="request()->routeIs('pull.index')"
+                :route="route('history.index')"
+                :active="request()->routeIs('history.index')"
                 icon="heroicon-o-clock"
                 label="History"
             />
