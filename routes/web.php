@@ -1,18 +1,11 @@
 <?php
 
-use App\Http\Controllers\ApiController;
 use App\Http\Livewire;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Livewire\Home::class)->name('home.index');
 
-Route::get('/gallery/{filters?}', Livewire\Gallery::class)
-    ->where('filters', '.*')
-    ->name('gallery.index');
+Route::get('/pulls', Livewire\Home::class)->name('pull.index');
+Route::get('/pulls/{pull}', Livewire\PullDetail::class)->name('pull.show');
 
-Route::get('/pull/{pull:slug}', Livewire\Detail::class)->name('pull.show');
-
-Route::get('/feed', Livewire\Feed::class)->name('feed.index');
-
-Route::post('/api/v1/upload', [ApiController::class, 'store'])
-    ->name('api.store');
+Route::get('/feed', Livewire\Home::class)->name('feed.index');

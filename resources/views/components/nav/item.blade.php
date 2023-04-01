@@ -1,22 +1,24 @@
 @props([
     'route',
+    'icon' => '',
+    'activeIcon' => Str::replace('-o-', '-s-', $icon),
+    'active' => $route === request()->url(),
     'label',
-    'background' => null,
 ])
 
-<li>
-    <a
-        style="padding: 1px"
-        href="{{ $route }}"
-        {{ $attributes->only('class')->merge([
-            'class' => 'inline-block',
-        ]) }}
-    >
-        <span class="
-            inline-block px-10 py-2 rounded-lg {{ $background }}
-            transition-all hover:bg-dark
-        ">
-            {{ $label }}
-        </span>
-    </a>
-</li>
+<a
+    href="{{ $route }}"
+    @class([
+        'flex items-center gap-4 p-4 text-title hover:text-primary',
+        'text-primary' => $active,
+    ])
+>
+    <x-dynamic-component
+        :component="$active ? $activeIcon : $icon"
+        class="w-6 h-6"
+    />
+
+    <span x-show="open" style="display: none">
+        {{ $label }}
+    </span>
+</a>

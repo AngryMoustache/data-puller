@@ -1,3 +1,3 @@
-<div {{ $attributes->merge(['class' => 'bg-surface rounded-lg p-4']) }}>
+<div {{ $attributes->merge(['class' => 'bg-surface rounded p-4']) }}>
     {{ $slot }}
 </div>

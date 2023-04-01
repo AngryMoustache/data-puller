@@ -16,18 +16,19 @@ class Pull extends Model
         'artist',
         'source_url',
         'status',
-        'preview_id',
         'views',
+        'verdict_at',
     ];
 
     public $casts = [
         'status' => Enums\Status::class,
+        'verdict_at' => 'datetime',
     ];
 
     public $with = [
-        'preview',
         'origin',
         'attachments',
+        'tags',
     ];
 
     public function origin()
@@ -38,11 +39,6 @@ class Pull extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
-    }
-
-    public function preview()
-    {
-        return $this->belongsTo(Attachment::class);
     }
 
     public function attachments()
@@ -57,63 +53,30 @@ class Pull extends Model
         return $this->morphedByMany(Video::class, 'media', 'media_pull');
     }
 
-    public function url()
+    public function route()
     {
         return route('pull.show', $this->slug);
     }
 
-    public function tagList()
+    public function getRouteKeyName()
     {
-        $tags = $this->tags()->with(['parent', 'children'])->get();
-
-        return $tags
-            ->reject(fn ($tag) => ! $tag->parent_id)
-            ->reject(fn ($tag) => $tag->children->pluck('id')->intersect($tags->pluck('id'))->count() > 0)
-            ->sortBy('slug')
-            ->values();
+        return 'slug';
     }
 
-    public function getImageAttribute()
+    public function getAttachmentAttribute()
     {
-        return $this->attachments->first() ?? $this->videos->first()->preview ?? dd($this->videos);
+        return $this->attachments->first()
+            ?? $this->videos->first()->preview;
     }
 
     public function getPulledWhenAttribute()
     {
-        return ($this->verdict_at ?? $this->created_at)->isoFormat('lll');
+        return $this->verdict_at ?? $this->created_at;
     }
 
-    public function getFormattedViewsAttribute()
+    public function getViewsAttribute($value)
     {
-        return number_format($this->views);
-    }
-
-    public function getGridSizeAttribute()
-    {
-        if (in_array($this->image->width, [0, null])) {
-            return collect((object) [
-                'columns' => 1,
-                'rows' => 1,
-            ]);
-        }
-
-        $ratioX = round($this->image->width / $this->image->height);
-        $ratioY = round($this->image->height / $this->image->width);
-
-        return collect((object) [
-            'columns' => ($ratioX > $ratioY) ? 2 : 1,
-            'rows' => ($ratioX < $ratioY) ? 2 : 1,
-        ]);
-    }
-
-    public function getRelatedAttribute()
-    {
-        return self::where('id', '!=', $this->id)
-            ->with('tags')
-            ->online()
-            ->get()
-            ->sortByDesc(fn ($pull) => $pull->tags->intersect($this->tags)->count())
-            ->take(100);
+        return number_format($value);
     }
 
     public function scopePending($query)

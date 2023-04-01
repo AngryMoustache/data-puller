@@ -5,19 +5,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans&family=Alegreya+Sans&display=swap');
 
 :root {
-    --color-primary: #db2769;
     --color-primary-light: #FF5C8D;
+    --color-primary: #db2769;
     --color-primary-dark: #A00037;
-    --color-primary-super-dark: #6A0020;
     --color-background: #121212;
+    --color-surface: #1C1C1C;
     --color-text: #D3D3D3;
-    --color-surface: #151515;
-    --color-surface-light: #2c2c2c;
-    --color-surface-dark: #121212;
+    --color-border: #4b4b4b;
     --color-error: #B00020;
 }
 
-@import 'feed';
 @import 'loading';
 @import 'modal';
 
@@ -36,50 +33,5 @@ h1, h2, h3, h4, h5, h6 {
     top: 0; bottom: 0;
     left: 0; right: 0;
     z-index: -100;
-    background: linear-gradient(35deg, var(--color-surface-light), var(--color-surface-dark));
-}
-
-.bg-gradient {
-    background: linear-gradient(120deg, var(--color-primary-light), var(--color-primary-dark));
-}
-
-input[type="checkbox"]:checked ~ label::before,
-.bg-gradient-dark {
-    background: linear-gradient(120deg, var(--color-primary-dark), var(--color-primary-super-dark));
-}
-
-.notification::after {
-    content: ' ';
-    width: .5rem;
-    height: .5rem;
-    background: rgb(208, 60, 60);
-    position: absolute;
-    border-radius: 50%;
-
-    transform: translateX(.5rem);
-}
-
-.aspect-video {
-    aspect-ratio: 16 / 9;
-}
-
-input[type="checkbox"] {
-    display: none;
-}
-
-.checkbox-label {
-    padding-left: 2rem;
-
-    &::before {
-        border: thin solid var(--color-primary-dark);
-        border-radius: 0.2rem;
-        content: "";
-        cursor: pointer;
-        height: 1.2rem;
-        width: 1.2rem;
-        position: absolute;
-        left: 0;
-        top: 0.3rem;
-        z-index: 1;
-    }
+    background-color: var(--color-background);
 }
