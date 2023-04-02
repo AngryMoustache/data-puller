@@ -24,7 +24,7 @@
         </div>
 
         <div
-            class="flex flex-col gap-4 p-4"
+            class="flex flex-col gap-4 md:p-4"
             x-show="open"
             x-transition
         >
@@ -44,14 +44,14 @@
             >
                 <div class="flex flex-col sm:flex-row gap-8 py-4 w-full">
                     <x-form.radio-list
-                        class="w-1/2"
+                        class="w-full md:w-1/2"
                         label="Sort by"
                         :options="Sorting::list()"
                         x-model="sort"
                     />
 
                     <x-form.radio-list
-                        class="w-1/2"
+                        class="w-full md:w-1/2"
                         label="Originated from"
                         nullable
                         :options="$origins"
@@ -82,7 +82,7 @@
     @if ($pulls->isNotEmpty())
         <div wire:loading>
             @include('livewire.loading.grid', [
-                'size' => 5,
+                'size' => 6,
             ])
         </div>
     @endif

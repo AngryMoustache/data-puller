@@ -18,7 +18,7 @@ class Index extends Component
     use HasPreLoading;
     use HasPagination;
 
-    public int $perPage = 20;
+    public int $perPage = 18;
 
     public Collection $selectedTags;
 
@@ -47,7 +47,7 @@ class Index extends Component
     public function render()
     {
         if (! $this->loaded) {
-            return $this->renderLoadingGridContainer(15);
+            return $this->renderLoadingGridContainer(18);
         }
 
         // Set the randomizer seed

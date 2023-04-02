@@ -16,28 +16,28 @@ trait HasPreLoading
         return view('livewire.loading.spinner');
     }
 
-    public function renderLoadingGrid(int $size = 5)
+    public function renderLoadingGrid(int $size = 6)
     {
         return view('livewire.loading.grid', [
             'size' => $size,
         ]);
     }
 
-    public function renderLoadingGridContainer(int $size = 5)
+    public function renderLoadingGridContainer(int $size = 6)
     {
         return view('livewire.loading.grid-container', [
             'size' => $size,
         ]);
     }
 
-    public function renderLoadingList(int $size = 5)
+    public function renderLoadingList(int $size = 6)
     {
         return view('livewire.loading.list', [
             'size' => $size,
         ]);
     }
 
-    public function renderLoadingListContainer(int $size = 5)
+    public function renderLoadingListContainer(int $size = 6)
     {
         return view('livewire.loading.list-container', [
             'size' => $size,

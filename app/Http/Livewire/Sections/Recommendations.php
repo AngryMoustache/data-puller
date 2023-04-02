@@ -14,7 +14,7 @@ class Recommendations extends Component
     public function render()
     {
         if (! $this->loaded) {
-            return $this->renderLoadingGrid(15);
+            return $this->renderLoadingGrid(18);
         }
 
         $history = History::limit(5)
@@ -34,7 +34,7 @@ class Recommendations extends Component
                     ->sum(fn ($id) => $tags[$id] ?? 0);
             })
             ->whereNotIn('id', $history)
-            ->take(15);
+            ->take(18);
 
         return view('livewire.sections.recommendations', [
             'pulls' => $pulls->fetch()->shuffle(),

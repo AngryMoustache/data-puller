@@ -12,7 +12,7 @@ class Index extends Component
     use HasPreLoading;
     use HasPagination;
 
-    public int $perPage = 5;
+    public int $perPage = 6;
 
     public function render()
     {

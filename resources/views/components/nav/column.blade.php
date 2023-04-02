@@ -1,9 +1,28 @@
 <div
-    class="fixed h-screen border-border border-r p-4 transition-all"
-    x-bind:class="{'w-64': open, 'w-24': ! open}"
+    class="
+        p-2 md:p-4
+        relative w-full transition-all z-10
+        border-border border-b
+        md:fixed md:h-screen md:border-b-0 md:border-r
+        md:w-24
+    "
+    x-bind:class="{
+        'md:w-64': open,
+        'md:w-24': ! open
+    }"
 >
-    <div class="flex flex-col gap-4">
-        <span @click="toggle" class="pt-4 p-8 mb-4 -mx-4 border-border border-b cursor-pointer">
+    <div class="
+        flex gap-4
+        flex-row justify-between
+        md:flex-col
+    ">
+        <span
+            @click="toggle"
+            class="
+                pt-4 p-8 mb-4 -mx-4 border-border border-b cursor-pointer
+                hidden md:block
+            "
+        >
             <x-heroicon-o-bars-3 class="w-8 h-6" />
         </span>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Models\Artist;
 use App\Models\Pull;
 use App\Models\Tag;
 use Livewire\Component;
@@ -18,26 +19,24 @@ class GlobalSearch extends Component
                     'id' => $tag->id,
                     'key' => $tag->name,
                     'name' => $tag->long_name,
+                    'slug' => $tag->slug,
                     'type' => 'tag',
                 ];
             });
 
-        // $artists = Pull::online()
-        //     ->pluck('artist')
-        //     ->filter()
-        //     ->unique()
-        //     ->map(fn ($artist) => [
-        //         'id' => $artist,
-        //         'key' => $artist,
-        //         'name' => $artist,
-        //         'type' => 'artist',
-        //     ]);
+        $artists = Artist::whereHas('pulls')
+            ->get()
+            ->map(fn ($artist) => [
+                'id' => $artist->id,
+                'key' => $artist->name,
+                'name' => $artist->name,
+                'slug' => $artist->slug,
+                'type' => 'artist',
+            ]);
 
         $this->emit(
             'options-fetched',
-            collect($tags)
-                // ->merge($artists)
-                ->toArray()
+            collect($tags)->merge($artists)->toArray()
         );
     }
 }

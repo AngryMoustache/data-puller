@@ -18,12 +18,14 @@
                 .filter((option) => option.key.toLowerCase().includes(this.query.toLowerCase()))
                 .slice(0, 10)
         },
-        select (id = null) {
+        select (option = null) {
             const options = this.filteredOptions()
-            const option = id || options[this.highlight] || options[0]
+            option = option || options[this.highlight] || options[0]
+            console.log(option, option.slug)
 
             if (option) {
-                window.location.href = `/pulls/tags:${option.slug}`
+                const type = option.type === 'tag' ? 'tags' : 'artist'
+                window.location.href = `/pulls/${type}:${option.slug}`
             }
         }
     }"
@@ -59,7 +61,7 @@
                     x-text="option.name"
                     class="px-4 py-2 cursor-pointer"
                     x-bind:class="{'bg-dark': highlight === key}"
-                    x-on:click.prevent="select(option.id)"
+                    x-on:click.prevent="select(option)"
                     x-on:mouseenter="highlight = key"
                 ></li>
             </template>

@@ -9,8 +9,9 @@
 <a
     href="{{ $route }}"
     @class([
-        'flex items-center gap-4 p-4 text-title hover:text-primary w-full select-none transition-colors',
         'text-primary' => $active,
+        'flex items-center p-4 text-title hover:text-primary w-full select-none transition-colors',
+        'flex-col justify-center md:justify-start md:flex-row md:gap-4',
     ])
 >
     <x-dynamic-component
@@ -19,6 +20,10 @@
     />
 
     <span x-show="open" style="display: none">
+        {{ $label }}
+    </span>
+
+    <span class="block md:hidden text-sm">
         {{ $label }}
     </span>
 </a>

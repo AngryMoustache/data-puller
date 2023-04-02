@@ -1,5 +1,5 @@
 <x-container class="p-8 flex gap-12 relative">
-    <div class="w-2/3 flex flex-col gap-12">
+    <div class="w-full md:w-2/3 flex flex-col gap-12">
         <x-alpine.infinite-scroll :enabled="$hasMore" class="flex flex-col gap-8">
             @foreach ($history as $day => $pulls)
                 <div>
@@ -23,7 +23,7 @@
 
     </div>
 
-    <div class="w-1/3 h-fit gap-4 sticky top-16">
+    <div class="w-1/3 h-fit gap-4 hidden md:block sticky top-16">
         <x-headers.h1 text="History" />
 
         <div class="flex flex-col mt-4">
