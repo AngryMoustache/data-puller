@@ -29,6 +29,7 @@ class History extends Model
     public static function add(Pull $pull): self
     {
         $pull->increment('views');
+        $pull->save(); // Fire jobs
 
         return self::updateOrCreate([
             'pull_id' => $pull->id,

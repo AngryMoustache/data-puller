@@ -1,5 +1,5 @@
 <div class="modal">
-    <div class="modal-overlay" wire:click="$emit('closeModal')"></div>
+    <div class="modal-overlay" x-on:click="window.closeModal()"></div>
 
     <div {{ $attributes->merge(['class' => 'modal-content']) }}>
         {{ $slot }}

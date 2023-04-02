@@ -29,25 +29,30 @@ class Pulls extends Collection
         }
 
         return Cache::rememberForever(static::KEY, function () {
-            return Pull::online()
-                ->with('tags', 'origin', 'artist')
-                ->get()
-                ->filter(fn ($pull) => $pull->attachment)
-                ->map(function (Pull $pull) {
-                    return collect([
-                        'id' => $pull->id,
-                        'name' => $pull->name,
-                        'artist' => $pull->artist?->slug,
-                        'views' => $pull->views,
-                        'verdict_at' => $pull->verdict_at,
-                        'origin' => $pull->origin?->slug,
-                        'tags' => $pull->tags->map(fn ($tag) => [
-                            'id' => $tag->id,
-                            'name' => $tag->name,
-                            'slug' => $tag->slug,
-                        ]),
-                    ]);
-                });
+            return static::getCacheData();
         });
+    }
+
+    public static function getCacheData(): Collection
+    {
+        return Pull::online()
+            ->with('tags', 'origin', 'artist')
+            ->get()
+            ->filter(fn ($pull) => $pull->attachment)
+            ->map(function (Pull $pull) {
+                return collect([
+                    'id' => $pull->id,
+                    'name' => $pull->name,
+                    'artist' => $pull->artist?->slug,
+                    'views' => $pull->views,
+                    'verdict_at' => $pull->verdict_at,
+                    'origin' => $pull->origin?->slug,
+                    'tags' => $pull->tags->map(fn ($tag) => [
+                        'id' => $tag->id,
+                        'name' => $tag->name,
+                        'slug' => $tag->slug,
+                    ]),
+                ]);
+            });
     }
 }

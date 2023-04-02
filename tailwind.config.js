@@ -10,6 +10,7 @@ module.exports = {
         primary: 'var(--color-primary)',
         light: 'var(--color-primary-light)',
         dark: 'var(--color-primary-dark)',
+        'dark-hover': 'var(--color-primary-dark-hover)',
         background: 'var(--color-background)',
         text: 'var(--color-text)',
         border: 'var(--color-border)',

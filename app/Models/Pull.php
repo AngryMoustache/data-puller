@@ -108,4 +108,9 @@ class Pull extends Model
     {
         return $query->where('status', Status::ONLINE);
     }
+
+    public function scopeOffline($query)
+    {
+        return $query->where('status', Status::OFFLINE);
+    }
 }

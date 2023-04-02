@@ -8,12 +8,19 @@ use Livewire\Component;
 class NewTag extends Component
 {
     public string $name = '';
-    public ?int $parent = null;
+
+    public null|int $parent = null;
+
+    public function mount(array $params = [])
+    {
+        $this->parent = $params['parent'] ?? null;
+    }
 
     public function render()
     {
         $tags = Tag::orderBy('long_name')
-            ->pluck('long_name', 'id')
+            ->get()
+            ->mapWithKeys(fn ($tag) => [$tag->id => "{$tag->long_name} ({$tag->name})"])
             ->toArray();
 
         return view('livewire.modal.new-tag', [
@@ -27,9 +34,10 @@ class NewTag extends Component
             return;
         }
 
-        $group = new Tag;
-        $group->name = $this->name;
-        $group->save();
+        $tag = new Tag;
+        $tag->name = $this->name;
+        $tag->parent_id = $this->parent;
+        $tag->save();
 
         $this->emit('closeModal');
     }

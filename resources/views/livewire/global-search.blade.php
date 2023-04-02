@@ -35,7 +35,7 @@
         <x-form.input
             x-model="query"
             placeholder="Search by title, tag, or author"
-            class="rounded-r-none"
+            class="bg-background rounded-r-none"
             x-on:keydown.enter.prevent="select()"
             x-on:keydown.arrow-up.prevent="highlight = (highlight === 0 ? filteredOptions().length - 1 : highlight - 1)"
             x-on:keydown.arrow-down.prevent="highlight = (highlight === filteredOptions().length - 1 ? 0 : highlight + 1)"

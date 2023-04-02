@@ -23,8 +23,8 @@
 
         @if ($feed)
             <x-nav.item
-                :route="route('pull.index')"
-                :active="request()->routeIs('pull.index')"
+                :route="route('feed.index')"
+                :active="request()->routeIs('feed.index')"
                 icon="heroicon-o-bell-alert"
                 label="Feed"
             />

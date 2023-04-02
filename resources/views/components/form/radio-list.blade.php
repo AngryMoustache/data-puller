@@ -25,7 +25,7 @@
                 opacity-50 cursor-pointer
                 peer-checked:opacity-100 peer-checked:font-semibold
             ">
-                None
+                Show all
             </span>
         </label>
     @endif
