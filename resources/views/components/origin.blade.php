@@ -3,12 +3,13 @@
     'type' => $origin->type,
 ])
 
-<span
+<a
     style="{{ $type->style() }}"
-    {{ $attributes->only('class')->merge([
+    target="_blank"
+    {{ $attributes->only(['class', 'href'])->merge([
         'class' => 'inline-flex gap-2 items-center rounded px-2',
     ]) }}
 >
     <i class="{{ $type->icon() }}"></i>
     {{ $origin->name }}
-</span>
+</a>

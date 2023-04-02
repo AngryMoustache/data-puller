@@ -20,17 +20,18 @@ class Index extends Component
             return $this->renderLoadingListContainer();
         }
 
-        $pulls = Pull::pending()->latest()->limit($this->page * $this->perPage)->get();
-        $archived = Pull::offline()->latest()->limit($this->page * $this->perPage)->get();
+        $pulls = Pull::pending()->latest()->get();
 
-        $hasMorePulls = Pull::pending()->count() > $pulls->count();
-        $hasMoreArchived = Pull::offline()->count() > $archived->count();
+        $archived = Pull::offline()
+            ->whereHas('attachments')
+            ->orWhereHas('videos')
+            ->latest()
+            ->limit($this->page * $this->perPage)->get();
 
         return view('livewire.feed.index', [
             'pulls' => $pulls,
             'archived' => $archived,
-            'hasMorePulls' => $hasMorePulls,
-            'hasMoreArchived' => $hasMoreArchived,
+            'hasMore' => Pull::offline()->count() > $archived->count(),
         ]);
     }
 }

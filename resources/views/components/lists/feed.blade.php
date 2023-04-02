@@ -15,7 +15,7 @@
                 <span class="opacity-50">Pulled</span>
                 <span class="mx-1">{{ $pull->created_at->diffForHumans() }}</span>
                 <span class="opacity-50">by</span>
-                <x-origin class="mx-2" :origin="$pull->origin" />
+                <x-origin class="mx-2" :origin="$pull->origin" href="{{ $pull->source_url }}" />
             </p>
         </div>
 

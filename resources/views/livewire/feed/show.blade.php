@@ -1,5 +1,5 @@
-<x-container class="w-full flex gap-8">
-    <div class="w-1/3 flex flex-col gap-4">
+<x-container class="w-full flex flex-col md:flex-row gap-8">
+    <div class="w-full md:w-1/3 flex flex-col gap-4">
         @foreach ($pull->videos as $video)
             <x-video :src="$video->path()" class="w-full rounded" />
         @endforeach
@@ -9,7 +9,7 @@
         @endforeach
     </div>
 
-    <div class="w-2/3 flex flex-col gap-16 py-4">
+    <div class="w-full md:w-2/3 flex flex-col gap-16 py-4">
         <div class="w-full flex flex-col gap-4">
             <x-headers.h1 :text="$pull->name" />
 
@@ -17,7 +17,7 @@
                 <span class="opacity-50">Pulled</span>
                 <span class="mx-1">{{ $pull->created_at->diffForHumans() }}</span>
                 <span class="opacity-50">by</span>
-                <x-origin class="mx-2" :origin="$pull->origin" />
+                <x-origin class="mx-2" :origin="$pull->origin" href="{{ $pull->source_url }}" />
             </p>
         </div>
 

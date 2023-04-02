@@ -1,20 +1,15 @@
-<x-container class="flex gap-16">
-    <x-alpine.infinite-scroll class="flex flex-col gap-8 w-1/2" :enabled="$hasMorePulls">
+<x-container class="flex gap-16 flex-col md:flex-row">
+    <div class="flex flex-col gap-8 w-full md:w-1/2">
         <x-headers.h2 text="Newest pulls" />
+
         <x-list>
             @foreach ($pulls as $pull)
                 <x-lists.feed :$pull />
             @endforeach
         </x-list>
+    </div>
 
-        @if ($hasMorePulls)
-            <div wire:loading wire:target="loadMore">
-                @include('livewire.loading.list', ['size' => $perPage])
-            </div>
-        @endif
-    </x-alpine.infinite-scroll>
-
-    <x-alpine.infinite-scroll class="flex flex-col gap-8 w-1/2" :enabled="$hasMoreArchived">
+    <x-alpine.infinite-scroll class="flex flex-col gap-8 w-full md:w-1/2" :enabled="$hasMore">
         <x-headers.h2 text="Archived pulls" />
         <x-list>
             @foreach ($archived as $pull)
@@ -22,7 +17,7 @@
             @endforeach
         </x-list>
 
-        @if ($hasMoreArchived)
+        @if ($hasMore)
             <div wire:loading wire:target="loadMore">
                 @include('livewire.loading.list', ['size' => $perPage])
             </div>
