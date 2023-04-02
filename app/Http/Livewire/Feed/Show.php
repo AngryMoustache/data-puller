@@ -24,7 +24,7 @@ class Show extends Component
 
         $this->fields = [
             'name' => $this->pull->name,
-            'artist' => $this->pull->artist->name,
+            'artist' => $this->pull->artist?->name ?? 'Unknown',
             'tags' => [],
         ];
     }

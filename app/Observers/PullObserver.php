@@ -2,7 +2,6 @@
 
 namespace App\Observers;
 
-use Api\Jobs\RebuildCache;
 use App\Models\Pull;
 use Illuminate\Support\Str;
 
@@ -12,8 +11,6 @@ class PullObserver
     {
         $slug = Str::slug($pull->name);
         $pull->slug = $this->createUniqueSlug($slug, $pull->id);
-
-        RebuildCache::dispatch();
     }
 
     private function createUniqueSlug($slug, $id)
