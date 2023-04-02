@@ -10,7 +10,7 @@ class Deviantion extends Pullable
     {
         $this->name = $this->checkJapanese($pull['title'])->limit(50);
         $this->source = $pull['url'];
-        $this->artist = $pull['author']['username'] ?? '';
+        $this->artist = $this->getArtist($pull['author']['username'] ?? '');
 
         $this->media = Image::make()
             ->source($pull['content']['src'])

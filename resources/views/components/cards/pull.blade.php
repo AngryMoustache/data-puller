@@ -5,7 +5,7 @@
 <x-surface {{ $attributes->except('pull')->merge([
     'class' => 'w-full flex flex-col gap-4',
 ]) }}>
-    <div class="overflow-hidden rounded" style="aspect-ratio: 3/2.5">
+    <div class="overflow-hidden rounded flex items-center" style="aspect-ratio: 3/2.5">
         <x-img class="w-full" src="{{ $pull->attachment->format('thumb') }}" />
     </div>
 

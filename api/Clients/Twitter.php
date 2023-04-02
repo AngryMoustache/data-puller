@@ -55,9 +55,17 @@ class Twitter
             return ! isset($tweet['attachments']['media_keys']);
         });
 
+        // Link the author to the tweets
+        $authors = collect($tweets['includes']['users'] ?? []);
+        $data = $data->map(function ($tweet) use ($authors) {
+            $tweet['author_id'] = $authors->where('id', $tweet['author_id'])->first();
+
+            return $tweet;
+        });
+
         // Link the media to the tweets
         $media = collect($tweets['includes']['media'] ?? []);
-        $tweets = $data->map(function ($tweet) use ($media) {
+        $data = $data->map(function ($tweet) use ($media) {
             $tweet['attachments'] = collect($tweet['attachments']['media_keys'])
                 ->map(fn ($item) => $media->where('media_key', $item)->first());
 
@@ -65,6 +73,6 @@ class Twitter
         });
 
         // Create entities and return them
-        return $tweets->mapInto(Tweet::class);
+        return $data->mapInto(Tweet::class);
     }
 }

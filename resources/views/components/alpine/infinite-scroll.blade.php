@@ -1,6 +1,10 @@
+@props([
+    'enabled' => true,
+])
+
 <div
     {{ $attributes}}
-    x-on:scroll.window="checkLoad"
+    @if ($enabled) x-on:scroll.window="checkLoad" @endif
     x-data="{
         loading: false,
         checkLoad () {
@@ -10,7 +14,7 @@
             if (scroll >= el && !this.loading) {
                 $wire.loadMore()
                 this.loading = true
-                setTimeout(() => this.loading = false, 1000)
+                setTimeout(() => this.loading = false, 500)
             }
         }
     }"

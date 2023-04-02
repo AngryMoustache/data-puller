@@ -18,7 +18,7 @@ class PixivIllust extends Pullable
         $this->name = $this->checkJapanese($pull['title'], $pull['id'])->limit(50);
         $this->source = "https://www.pixiv.net/en/artworks/{$pull['id']}";
         $this->media = collect($media);
-        $this->artist = $pull['user']['account'] ?? '';
+        $this->artist = $this->getArtist($pull['user']['account'] ?? '');
 
         $this->media = $this->media->map(function ($media, $key) {
             $name = $this->name;

@@ -17,7 +17,8 @@ class Pulls extends Collection
 
     public function fetch(): Collection
     {
-        return Pull::orderByRaw('FIELD(id, ' . $this->pluck('id')->implode(',') . ')')
+        return Pull::query()
+            ->orderByRaw('FIELD(id, ' . $this->pluck('id')->implode(',') . ')')
             ->find($this->pluck('id'));
     }
 
@@ -29,22 +30,17 @@ class Pulls extends Collection
 
         return Cache::rememberForever(static::KEY, function () {
             return Pull::online()
-                ->with('tags', 'origin')
+                ->with('tags', 'origin', 'artist')
                 ->get()
+                ->filter(fn ($pull) => $pull->attachment)
                 ->map(function (Pull $pull) {
                     return collect([
                         'id' => $pull->id,
                         'name' => $pull->name,
-                        'slug' => $pull->slug,
-                        'artist' => $pull->artist,
-                        'source_url' => $pull->source_url,
+                        'artist' => $pull->artist?->slug,
                         'views' => $pull->views,
                         'verdict_at' => $pull->verdict_at,
-                        'origin' => $pull->origin ? [
-                            'id' => $pull->origin->id,
-                            'name' => $pull->origin->name,
-                            'slug' => $pull->origin->slug,
-                        ] : null,
+                        'origin' => $pull->origin?->slug,
                         'tags' => $pull->tags->map(fn ($tag) => [
                             'id' => $tag->id,
                             'name' => $tag->name,

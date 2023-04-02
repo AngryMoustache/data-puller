@@ -37,16 +37,4 @@ class History extends Model
             'last_viewed_at' => now(),
         ]);
     }
-
-    public static function getList()
-    {
-        return self::with('pull.tags')
-            ->orderBy('last_viewed_at', 'desc')
-            ->where('viewed_on', '>=', now()->subDays(7))
-            ->get()
-            ->groupBy('viewed_on')
-            ->mapWithKeys(fn ($group) => [
-                $group->first()->viewed_on->format('l, F jS') => $group->pluck('pull')
-            ]);
-    }
 }

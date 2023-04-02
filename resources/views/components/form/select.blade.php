@@ -7,7 +7,7 @@
 
 <select
     {{ $attributes->except('options')->merge([
-        'class' => 'bg-background px-3 py-3 text-lg rounded-lg w-full outline-none',
+        'class' => 'bg-surface px-3 py-3 text-lg rounded-lg w-full outline-none',
     ]) }}
 >
     @if ($nullable)

@@ -10,7 +10,7 @@ class AIGeneration extends Pullable
     {
         $this->name = collect($pull['tags'])->join(' ');
         $this->source = md5(now()->timestamp);
-        $this->artist = 'AI Generated';
+        $this->artist = $this->getArtist('AI Generated');
 
         $this->media = Image::make()
             ->source($pull['media']['source'])

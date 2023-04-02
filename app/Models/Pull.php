@@ -15,7 +15,7 @@ class Pull extends Model
         'origin_id',
         'name',
         'slug',
-        'artist',
+        'artist_id',
         'source_url',
         'status',
         'views',
@@ -30,11 +30,22 @@ class Pull extends Model
     public $with = [
         'origin',
         'attachments',
+        'videos',
     ];
 
     public function origin()
     {
         return $this->belongsTo(Origin::class);
+    }
+
+    public function artist()
+    {
+        return $this->belongsTo(Artist::class);
+    }
+
+    public function folders()
+    {
+        return $this->belongsToMany(Folder::class);
     }
 
     public function tags()
@@ -67,7 +78,7 @@ class Pull extends Model
     public function getAttachmentAttribute()
     {
         return $this->attachments->first()
-            ?? $this->videos->first()->preview;
+            ?? $this->videos->first()?->preview;
     }
 
     public function getPulledWhenAttribute()
@@ -83,7 +94,7 @@ class Pull extends Model
     public function getListInfoAttribute()
     {
         return collect([
-            $this->artist,
+            $this->artist?->name,
             $this->views . ' ' . Str::plural('view', $this->views)
         ])->filter()->join(' - ');
     }

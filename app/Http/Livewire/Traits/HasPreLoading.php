@@ -36,4 +36,11 @@ trait HasPreLoading
             'size' => $size,
         ]);
     }
+
+    public function renderLoadingListContainer(int $size = 5)
+    {
+        return view('livewire.loading.list-container', [
+            'size' => $size,
+        ]);
+    }
 }

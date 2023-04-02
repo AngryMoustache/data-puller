@@ -5,9 +5,13 @@
         query: '',
         options: [],
         highlight: -1,
+        loading: true,
         init () {
             $watch('query', (value) => { this.highlight = -1 })
-            $wire.on('options-fetched', (e) => { this.options = e })
+            $wire.on('options-fetched', (e) => {
+                this.options = e
+                this.loading = false
+            })
         },
         filteredOptions () {
             return this.options
@@ -15,9 +19,12 @@
                 .slice(0, 10)
         },
         select (id = null) {
-            const option = id || this.filteredOptions()[this.highlight]
+            const options = this.filteredOptions()
+            const option = id || options[this.highlight] || options[0]
 
-            window.location.href = `/pulls/tags:${option.slug}`
+            if (option) {
+                window.location.href = `/pulls/tags:${option.slug}`
+            }
         }
     }"
 >
@@ -27,7 +34,7 @@
     ">
         <x-form.input
             x-model="query"
-            placeholder="Search"
+            placeholder="Search by title, tag, or author"
             class="rounded-r-none"
             x-on:keydown.enter.prevent="select()"
             x-on:keydown.arrow-up.prevent="highlight = (highlight === 0 ? filteredOptions().length - 1 : highlight - 1)"

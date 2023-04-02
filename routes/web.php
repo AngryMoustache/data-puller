@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Livewire\Home::class)->name('home.index');
 
 Route::get('/pulls/{filterString?}', Livewire\Pull\Index::class)
-    ->where('filters', '.*')
+    ->where('filterString', '.*')
     ->name('pull.index');
 
 Route::get('/pull/{pull}', Livewire\Pull\Show::class)->name('pull.show');
