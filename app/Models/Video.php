@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Storage;
 class Video extends Model
 {
     protected $fillable = [
-        'name',
-        'filename',
+        'original_name',
+        'alt_name',
         'preview_id',
         'extension',
         'size',
@@ -27,11 +27,11 @@ class Video extends Model
 
     public function fullPath()
     {
-        return Storage::path("public/videos/{$this->id}/{$this->filename}");
+        return Storage::path("public/videos/{$this->id}/{$this->original_name}");
     }
 
     public function path()
     {
-        return Storage::url("public/videos/{$this->id}/{$this->filename}");
+        return Storage::url("public/videos/{$this->id}/{$this->original_name}");
     }
 }
