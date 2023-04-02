@@ -1,6 +1,6 @@
 <div class="flex gap-4 w-full">
     <div class="w-64 overflow-hidden rounded" style="aspect-ratio: 3/2.5">
-        <x-img class="w-full" src="{{ $pull->attachment->format('thumb') }}" />
+        <x-img class="w-full" src="{{ $pull->attachment?->format('thumb') }}" />
     </div>
 
     <div class="w-full flex flex-col justify-between py-2">

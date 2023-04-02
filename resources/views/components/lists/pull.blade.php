@@ -6,7 +6,7 @@
     'class' => 'w-full flex gap-1 md:gap-4 flex-col md:flex-row',
 ]) }}>
     <div class="w-full md:w-64 overflow-hidden rounded" style="aspect-ratio: 3/2.5">
-        <x-img class="w-full" src="{{ $pull->attachment->format('thumb') }}" />
+        <x-img class="w-full" src="{{ $pull->attachment?->format('thumb') }}" />
     </div>
 
     <div class="w-full flex flex-col gap-1 md:gap-2 py-2 overflow-hidden">
