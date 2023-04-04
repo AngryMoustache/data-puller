@@ -24,7 +24,7 @@
 
 @layer components {
     .min-h-feed {
-        min-height: calc(100vh - 1rem);
+        max-height: calc(100vh - 1rem);
         overflow-y: auto;
     }
 }
