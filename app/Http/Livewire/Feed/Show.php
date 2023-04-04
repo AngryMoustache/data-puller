@@ -30,7 +30,7 @@ class Show extends Component
         $this->fields = [
             'name' => $this->pull->name,
             'artist' => $this->pull->artist?->name ?? 'Unknown',
-            'tags' => [],
+            'tags' => $this->pull->tags->pluck('id')->mapWithKeys(fn (int $id) => [$id => true])->toArray(),
         ];
     }
 
