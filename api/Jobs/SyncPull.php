@@ -33,7 +33,7 @@ class SyncPull implements ShouldQueue
         ]);
 
         // Don't save the media if it was not created now
-        if ($pull->wasRecentlyCreated) {
+        if (! $pull->wasRecentlyCreated) {
             return;
         }
 
