@@ -18,6 +18,10 @@ class Show extends Component
 
     public array $fields;
 
+    public $listeners = [
+        'add-attachments' => 'addAttachments',
+    ];
+
     public function mount(Pull $pull)
     {
         $this->pull = $pull;
@@ -35,7 +39,10 @@ class Show extends Component
             return $this->renderLoading();
         }
 
+        $this->pull = $this->pull->fresh(['attachments']);
+
         return view('livewire.feed.show', [
+            'attachments' => $this->pull->attachments->sortBy('sort_order'),
             'tags' => Tag::whereDoesntHave('parent')
                 ->with('children.children.children.children.children')
                 ->get()
@@ -64,5 +71,38 @@ class Show extends Component
         if ($status !== Status::PENDING->value) {
             return redirect()->route('feed.index');
         }
+    }
+
+    public function updateMediaOrder(array $attachments)
+    {
+        $attachments = collect($attachments)->mapWithKeys(function (array $attachment) {
+            return [$attachment['value'] => [
+                'sort_order' => $attachment['order'] + 1000,
+            ]];
+        });
+
+        $this->pull->attachments()->sync($attachments);
+
+        $this->emitSelf('refreshComponent');
+    }
+
+    public function removeAttachment(int $id)
+    {
+        $this->pull->attachments()->detach($id);
+    }
+
+    public function addAttachments(array $selections)
+    {
+        $sort = $this->pull->attachments()->pluck('sort_order')->max() ?? 1000;
+
+        $selections = collect($selections)->mapWithKeys(function (string $id, $key) use ($sort) {
+            return [$id => [
+                'sort_order' => $key + $sort,
+            ]];
+        });
+
+        $this->pull->attachments()->syncWithoutDetaching($selections);
+
+        $this->dispatchBrowserEvent('close-modal');
     }
 }

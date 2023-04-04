@@ -9,7 +9,7 @@
         @endforeach
     </div>
 
-    <div class="w-full md:w-2/3 flex flex-col gap-8">
+    <div class="w-full md:w-1/3 flex flex-col gap-8">
         <div class="flex flex-col gap-2">
             <x-headers.h1 :text="$pull->name" />
 

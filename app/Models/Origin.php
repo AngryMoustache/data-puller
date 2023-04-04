@@ -58,10 +58,8 @@ class Origin extends Model
         ));
     }
 
-    public static function boot()
+    public function scopeOnline($query)
     {
-        parent::boot();
-
-        self::addGlobalScope('online', fn ($query) => $query->where('online', 1));
+        return $query->where('online', 1);
     }
 }

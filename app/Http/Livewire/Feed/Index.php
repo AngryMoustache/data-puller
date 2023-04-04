@@ -23,10 +23,10 @@ class Index extends Component
         $pulls = Pull::pending()->latest()->get();
 
         $archived = Pull::offline()
-            ->whereHas('attachments')
-            ->orWhereHas('videos')
+            ->where(fn ($query) => $query->whereHas('attachments')->orWhereHas('videos'))
             ->latest()
-            ->limit($this->page * $this->perPage)->get();
+            ->limit($this->page * $this->perPage)
+            ->get();
 
         return view('livewire.feed.index', [
             'pulls' => $pulls,

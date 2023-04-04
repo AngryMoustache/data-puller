@@ -2,12 +2,14 @@
 
 namespace Api\Entities\Media;
 
-class Media
+abstract class Media
 {
     public string $name;
     public string $src;
     public int $width = 0;
     public int $height = 0;
+
+    abstract function save();
 
     public function __construct()
     {

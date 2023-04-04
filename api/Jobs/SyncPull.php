@@ -2,6 +2,7 @@
 
 namespace Api\Jobs;
 
+use Api\Entities\Media\Media;
 use Api\Entities\Pullable;
 use App\Models\Origin;
 use App\Models\Pull;
@@ -32,21 +33,13 @@ class SyncPull implements ShouldQueue
         ]);
 
         // Don't save the media if it was not created now
-        if (! $pull->wasRecentlyCreated && ! $pull->attachment) {
-            return $pull;
+        if ($pull->wasRecentlyCreated) {
+            return;
         }
 
         // Save the media
-        $this->pull->media = Collection::wrap($this->pull->media)->map->save();
-
-        // Attach the media to the pull
-        $this->pull->media->filter()->each(function ($item) use ($pull) {
-            DB::insert(
-                'INSERT INTO media_pull (media_type, media_id, pull_id) values (?, ?, ?)',
-                [get_class($item), $item->id, $pull->id]
-            );
+        Collection::wrap($this->pull->media)->each(function (Media $media, $key) use ($pull) {
+            SaveMedia::dispatch($media, $pull, $key + 1000);
         });
-
-        return $pull;
     }
 }

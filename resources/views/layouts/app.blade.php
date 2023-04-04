@@ -8,9 +8,7 @@
         <livewire:styles />
         @vite(['resources/css/app.scss', 'resources/js/app.js'])
     </head>
-    <body>
-        <div class="background"></div>
-
+    <body class="bg-background">
         <livewire:modal-controller />
 
         <x-main>

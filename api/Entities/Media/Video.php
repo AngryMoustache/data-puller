@@ -26,8 +26,8 @@ class Video extends Media
 
         $video = ModelsVideo::firstOrCreate([
             'preview_id' => $this->preview->save()?->id,
-            'name' => (string) $name,
-            'filename' => (string) $filename,
+            'alt_name' => (string) $name,
+            'original_name' => (string) $filename,
             'extension' => (string) $extension,
         ]);
 

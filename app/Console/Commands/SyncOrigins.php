@@ -11,6 +11,6 @@ class SyncOrigins extends Command
 
     public function handle()
     {
-        Origin::get()->each(fn ($origin) => $origin->pull());
+        Origin::online()->get()->each(fn (Origin $origin) => $origin->pull());
     }
 }
