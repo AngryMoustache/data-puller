@@ -1,4 +1,6 @@
-<div {{ $attributes->except('tag') }} x-data="{ open{{ $tag->id }}: false }">
+<div {{ $attributes->except('tag') }} x-data="{
+    open{{ $tag->id }}: $wire.get('fields.tags.{{ $tag->id }}'),
+}">
     <div class="flex items-center">
         <x-form.checkbox
             :label="$tag->name"
