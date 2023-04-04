@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Feed;
 
+use Api\Jobs\RebuildCache;
 use App\Enums\Status;
 use App\Http\Livewire\Traits\HasPreLoading;
 use App\Models\Artist;
@@ -67,6 +68,9 @@ class Show extends Component
         $tags = $all->filter(fn (Tag $tag) => is_null($tag->parent_id) || $all->contains('id', $tag->parent_id));
 
         $this->pull->tags()->sync($tags->pluck('id'));
+
+        // Rebuild cache
+        RebuildCache::dispatch();
 
         if ($status !== Status::PENDING->value) {
             return redirect()->route('feed.index');

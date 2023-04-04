@@ -118,6 +118,11 @@
                 text="Archive"
             />
 
+            <x-form.button-secondary
+                wire:click="save('pending')"
+                text="Save changes"
+            />
+
             <x-form.button
                 wire:click="save('online')"
                 text="Publish"

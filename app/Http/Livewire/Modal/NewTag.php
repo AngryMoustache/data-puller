@@ -39,6 +39,7 @@ class NewTag extends Component
         $tag->parent_id = $this->parent;
         $tag->save();
 
-        $this->emit('closeModal');
+        $this->dispatchBrowserEvent('close-modal');
+
     }
 }
