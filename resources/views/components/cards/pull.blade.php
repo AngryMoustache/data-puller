@@ -6,7 +6,12 @@
     'class' => 'w-full flex flex-col gap-4',
 ]) }}>
     <div class="overflow-hidden rounded flex items-center" style="aspect-ratio: 3/2.5">
-        <x-img class="w-full" src="{{ $pull->attachment?->format('thumb') }}" />
+        <x-img
+            class="w-full"
+            src="{{ $pull->attachment?->format('thumb') }}"
+            :width="3"
+            :height="2.5"
+        />
     </div>
 
     <div class="flex flex-col gap-1">
