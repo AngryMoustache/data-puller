@@ -103,7 +103,7 @@
         </x-alpine.collapsible>
 
         @if ($pull->attachment)
-            <x-alpine.collapsible title="Thumbnail" :open="true">
+            <x-alpine.collapsible title="Thumbnail">
                 <livewire:cropper :attachment="$pull->attachment" />
             </x-alpine.collapsible>
         @endif
