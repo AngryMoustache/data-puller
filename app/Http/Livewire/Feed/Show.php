@@ -9,6 +9,7 @@ use App\Models\Artist;
 use App\Models\Pull;
 use App\Models\Tag;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Show extends Component
@@ -54,6 +55,7 @@ class Show extends Component
     {
         $artist = Artist::firstOrCreate([
             'name' => $this->fields['artist'],
+            'slug' => Str::slug($this->fields['artist']),
         ]);
 
         $this->pull->update([
