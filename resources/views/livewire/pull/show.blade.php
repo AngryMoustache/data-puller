@@ -5,13 +5,26 @@
         @endforeach
 
         @foreach ($pull->attachments as $image)
-            <x-img :src="$image->path()" class="w-full rounded" />
+            <x-img
+                :src="$image->path()"
+                class="w-full rounded"
+                :width="$image->width"
+                :height="$image->height"
+            />
         @endforeach
     </div>
 
     <div class="w-full md:w-1/3 flex flex-col gap-8">
         <div class="flex flex-col gap-2">
-            <x-headers.h1 :text="$pull->name" />
+            <x-headers.h1 class="flex items-center justify-between">
+                <span>{{ $pull->name }}</span>
+
+                <x-form.button-secondary
+                    text="Edit"
+                    href="{{ route('feed.show', $pull) }}"
+                    class="text-sm"
+                />
+            </x-headers.h1>
 
             @if ($pull->artist)
                 <p>

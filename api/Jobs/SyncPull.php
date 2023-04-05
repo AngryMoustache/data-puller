@@ -26,14 +26,16 @@ class SyncPull implements ShouldQueue
     public function handle()
     {
         // Create or update the pull
-        $pull = Pull::updateOrCreate(['source_url' => $this->pull->source], [
+        $pull = Pull::updateOrCreate([
+            'source_url' => $this->pull->source
+        ], [
             'name' => $this->pull->name,
             'artist_id' => $this->pull->artist->id,
             'origin_id' => $this->pull->origin->id,
         ]);
 
         // Don't save the media if it was not created now
-        if ($pull->wasRecentlyCreated) {
+        if (! $pull->wasRecentlyCreated) {
             return;
         }
 

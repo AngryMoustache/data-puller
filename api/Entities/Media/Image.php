@@ -16,11 +16,11 @@ class Image extends Media
 
         $attachment = Attachment::withoutGlobalScopes()->firstOrCreate([
             'original_name' => $filename,
-            'alt_name' => $name,
             'extension' => $extension,
-            'folder_location' => 'pulls',
         ], [
+            'alt_name' => $name,
             'disk' => config('media.default-disk', 'public'),
+            'folder_location' => 'pulls',
         ]);
 
         // Avoid saving the image again if we already have it

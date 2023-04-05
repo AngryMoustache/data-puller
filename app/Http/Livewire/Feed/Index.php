@@ -23,6 +23,7 @@ class Index extends Component
         $pulls = Pull::pending()->latest()->get();
 
         $archived = Pull::offline()
+            ->orderBy('verdict_at', 'desc')
             ->where(fn ($query) => $query->whereHas('attachments')->orWhereHas('videos'))
             ->latest()
             ->limit($this->page * $this->perPage)

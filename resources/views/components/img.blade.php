@@ -1,3 +1,9 @@
+@props([
+    'src' => null,
+    'width' => 1,
+    'height' => 1,
+])
+
 <img
     x-data="{
         loaded: false,
@@ -11,11 +17,18 @@
             }
         }
     }"
-    style="transition: opacity 0.5s ease-in-out"
-    {{ $attributes->except('src') }}
+
     x-bind:src="loaded ? source : ''"
     x-bind:class="{
-        'opacity-0': ! loaded,
         'opacity-100': loaded,
+        'animate animate-pulse rounded': ! loaded,
     }"
+    x-bind:style="{
+        'aspect-ratio': ! loaded ? '{{ $width }} / {{ $height }}' : 'auto'
+    }"
+
+    class="opacity-0 bg-border"
+    style="transition: opacity 0.5s ease-in-out"
+
+    {{ $attributes->except('src') }}
 />
