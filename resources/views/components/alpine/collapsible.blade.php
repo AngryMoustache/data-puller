@@ -22,7 +22,7 @@
         <x-headers.h3 :text="$title" />
     </div>
 
-    <div class="p-4" x-show="open">
+    <div class="p-4" x-bind:class="{ 'p-0 h-0 overflow-hidden': ! open }">
         {{ $slot }}
     </div>
 </div>
