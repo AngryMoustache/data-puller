@@ -77,7 +77,7 @@
                             </div>
 
                             <div class="grow">
-                                <p>{{ $image->original_name }}</p>
+                                <p class="line-clamp-1">{{ $image->original_name }}</p>
                                 <p class="opacity-50 text-sm">
                                     {{ $image->width }}px x {{ $image->height }}px
                                 </p>
@@ -102,10 +102,16 @@
             </div>
         </x-alpine.collapsible>
 
+        @if ($pull->attachment)
+            <x-alpine.collapsible title="Thumbnail" :open="true">
+                <livewire:cropper :attachment="$pull->attachment" />
+            </x-alpine.collapsible>
+        @endif
+
         <x-alpine.collapsible title="Tags">
             <div class="flex flex-col gap-4">
                 @foreach ($tags as $group)
-                    <x-alpine.collapsible :open="$loop->first" :title="$group->name">
+                    <x-alpine.collapsible :open="true" :title="$group->name">
                         <div x-show="open" class="pt-2">
                             <x-form.tag-tree :tag="$group" />
                         </div>

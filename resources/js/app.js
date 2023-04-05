@@ -1,5 +1,8 @@
 import Alpine from 'alpinejs'
+import Cropper from 'cropperjs';
 import 'livewire-sortable'
+
+window.Cropper = Cropper
 
 window.Alpine = Alpine
 Alpine.start()
