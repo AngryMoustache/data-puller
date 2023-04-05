@@ -20,7 +20,7 @@
 
     x-bind:src="loaded ? source : ''"
     x-bind:class="{
-        'opacity-100': loaded,
+        '!opacity-100': loaded,
         'animate animate-pulse rounded': ! loaded,
     }"
     x-bind:style="{
