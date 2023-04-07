@@ -29,8 +29,7 @@
         'aspect-ratio': ! loaded ? '{{ $width }} / {{ $height }}' : 'auto'
     }"
 
-    class="w-full opacity-0 bg-border"
-    style="transition: opacity 0.5s ease-in-out"
-
-    {{ $attributes->except('src') }}
+    {{ $attributes->except('src')->merge([
+        'class' => 'w-full opacity-0 bg-border transition-all',
+    ]) }}
 />

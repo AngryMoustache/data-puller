@@ -17,24 +17,25 @@
     </div>
 
     <div class="flex flex-col p-1">
-        <span class="line-clamp-1">
-            <span class="text-dark mr-1">
-                #{{ $pull->id }}
-            </span>
-
-            <span class="font-bold">
+        <div class="flex justify-between gap-1">
+            <span class="font-bold line-clamp-1">
                 {{ $pull->name }}
             </span>
-        </span>
+
+            <span class="text-dark">
+                #{{ $pull->id }}
+            </span>
+        </div>
 
         <div class="text-sm flex justify-between opacity-75">
             <span>
-                {{ $pull->views }}
-                {{ Str::plural('view', $pull->views) }}
+
+                {{ optional($pull->pulledWhen)->diffForHumans() }}
             </span>
 
             <span>
-                {{ optional($pull->pulledWhen)->diffForHumans() }}
+                {{ $pull->views }}
+                {{ Str::plural('view', $pull->views) }}
             </span>
         </div>
     </div>
