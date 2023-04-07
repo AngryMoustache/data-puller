@@ -24,7 +24,7 @@
             />
 
             <x-form.button
-                text="Create"
+                text="Save"
                 wire:click="save"
             />
         </div>

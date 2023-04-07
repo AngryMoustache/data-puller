@@ -24,7 +24,8 @@ class GlobalSearch extends Component
                 ];
             });
 
-        $artists = Artist::whereHas('pulls')
+        $artists = Artist::with('pulls')
+            ->whereHas('pulls', fn ($q) => $q->online())
             ->get()
             ->map(fn ($artist) => [
                 'id' => $artist->id,

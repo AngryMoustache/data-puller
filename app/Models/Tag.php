@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Api\Jobs\RebuildTagNames;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -72,9 +73,13 @@ class Tag extends Model
             $query->orderBy('name');
         });
 
-        static::saving(function ($tag) {
+        static::saving(function (self $tag) {
             $tag->long_name = $tag->generateLongName();
             $tag->slug = Str::slug($tag->long_name);
+
+            if ($tag->isDirty('name')) {
+                RebuildTagNames::dispatch();
+            }
         });
     }
 }

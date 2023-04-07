@@ -1,7 +1,6 @@
 <div class="flex gap-4 w-full">
     <div class="w-64 overflow-hidden rounded" style="aspect-ratio: 3/2.5">
         <x-img
-            class="w-full"
             src="{{ $pull->attachment?->format('thumb') }}"
             :width="3"
             :height="2.5"
@@ -11,8 +10,14 @@
     <div class="w-full flex flex-col justify-between py-2">
         <div class="w-full flex flex-col gap-2">
             <div class="flex items-center justify-between">
-                <p class="font-bold line-clamp-1">
-                    {{ $pull->name }}
+                <p class="line-clamp-1">
+                    <span class="text-dark mr-2">
+                        #{{ $pull->id }}
+                    </span>
+
+                    <span class="font-bold">
+                        {{ $pull->name }}
+                    </span>
                 </p>
             </div>
 

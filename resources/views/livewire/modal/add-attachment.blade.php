@@ -31,7 +31,7 @@
                             <div wire:key="attachment-{{ $attachment->id }}">
                                 <x-img
                                     :src="$attachment->format('thumb')"
-                                    class="w-full rounded"
+                                    class="rounded"
                                     x-bind:class="{
                                         'border border-primary': selected.includes({{ $attachment->id }}),
                                     }"

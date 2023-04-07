@@ -2,24 +2,26 @@
 
 namespace App\Http\Livewire\Modal;
 
-use App\Http\Livewire\Feed\Show;
 use App\Models\Tag;
 use Livewire\Component;
 
-class NewTag extends Component
+class EditTag extends Component
 {
-    public string $name = '';
-
+    public int $tagId;
+    public string $name;
     public string | int $parent = '';
 
     public function mount(array $params = [])
     {
-        $this->parent = $params['parent'] ?? null;
+        $this->tagId = $params['id'] ?? null;
+        $this->name = $params['name'] ?? null;
+        $this->parent = $params['parent'] ?? '';
     }
 
     public function render()
     {
         $tags = Tag::orderBy('long_name')
+            ->where('id', '!=', $this->tagId)
             ->get()
             ->mapWithKeys(fn ($tag) => [$tag->id => "{$tag->long_name} ({$tag->name})"])
             ->toArray();
@@ -35,7 +37,7 @@ class NewTag extends Component
             return;
         }
 
-        $tag = new Tag;
+        $tag = Tag::find($this->tagId);
         $tag->name = $this->name;
         $tag->parent_id = filled($this->parent) ? $this->parent : null;
         $tag->save();

@@ -7,7 +7,7 @@
         @foreach ($pull->attachments as $image)
             <x-img
                 :src="$image->path()"
-                class="w-full rounded"
+                class="rounded"
                 :width="$image->width"
                 :height="$image->height"
             />

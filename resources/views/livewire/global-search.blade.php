@@ -14,17 +14,25 @@
             })
         },
         filteredOptions () {
-            return this.options
+            const options = [...this.options]
                 .filter((option) => option.key.toLowerCase().includes(this.query.toLowerCase()))
                 .slice(0, 10)
+
+            options.push({
+                type: 'query',
+                name: 'Search for ' + this.query,
+                key: this.query,
+                slug: this.query,
+            })
+
+            return options
         },
         select (option = null) {
             const options = this.filteredOptions()
             option = option || options[this.highlight] || options[0]
-            console.log(option, option.slug)
 
             if (option) {
-                const type = option.type === 'tag' ? 'tags' : 'artist'
+                const type = option.type === 'tag' ? 'tags' : option.type
                 window.location.href = `/pulls/${type}:${option.slug}`
             }
         }
@@ -58,12 +66,17 @@
         ">
             <template x-for="(option, key) in filteredOptions()" key="option.id">
                 <li
-                    x-text="option.name"
-                    class="px-4 py-2 cursor-pointer"
+                    class="flex items-center gap-2 px-4 py-2 cursor-pointer"
                     x-bind:class="{'bg-dark': highlight === key}"
                     x-on:click.prevent="select(option)"
                     x-on:mouseenter="highlight = key"
-                ></li>
+                >
+                    <x-heroicon-o-tag x-show="option.type === 'tag'" class="w-4 h-4" />
+                    <x-heroicon-o-user-group x-show="option.type === 'artist'" class="w-4 h-4" />
+                    <x-heroicon-o-magnifying-glass x-show="option.type === 'query'" class="w-4 h-4" />
+
+                    <span x-text="option.name"></span>
+                </li>
             </template>
         </ul>
     </div>

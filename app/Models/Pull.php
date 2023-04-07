@@ -86,11 +86,6 @@ class Pull extends Model
         return $this->verdict_at ?? $this->created_at;
     }
 
-    public function getViewsAttribute($value)
-    {
-        return number_format($value);
-    }
-
     public function getListInfoAttribute()
     {
         return collect([

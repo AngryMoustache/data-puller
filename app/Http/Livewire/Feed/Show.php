@@ -8,7 +8,6 @@ use App\Http\Livewire\Traits\HasPreLoading;
 use App\Models\Artist;
 use App\Models\Pull;
 use App\Models\Tag;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -22,6 +21,7 @@ class Show extends Component
 
     public $listeners = [
         'add-attachments' => 'addAttachments',
+        'refresh' => '$refresh',
     ];
 
     public function mount(Pull $pull)

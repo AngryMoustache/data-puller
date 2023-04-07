@@ -11,6 +11,7 @@ use App\Models\Tag;
 use App\Pulls;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Index extends Component
@@ -22,9 +23,11 @@ class Index extends Component
 
     public Collection $selectedTags;
 
-    public null | string $artist = null;
-
     public Sorting $sort = Sorting::NEWEST;
+
+    public string $query = '';
+
+    public null | string $artist = null;
 
     public null | int $randomizer = null;
 
@@ -42,6 +45,7 @@ class Index extends Component
         $this->sort = Sorting::tryFrom($filters['sort'] ?? '') ?? Sorting::default();
         $this->selectedTags = Tag::whereIn('slug', explode(',', $filters->get('tags', '')))->get();
         $this->artist = $filters->get('artist', null);
+        $this->query = $filters->get('query', '');
     }
 
     public function render()
@@ -66,6 +70,9 @@ class Index extends Component
                     ->intersect($this->selectedTags->pluck('slug'))
                     ->count();
             }))
+            ->when($this->query, fn ($items) => $items->filter(function ($pull) {
+                return Str::contains($pull['name'], $this->query, true);
+            }))
             ->when($this->origin, fn ($items) => $items->where('origin', $this->origin->slug))
             ->when($this->sort, fn ($items) => $this->sort->sortCollection($items))
             ->when($this->artist, fn ($items) => $items->where('artist', $this->artist));
@@ -73,7 +80,7 @@ class Index extends Component
         return view('livewire.pull.index', [
             'pulls' => $pulls->take($this->page * $this->perPage)->fetch(),
             'count' => $pulls->count(),
-            'hasMore' => $pulls->count() > $this->page * $this->perPage,
+            'hasMore' => $pulls->count() > ($this->page * $this->perPage),
             'sortOptions' => Sorting::list(),
             'origins' => Origin::get()->mapWithKeys(function ($origin) {
                 return [$origin->slug => view('components.origin', ['origin' => $origin])->render()];
@@ -97,7 +104,7 @@ class Index extends Component
     private function buildQueryString()
     {
         return collect([
-            // 'query' => $this->query,
+            'query' => $this->query,
             'sort' => $this->sort->value,
             'randomizer' => $this->randomizer,
             'origin' => $this->origin?->slug,

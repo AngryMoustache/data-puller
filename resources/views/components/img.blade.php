@@ -27,7 +27,7 @@
         'aspect-ratio': ! loaded ? '{{ $width }} / {{ $height }}' : 'auto'
     }"
 
-    class="opacity-0 bg-border"
+    class="w-full opacity-0 bg-border"
     style="transition: opacity 0.5s ease-in-out"
 
     {{ $attributes->except('src') }}

@@ -10,7 +10,7 @@
         @foreach ($attachments as $image)
             <x-img
                 wire:key="image-list-{{ $image->id }}"
-                class="w-full rounded"
+                class="rounded"
                 :src="$image->path()"
                 :width="$image->width"
                 :height="$image->height"
@@ -72,7 +72,7 @@
                             <div class="w-16 h-16">
                                 <x-img
                                     :src="$image->format('thumb')"
-                                    class="w-full rounded-lg"
+                                    class="rounded-lg"
                                 />
                             </div>
 

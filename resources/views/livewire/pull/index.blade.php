@@ -79,7 +79,7 @@
         </x-alpine.infinite-scroll>
     </div>
 
-    @if ($pulls->isNotEmpty())
+    @if ($hasMore && $pulls->isNotEmpty())
         <div wire:loading>
             @include('livewire.loading.grid', [
                 'size' => 6,
