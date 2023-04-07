@@ -26,7 +26,7 @@ class SyncPull implements ShouldQueue
     public function handle()
     {
         // Create or update the pull
-        $pull = Pull::updateOrCreate([
+        $pull = Pull::firstOrCreate([
             'source_url' => $this->pull->source
         ], [
             'name' => $this->pull->name,

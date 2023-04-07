@@ -18,11 +18,13 @@
         }
     }"
 
-    x-bind:src="loaded ? source : ''"
+    x-bind:src="loaded ? source : 'images/pixel.png'"
+
     x-bind:class="{
         '!opacity-100': loaded,
         'animate animate-pulse rounded': ! loaded,
     }"
+
     x-bind:style="{
         'aspect-ratio': ! loaded ? '{{ $width }} / {{ $height }}' : 'auto'
     }"
