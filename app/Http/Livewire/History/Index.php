@@ -10,9 +10,8 @@ use Livewire\Component;
 class Index extends Component
 {
     use HasPreLoading;
-    use HasPagination;
 
-    public int $perPage = 10;
+    public string $current;
 
     public function render()
     {
@@ -20,20 +19,24 @@ class Index extends Component
             return $this->renderLoadingListContainer();
         }
 
-        $items = History::with('pull.tags')
+        $history = History::with('pull.tags')
             ->orderBy('last_viewed_at', 'desc')
-            ->get();
-
-        $history = $items
-            ->take($this->page * $this->perPage + 1)
+            ->get()
             ->groupBy('viewed_on')
             ->mapWithKeys(fn ($group) => [
                 $group->first()->viewed_on->format('l, F jS') => $group->pluck('pull')
             ]);
 
+        $this->current ??= $history->keys()->first();
+
         return view('livewire.history.index', [
-            'history' => $history,
-            'hasMore' => $history->flatten()->count() > ($this->page * $this->perPage),
+            'history' => $history[$this->current],
+            'days' => $history->keys(),
         ]);
+    }
+
+    public function changeDay(string $day)
+    {
+        $this->current = $day;
     }
 }

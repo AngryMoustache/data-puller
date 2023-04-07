@@ -1,3 +1,5 @@
+@props(['size' => 5])
+
 <x-list wire:init="ready">
     @for ($i = 0; $i < $size; $i++)
         <div class="w-full flex gap-4 animate-pulse">

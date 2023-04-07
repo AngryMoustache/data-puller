@@ -1,3 +1,5 @@
+@props(['size' => 6])
+
 <x-grid wire:init="ready">
     @for ($i = 0; $i < $size; $i++)
         <x-surface class="w-full flex flex-col gap-4 animate-pulse">
