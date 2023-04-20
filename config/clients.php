@@ -11,10 +11,14 @@ return [
         'client_secret' => env('DEVIANT_ART_CLIENT_SECRET'),
     ],
     'pixiv' => [
+        // 'code' => env('PIXIV_CODE'),
         'client_id' => env('PIXIV_CLIENT_ID'),
         'client_secret' => env('PIXIV_CLIENT_SECRET'),
-        // 'code' => env('PIXIV_CODE'),
         'access_token' => env('PIXIV_ACCESS_TOKEN'),
         'refresh_token' => env('PIXIV_REFRESH_TOKEN'),
+    ],
+    'scraper' => [
+        'base_url' => env('SCRAPER_BASE_URL'),
+        'detail_url' => env('SCRAPER_DETAIL_URL'),
     ],
 ];

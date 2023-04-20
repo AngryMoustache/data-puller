@@ -18,11 +18,11 @@
         }
     }"
 
-    x-bind:src="loaded ? source : 'images/pixel.png'"
+    x-bind:src="loaded ? source : '{{ asset('images/pixel.png') }}'"
 
     x-bind:class="{
         '!opacity-100': loaded,
-        'animate animate-pulse rounded': ! loaded,
+        'animate animate-pulse': ! loaded,
     }"
 
     x-bind:style="{
@@ -30,6 +30,6 @@
     }"
 
     {{ $attributes->except('src')->merge([
-        'class' => 'w-full opacity-0 bg-border transition-all',
+        'class' => 'w-full opacity-0 bg-border transition-all rounded',
     ]) }}
 />

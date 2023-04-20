@@ -19,12 +19,12 @@
     <div class="w-full flex flex-col gap-1 md:gap-2 py-2 overflow-hidden">
         <div class="flex items-center justify-between">
             <span class=" line-clamp-1">
-                <span class="text-dark mr-2">
-                    #{{ $pull->id }}
-                </span>
-
                 <span class="font-bold">
                     {{ $pull->name }}
+                </span>
+
+                <span class="text-dark ml-2">
+                    #{{ $pull->id }}
                 </span>
             </span>
         </div>
