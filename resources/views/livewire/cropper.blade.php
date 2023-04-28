@@ -32,9 +32,12 @@
                     text="Save format"
                     class="text-center"
                     x-on:click="$wire.emit('cropped', {
-                        crop: window.cropper.getCroppedCanvas().toDataURL('{{ $attachment->mime_type }}'),
                         data: window.cropper.getData(),
                         saveAsNew: false,
+                        crop: window.cropper.getCroppedCanvas({
+                            width: 500,
+                            height: 500,
+                        }).toDataURL('{{ $attachment->mime_type }}'),
                     })"
                 />
 
