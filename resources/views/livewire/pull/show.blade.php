@@ -26,20 +26,17 @@
                 />
             </x-headers.h1>
 
-            @if ($pull->artist)
-                <p>
-                    <span class="opacity-50">Artist</span>
-                    <a href="{{ $pull->artist->route() }}" class="mx-1">
-                        {{ $pull->artist->name }}
-                    </a>
-                </p>
-            @endif
-
             <p>
                 <span class="opacity-50">Pulled</span>
                 <span class="mx-1">{{ $pull->verdict_at->diffForHumans() }}</span>
-                <span class="opacity-50">by</span>
-                <x-origin class="mx-2" :origin="$pull->origin" href="{{ $pull->source_url }}" />
+                <span class="opacity-50">from</span>
+
+                <x-origin
+                    class="mx-2"
+                    :origin="$pull->origin"
+                    :href="$pull->source_url"
+                    :label="$pull->artist?->name"
+                />
             </p>
         </div>
 

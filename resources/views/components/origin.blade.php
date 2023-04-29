@@ -1,5 +1,6 @@
 @props([
     'origin',
+    'label' => $origin->name,
     'type' => $origin->type,
 ])
 
@@ -11,5 +12,5 @@
     ]) }}
 >
     <i class="{{ $type->icon() }}"></i>
-    {{ $origin->name }}
+    {{ $label }}
 </a>
