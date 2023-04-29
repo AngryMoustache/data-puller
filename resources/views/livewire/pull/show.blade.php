@@ -52,11 +52,26 @@
         {{-- <div class="flex flex-col gap-4">
             <x-headers.h2 text="Folders" />
 
-            <x-form.button
-                text="Save to folder"
-                class="w-full"
-                wire:click="$set('showAddToFolderModal', true)"
-            />
+            @foreach ($pull->folders as $folder)
+                <x-folder :$folder>
+                    <x-form.button-secondary
+                        wire:click="removeFromFolder({{ $folder->id }})"
+                        class="m-2 flex items-center"
+                    >
+                        <x-heroicon-o-trash class="w-5 h-5" />
+                    </x-form.button-secondary>
+                </x-folder>
+            @endforeach
+
+            <div>
+                <x-form.button-secondary
+                    text="Create new folder"
+                    class="w-fit"
+                    x-on:click="window.openModal('new-folder', {
+                        pullId: {{ $pull->id }},
+                    })"
+                />
+            </div>
         </div> --}}
 
         <div class="flex flex-col gap-4">

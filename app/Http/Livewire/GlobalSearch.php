@@ -9,6 +9,13 @@ use Livewire\Component;
 
 class GlobalSearch extends Component
 {
+    public bool $isPullIndex = false;
+
+    public function mount()
+    {
+        $this->isPullIndex = request()->routeIs('pull.index');
+    }
+
     public function fetchOptions()
     {
         $tags = Tag::where('hidden', false)

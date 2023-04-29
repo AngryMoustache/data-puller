@@ -63,7 +63,16 @@
         </div>
     </div>
 
-    <div wire:loading.remove wire:target="setFilterValues">
+    @if ($selectedTags->isNotEmpty())
+        <div class="w-full pt-4 flex gap-4">
+            <span class="p-2 block">Selected tags:</span>
+            @foreach ($selectedTags as $tag)
+                <x-tag :text="$tag->long_name" wire:click="toggleTag({{ $tag->id }})" />
+            @endforeach
+        </div>
+    @endif
+
+    <div wire:loading.remove wire:target="setFilterValues, toggleTag">
         <x-alpine.infinite-scroll :enabled="$hasMore">
             @if ($pulls->isNotEmpty())
                 <x-grid>

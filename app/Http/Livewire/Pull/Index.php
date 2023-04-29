@@ -6,11 +6,9 @@ use App\Enums\Sorting;
 use App\Http\Livewire\Traits\HasPagination;
 use App\Http\Livewire\Traits\HasPreLoading;
 use App\Models\Origin;
-use App\Models\Pull;
 use App\Models\Tag;
 use App\Pulls;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -32,6 +30,10 @@ class Index extends Component
     public null | int $randomizer = null;
 
     public null | Origin $origin = null;
+
+    protected $listeners = [
+        'toggleTag',
+    ];
 
     public function mount(string $filterString = '')
     {
@@ -66,9 +68,9 @@ class Index extends Component
         $pulls = Pulls::make()
             ->when($this->selectedTags->isNotEmpty(), fn ($items) => $items->filter(function ($pull) {
                 return collect($pull['tags'])
-                    ->pluck('slug')
-                    ->intersect($this->selectedTags->pluck('slug'))
-                    ->count();
+                    ->pluck('id')
+                    ->intersect($this->selectedTags->pluck('id'))
+                    ->count() === $this->selectedTags->count();
             }))
             ->when($this->query, fn ($items) => $items->filter(function ($pull) {
                 return Str::contains($pull['name'], $this->query, true);
@@ -101,6 +103,17 @@ class Index extends Component
         $this->origin = Origin::whereSlug($origin)->first();
     }
 
+    public function toggleTag(int $id)
+    {
+        $tag = Tag::find($id);
+
+        if ($this->selectedTags->contains($tag)) {
+            $this->selectedTags = $this->selectedTags->reject(fn ($item) => $item->id === $id);
+        } else {
+            $this->selectedTags->push($tag);
+        }
+    }
+
     private function buildQueryString()
     {
         return collect([
@@ -108,7 +121,7 @@ class Index extends Component
             'sort' => $this->sort->value,
             'randomizer' => $this->randomizer,
             'origin' => $this->origin?->slug,
-            'tags' => $this->selectedTags->pluck('slug')->join(','),
+            'tags' => $this->selectedTags->pluck('slug')->unique()->join(','),
             'artist' => $this->artist,
         ])
             ->filter()

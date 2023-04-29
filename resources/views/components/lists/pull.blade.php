@@ -33,7 +33,7 @@
             {{ $pull->listInfo }}
         </div>
 
-        <div class="w-full md:line-clamp-2 hidden md:block">
+        <div class="w-full md:line-clamp-2 hidden">
             {{ $pull->tags->where('hidden', 0)->pluck('name')->join(', ') }}
         </div>
     </div>

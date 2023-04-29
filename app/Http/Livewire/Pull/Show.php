@@ -10,6 +10,10 @@ class Show extends Component
 {
     public Pull $pull;
 
+    public $listeners = [
+        'refresh' => '$refresh',
+    ];
+
     public function mount(Pull $pull)
     {
         $this->pull = $pull;

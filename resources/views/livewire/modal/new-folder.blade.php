@@ -1,21 +1,13 @@
 <x-modal>
     <x-surface class="flex flex-col gap-4" x-data="{}">
-        <x-headers.h2 text="New tag" class="p-2" />
+        <x-headers.h2 text="New folder" class="p-2" />
 
         <div class="flex flex-col gap-4 px-2">
-            <x-form.select
-                nullable
-                wire:model.defer="parent"
-                label="Parent"
-                :options="$tags"
-                class="bg-background"
-            />
-
             <x-form.input
                 wire:model.defer="name"
                 label="Name"
-                class="bg-background"
-                placeholder="Name of the tag"
+                class="!bg-background"
+                placeholder="Name of the folder"
             />
         </div>
 

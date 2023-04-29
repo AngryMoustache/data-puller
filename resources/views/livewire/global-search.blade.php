@@ -6,6 +6,7 @@
         options: [],
         highlight: -1,
         loading: true,
+        isPullIndex: @js($isPullIndex),
         init () {
             $watch('query', (value) => { this.highlight = -1 })
             $wire.on('options-fetched', (e) => {
@@ -33,7 +34,13 @@
 
             if (option) {
                 const type = option.type === 'tag' ? 'tags' : option.type
-                window.location.href = `/pulls/${type}:${option.slug}`
+
+                if (this.isPullIndex) {
+                    $wire.emit('toggleTag', option.id)
+                    this.query = ''
+                } else {
+                    window.location.href = `/pulls/${type}:${option.slug}`
+                }
             }
         }
     }"

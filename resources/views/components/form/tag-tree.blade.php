@@ -11,9 +11,9 @@
         <span
             class="ml-2 p-2 text-xl text-primary cursor-pointer rounded hover:bg-dark-hover hover:text-text"
             x-on:click="window.openModal('edit-tag', {
-                id: {{ $tag->id }},
-                name: '{{ $tag->name }}',
-                parent: {{ $tag->parent_id }},
+                id: @js($tag->id),
+                name: @js($tag->name),
+                parent: @js($tag->parent_id),
             })"
         >
             <x-heroicon-o-pencil class="w-4 h-4" />
