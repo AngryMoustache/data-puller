@@ -66,11 +66,11 @@
     @if ($selectedTags->isNotEmpty() || $selectedFolders->isNotEmpty())
         <div class="w-full pt-4 flex gap-4">
             @foreach ($selectedFolders as $folder)
-                <x-tag :text="$folder->name" wire:click="toggleTag({{ $folder->id }})" />
+                <x-tag :text="$folder->name" wire:click="toggleFolder({{ $folder->id }})" />
             @endforeach
 
             @foreach ($selectedTags as $tag)
-                <x-tag :text="$tag->long_name" wire:click="toggleTag({{ $tag->id }})" />
+                <x-tag :text="$tag->long_name" wire:click="toggle({{ $tag->id }})" />
             @endforeach
         </div>
     @endif
