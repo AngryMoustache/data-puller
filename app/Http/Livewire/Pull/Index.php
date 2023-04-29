@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Pull;
 use App\Enums\Sorting;
 use App\Http\Livewire\Traits\HasPagination;
 use App\Http\Livewire\Traits\HasPreLoading;
+use App\Models\Folder;
 use App\Models\Origin;
 use App\Models\Tag;
 use App\Pulls;
@@ -21,6 +22,8 @@ class Index extends Component
 
     public Collection $selectedTags;
 
+    public Collection $selectedFolders;
+
     public Sorting $sort = Sorting::NEWEST;
 
     public string $query = '';
@@ -33,6 +36,7 @@ class Index extends Component
 
     protected $listeners = [
         'toggleTag',
+        'toggleFolder',
     ];
 
     public function mount(string $filterString = '')
@@ -46,6 +50,7 @@ class Index extends Component
         $this->origin = Origin::whereSlug($filters->get('origin'))->first();
         $this->sort = Sorting::tryFrom($filters['sort'] ?? '') ?? Sorting::default();
         $this->selectedTags = Tag::whereIn('slug', explode(',', $filters->get('tags', '')))->get();
+        $this->selectedFolders = Folder::whereIn('slug', explode(',', $filters->get('folders', '')))->get();
         $this->artist = $filters->get('artist', null);
         $this->query = $filters->get('query', '');
     }
@@ -71,6 +76,12 @@ class Index extends Component
                     ->pluck('id')
                     ->intersect($this->selectedTags->pluck('id'))
                     ->count() === $this->selectedTags->count();
+            }))
+            ->when($this->selectedFolders->isNotEmpty(), fn ($items) => $items->filter(function ($pull) {
+                return collect($pull['folders'])
+                    ->pluck('id')
+                    ->intersect($this->selectedFolders->pluck('id'))
+                    ->count() === $this->selectedFolders->count();
             }))
             ->when($this->query, fn ($items) => $items->filter(function ($pull) {
                 return Str::contains($pull['name'], $this->query, true);
@@ -114,6 +125,17 @@ class Index extends Component
         }
     }
 
+    public function toggleFolder(int $id)
+    {
+        $folder = Folder::find($id);
+
+        if ($this->selectedFolders->contains($folder)) {
+            $this->selectedFolders = $this->selectedFolders->reject(fn ($item) => $item->id === $id);
+        } else {
+            $this->selectedFolders->push($folder);
+        }
+    }
+
     private function buildQueryString()
     {
         return collect([
@@ -121,7 +143,8 @@ class Index extends Component
             'sort' => $this->sort->value,
             'randomizer' => $this->randomizer,
             'origin' => $this->origin?->slug,
-            'tags' => $this->selectedTags->pluck('slug')->unique()->join(','),
+            'tags' => $this->selectedTags->pluck('slug')->join(','),
+            'folders' => $this->selectedFolders->pluck('slug')->join(','),
             'artist' => $this->artist,
         ])
             ->filter()

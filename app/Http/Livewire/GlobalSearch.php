@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use App\Models\Artist;
-use App\Models\Pull;
+use App\Models\Folder;
 use App\Models\Tag;
 use Livewire\Component;
 
@@ -42,9 +42,20 @@ class GlobalSearch extends Component
                 'type' => 'artist',
             ]);
 
+        $folders = Folder::orderBy('name')
+            ->whereHas('pulls')
+            ->get()
+            ->map(fn ($folder) => [
+                'id' => $folder->id,
+                'key' => $folder->name,
+                'name' => $folder->name,
+                'slug' => $folder->slug,
+                'type' => 'folders',
+            ]);
+
         $this->emit(
             'options-fetched',
-            collect($tags)->merge($artists)->toArray()
+            collect($tags)->merge($folders)->merge($artists)->toArray()
         );
     }
 }

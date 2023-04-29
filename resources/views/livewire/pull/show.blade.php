@@ -49,30 +49,32 @@
             @endforeach
         </div>
 
-        {{-- <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4">
             <x-headers.h2 text="Folders" />
 
-            @foreach ($pull->folders as $folder)
-                <x-folder :$folder>
+            @foreach ($folders as $folder)
+                <x-folder :$folder wire:key="folder-{{ $folder->id }}">
                     <x-form.button-secondary
-                        wire:click="removeFromFolder({{ $folder->id }})"
+                        wire:click="toggleFromFolder({{ $folder->id }})"
                         class="m-2 flex items-center"
                     >
-                        <x-heroicon-o-trash class="w-5 h-5" />
+                        @if ($pull->folders->pluck('id')->contains($folder->id))
+                            <x-heroicon-o-minus class="w-5 h-5" />
+                        @else
+                            <x-heroicon-o-plus class="w-5 h-5" />
+                        @endif
                     </x-form.button-secondary>
                 </x-folder>
             @endforeach
 
-            <div>
-                <x-form.button-secondary
-                    text="Create new folder"
-                    class="w-fit"
-                    x-on:click="window.openModal('new-folder', {
-                        pullId: {{ $pull->id }},
-                    })"
-                />
-            </div>
-        </div> --}}
+            <x-form.button-secondary
+                text="Create new folder"
+                class="w-fit"
+                x-on:click="window.openModal('new-folder', {
+                    pullId: {{ $pull->id }},
+                })"
+            />
+        </div>
 
         <div class="flex flex-col gap-4">
             <x-headers.h2 text="Related pulls" />

@@ -36,7 +36,12 @@
                 const type = option.type === 'tag' ? 'tags' : option.type
 
                 if (this.isPullIndex) {
-                    $wire.emit('toggleTag', option.id)
+
+                    if (option.type === 'folders') {
+                        $wire.emit('toggleFolder', option.id)
+                    } else {
+                        $wire.emit('toggleTag', option.id)
+                    }
                     this.query = ''
                 } else {
                     window.location.href = `/pulls/${type}:${option.slug}`
@@ -81,6 +86,7 @@
                     <x-heroicon-o-tag x-show="option.type === 'tag'" class="w-4 h-4" />
                     <x-heroicon-o-user-group x-show="option.type === 'artist'" class="w-4 h-4" />
                     <x-heroicon-o-magnifying-glass x-show="option.type === 'query'" class="w-4 h-4" />
+                    <x-heroicon-o-folder-open x-show="option.type === 'folders'" class="w-4 h-4" />
 
                     <span x-text="option.name"></span>
                 </li>

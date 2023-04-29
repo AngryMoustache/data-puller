@@ -52,6 +52,11 @@ class Pulls extends Collection
                         'name' => $tag->name,
                         'slug' => $tag->slug,
                     ]),
+                    'folders' => $pull->folders->map(fn ($folder) => [
+                        'id' => $folder->id,
+                        'name' => $folder->name,
+                        'slug' => $folder->slug,
+                    ]),
                 ]);
             });
     }

@@ -63,9 +63,12 @@
         </div>
     </div>
 
-    @if ($selectedTags->isNotEmpty())
+    @if ($selectedTags->isNotEmpty() || $selectedFolders->isNotEmpty())
         <div class="w-full pt-4 flex gap-4">
-            <span class="p-2 block">Selected tags:</span>
+            @foreach ($selectedFolders as $folder)
+                <x-tag :text="$folder->name" wire:click="toggleTag({{ $folder->id }})" />
+            @endforeach
+
             @foreach ($selectedTags as $tag)
                 <x-tag :text="$tag->long_name" wire:click="toggleTag({{ $tag->id }})" />
             @endforeach

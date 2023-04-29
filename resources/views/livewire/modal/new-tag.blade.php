@@ -8,13 +8,13 @@
                 wire:model.defer="parent"
                 label="Parent"
                 :options="$tags"
-                class="bg-background"
+                class="!bg-background"
             />
 
             <x-form.input
                 wire:model.defer="name"
                 label="Name"
-                class="bg-background"
+                class="!bg-background"
                 placeholder="Name of the tag"
             />
         </div>
