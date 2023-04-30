@@ -4,6 +4,7 @@
             <div class="w-full md:w-fit flex flex-wrap gap-4">
                 @foreach ($filters->filters as $filter)
                     <x-tag
+                        wire:key="enabled-tag-{{ $filter->key }}"
                         class="flex gap-3 !py-2 !px-4 !text-base"
                         wire:click="toggleFilter({{ json_encode($filter->type) }}, {{ $filter->id }})"
                     >
@@ -32,18 +33,18 @@
 
     <div
         class="w-full border-b border-border pb-8"
-        x-data="{ open: false }"
+        x-data="{ extraFiltersOpen: false }"
     >
         <div class="flex items-center justify-between">
             <div
                 class="flex items-center gap-4 cursor-pointer p-4 select-none"
-                x-on:click="open = ! open"
+                x-on:click="extraFiltersOpen = ! extraFiltersOpen"
                 x-bind:class="{
-                    'text-primary': open,
+                    'text-primary': extraFiltersOpen,
                 }"
             >
-                <x-heroicon-o-adjustments-horizontal x-show="! open" class="w-6 h-6" />
-                <x-heroicon-s-adjustments-horizontal x-show="open" class="w-6 h-6" />
+                <x-heroicon-o-adjustments-horizontal x-show="! extraFiltersOpen" class="w-6 h-6" />
+                <x-heroicon-s-adjustments-horizontal x-show="extraFiltersOpen" class="w-6 h-6" />
                 <span>Extra filters</span>
             </div>
 
@@ -56,7 +57,7 @@
 
         <div
             class="flex flex-col gap-4 md:p-4"
-            x-show="open"
+            x-show="extraFiltersOpen"
             x-transition
         >
             <form

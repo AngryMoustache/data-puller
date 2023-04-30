@@ -62,7 +62,7 @@ class Show extends Component
             'name' => $this->fields['name'],
             'artist_id' => $artist->id,
             'status' => $status,
-            'verdict_at' => now(),
+            'verdict_at' => $this->pull->verdict_at ?? now(),
         ]);
 
         // Make sure we don't save any tags where the parent is not in the list

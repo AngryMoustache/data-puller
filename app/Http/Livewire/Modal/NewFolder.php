@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Modal;
 
+use Api\Jobs\RebuildCache;
 use App\Http\Livewire\Pull\Show;
 use App\Models\DynamicFolder;
 use App\Models\Folder;
@@ -11,9 +12,9 @@ class NewFolder extends Component
 {
     public string $name = '';
 
-    public null | int $pullId;
+    public null | int $pullId = null;
 
-    public null | string $filters;
+    public null | string $filters = null;
 
     public function mount(array $params = [])
     {
@@ -36,6 +37,8 @@ class NewFolder extends Component
 
             $folder->pulls()->attach($this->pullId);
         }
+
+        RebuildCache::dispatch();
 
         $this->dispatchBrowserEvent('close-modal');
         $this->emitTo(Show::class, 'refresh');

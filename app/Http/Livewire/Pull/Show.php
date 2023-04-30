@@ -21,6 +21,10 @@ class Show extends Component
 
     public function mount(Pull $pull)
     {
+        if (! $pull->online) {
+            abort(404);
+        }
+
         $this->pull = $pull;
         $this->folders = Folder::orderBy('name')
             ->whereHas('pulls')

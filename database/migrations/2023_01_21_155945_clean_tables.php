@@ -19,7 +19,6 @@ return new class extends Migration
 
         Schema::table('pulls', function (Blueprint $table) {
             $table->dropColumn('verdict_at');
-            $table->dropColumn('comic');
             $table->dropForeign(['preview_id']);
             $table->dropColumn('preview_id');
         });

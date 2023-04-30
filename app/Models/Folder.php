@@ -22,6 +22,13 @@ class Folder extends Model
         return $this->pulls->first()?->attachment;
     }
 
+    public function route()
+    {
+        return route('pull.index', [
+            'filterString' => "folders:{$this->slug}",
+        ]);
+    }
+
     public static function booted()
     {
         static::saving(function (self $folder) {
