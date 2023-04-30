@@ -43,7 +43,7 @@ enum Sorting: string
     public static function list()
     {
         return collect(self::cases())->mapWithKeys(fn ($value) => [
-            $value->value => $value->label()
+            $value->value => $value->label(),
         ]);
     }
 

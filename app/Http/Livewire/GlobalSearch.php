@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire;
 
+use App\Entities\Filter;
 use App\Models\Artist;
 use App\Models\Folder;
 use App\Models\Tag;
@@ -19,43 +20,24 @@ class GlobalSearch extends Component
     public function fetchOptions()
     {
         $tags = Tag::where('hidden', false)
-            ->orderBy('long_name')
-            ->get()
-            ->map(function ($tag) {
-                return [
-                    'id' => $tag->id,
-                    'key' => $tag->name,
-                    'name' => $tag->long_name,
-                    'slug' => $tag->slug,
-                    'type' => 'tag',
-                ];
-            });
-
-        $artists = Artist::with('pulls')
             ->whereHas('pulls', fn ($q) => $q->online())
-            ->get()
-            ->map(fn ($artist) => [
-                'id' => $artist->id,
-                'key' => $artist->name,
-                'name' => $artist->name,
-                'slug' => $artist->slug,
-                'type' => 'artist',
-            ]);
+            ->orderBy('long_name')
+            ->get();
+
+        $artists = Artist::whereHas('pulls', fn ($q) => $q->online())
+            ->get();
 
         $folders = Folder::orderBy('name')
             ->whereHas('pulls')
-            ->get()
-            ->map(fn ($folder) => [
-                'id' => $folder->id,
-                'key' => $folder->name,
-                'name' => $folder->name,
-                'slug' => $folder->slug,
-                'type' => 'folders',
-            ]);
+            ->get();
 
         $this->emit(
             'options-fetched',
-            collect($tags)->merge($folders)->merge($artists)->toArray()
+            collect($tags)
+                ->merge($folders)
+                ->merge($artists)
+                ->map(fn ($item) => Filter::fromModel($item)->toArray())
+                ->toArray()
         );
     }
 }

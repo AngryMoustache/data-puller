@@ -31,8 +31,8 @@
             <form
                 x-on:submit.prevent="search()"
                 x-data="{
-                    sort: @js($sort),
-                    origin: @js($origin?->slug),
+                    sort: @js($filters->sort->value),
+                    origin: @js($filters->getOrigin()?->key),
                     init () {
                         $watch('sort', () => this.search())
                         $watch('origin', () => this.search())
@@ -55,7 +55,7 @@
                         label="Originated from"
                         nullable
                         :options="$origins"
-                        :value="$origin?->slug"
+                        :value="$filters->getOrigin()?->key"
                         x-model="origin"
                     />
                 </div>
@@ -63,19 +63,31 @@
         </div>
     </div>
 
-    @if ($selectedTags->isNotEmpty() || $selectedFolders->isNotEmpty())
-        <div class="w-full pt-4 flex gap-4">
-            @foreach ($selectedFolders as $folder)
-                <x-tag :text="$folder->name" wire:click="toggleFolder({{ $folder->id }})" />
-            @endforeach
+    @if ($filters->filters->isNotEmpty())
+        <div class="w-full pt-4 flex flex-col gap-4">
+            @foreach ($filters->filters->groupBy('type') as $filters)
+                <div class="w-full flex gap-4">
+                    @foreach ($filters as $filter)
+                        <x-tag
+                            class="flex gap-3 !py-2 !px-4 !text-base"
+                            wire:click="toggleFilter({{ json_encode($filter->type) }}, {{ $filter->id }})"
+                        >
+                            @switch ($filter->type)
+                                @case (App\Models\Tag::class) <x-heroicon-o-tag class="w-5 h-5" /> @break
+                                @case (App\Models\Artist::class) <x-heroicon-o-user-group class="w-5 h-5" /> @break
+                                @case (App\Models\Folder::class) <x-heroicon-o-folder-open class="w-5 h-5" /> @break
+                                @case ('query') <x-heroicon-o-magnifying-glass class="w-5 h-5" /> @break
+                            @endswitch
 
-            @foreach ($selectedTags as $tag)
-                <x-tag :text="$tag->long_name" wire:click="toggle({{ $tag->id }})" />
+                            {{ $filter->value }}
+                        </x-tag>
+                    @endforeach
+                </div>
             @endforeach
         </div>
     @endif
 
-    <div wire:loading.remove wire:target="setFilterValues, toggleTag">
+    <div wire:loading.remove wire:target="setFilterValues, toggleFilter">
         <x-alpine.infinite-scroll :enabled="$hasMore">
             @if ($pulls->isNotEmpty())
                 <x-grid>

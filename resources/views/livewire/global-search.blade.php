@@ -16,14 +16,15 @@
         },
         filteredOptions () {
             const options = [...this.options]
-                .filter((option) => option.key.toLowerCase().includes(this.query.toLowerCase()))
+                .filter((option) => option.value.toLowerCase().includes(this.query.toLowerCase()))
                 .slice(0, 10)
 
+            // Custom query filter at the bottom
             options.push({
                 type: 'query',
-                name: 'Search for ' + this.query,
+                id: null,
+                value: 'Search for ' + this.query,
                 key: this.query,
-                slug: this.query,
             })
 
             return options
@@ -32,20 +33,24 @@
             const options = this.filteredOptions()
             option = option || options[this.highlight] || options[0]
 
-            if (option) {
-                const type = option.type === 'tag' ? 'tags' : option.type
+            if (! option) {
+                return
+            }
 
-                if (this.isPullIndex) {
+            if (this.isPullIndex) {
+                $wire.emit('toggleFilter', option.type, option.id || option.key)
+                this.query = ''
+            } else {
+                let type = ''
 
-                    if (option.type === 'folders') {
-                        $wire.emit('toggleFolder', option.id)
-                    } else {
-                        $wire.emit('toggleTag', option.id)
-                    }
-                    this.query = ''
-                } else {
-                    window.location.href = `/pulls/${type}:${option.slug}`
+                switch (option.type.substr(option.type.lastIndexOf('\\') + 1)) {
+                    case 'Tag': type = 'tags'; break;
+                    case 'Artist': type = 'artists'; break;
+                    case 'Folder': type = 'folders'; break;
+                    default: type = 'query'; break;
                 }
+
+                window.location.href = `/pulls/${type}:${option.key}`
             }
         }
     }"
@@ -83,12 +88,12 @@
                     x-on:click.prevent="select(option)"
                     x-on:mouseenter="highlight = key"
                 >
-                    <x-heroicon-o-tag x-show="option.type === 'tag'" class="w-4 h-4" />
-                    <x-heroicon-o-user-group x-show="option.type === 'artist'" class="w-4 h-4" />
+                    <x-heroicon-o-tag x-show="option.type.includes('Tag')" class="w-4 h-4" />
+                    <x-heroicon-o-user-group x-show="option.type.includes('Artist')" class="w-4 h-4" />
+                    <x-heroicon-o-folder-open x-show="option.type.includes('Folder')" class="w-4 h-4" />
                     <x-heroicon-o-magnifying-glass x-show="option.type === 'query'" class="w-4 h-4" />
-                    <x-heroicon-o-folder-open x-show="option.type === 'folders'" class="w-4 h-4" />
 
-                    <span x-text="option.name"></span>
+                    <span x-text="option.value"></span>
                 </li>
             </template>
         </ul>

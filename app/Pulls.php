@@ -43,20 +43,12 @@ class Pulls extends Collection
                 return collect([
                     'id' => $pull->id,
                     'name' => $pull->name,
-                    'artist' => $pull->artist?->slug,
                     'views' => $pull->views,
                     'verdict_at' => $pull->verdict_at,
-                    'origin' => $pull->origin?->slug,
-                    'tags' => $pull->tags->map(fn ($tag) => [
-                        'id' => $tag->id,
-                        'name' => $tag->name,
-                        'slug' => $tag->slug,
-                    ]),
-                    'folders' => $pull->folders->map(fn ($folder) => [
-                        'id' => $folder->id,
-                        'name' => $folder->name,
-                        'slug' => $folder->slug,
-                    ]),
+                    'artists' => [$pull->artist?->slug],
+                    'origins' => [$pull->origin?->slug],
+                    'tags' => $pull->tags->pluck('slug'),
+                    'folders' => $pull->folders->pluck('slug'),
                 ]);
             });
     }
