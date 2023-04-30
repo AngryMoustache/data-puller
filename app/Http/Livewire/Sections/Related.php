@@ -28,11 +28,11 @@ class Related extends Component
             return $this->renderLoadingList($this->perPage);
         }
 
-        $tags = Pull::find($this->pullId)->tags->pluck('id')->toArray();
+        $tags = Pull::find($this->pullId)->tags->pluck('slug')->toArray();
 
         $pulls = Pulls::make()
             ->where('id', '!=', $this->pullId)
-            ->sortByDesc(fn (array $pull) => collect($pull['tags'])->pluck('id')->intersect($tags)->count())
+            ->sortByDesc(fn (array $pull) => collect($pull['tags'])->intersect($tags)->count())
             ->take($this->page * $this->perPage);
 
         return view('livewire.sections.related', [
