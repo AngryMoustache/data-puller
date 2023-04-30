@@ -56,22 +56,14 @@ class Index extends Component
     public function setFilterValues($sort, $origin)
     {
         $this->filters->setSorting($sort);
-        $this->filters->setOrigin($origin);
+
+        if ($origin) {
+            $this->filters->setOrigin($origin);
+        }
     }
 
     public function toggleFilter(string $type, null | int $id)
     {
         $this->filters->toggleFilter($type, $id);
     }
-
-    // public function toggleFolder(int $id)
-    // {
-    //     // $folder = Folder::find($id);
-
-    //     // if ($this->selectedFolders->contains($folder)) {
-    //     //     $this->selectedFolders = $this->selectedFolders->reject(fn ($item) => $item->id === $id);
-    //     // } else {
-    //     //     $this->selectedFolders->push($folder);
-    //     // }
-    // }
 }
