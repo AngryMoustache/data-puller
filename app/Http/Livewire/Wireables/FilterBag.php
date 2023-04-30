@@ -102,12 +102,12 @@ class FilterBag implements Wireable
         return $this->filters->firstWhere(fn (Filter $filter) => $filter->type === FilterTypes::ORIGIN->value);
     }
 
-    public function toggleFilter(string $type, null | int $id)
+    public function toggleFilter(string $type, $id)
     {
         if ($type === 'query') {
             $this->filters = $this->filters
                 ->reject(fn (Filter $filter) => $filter->type === $type)
-                ->push(new QueryFilter($id));
+                ->when($id, fn ($items) => $items->push(new QueryFilter($id)));
 
             return;
         }

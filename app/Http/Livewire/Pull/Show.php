@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Pull;
 
 use Api\Jobs\RebuildCache;
+use App\Enums\Status;
 use App\Models\Folder;
 use App\Models\History;
 use App\Models\Pull;
@@ -21,7 +22,7 @@ class Show extends Component
 
     public function mount(Pull $pull)
     {
-        if (! $pull->online) {
+        if ($pull->status !== Status::ONLINE) {
             abort(404);
         }
 

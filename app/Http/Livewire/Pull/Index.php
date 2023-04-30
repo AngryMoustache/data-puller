@@ -62,7 +62,7 @@ class Index extends Component
         }
     }
 
-    public function toggleFilter(string $type, null | int $id)
+    public function toggleFilter(string $type, $id)
     {
         $this->filters->toggleFilter($type, $id);
     }

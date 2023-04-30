@@ -16,6 +16,10 @@ class Index extends Component
 
     public Collection $dynamicFolders;
 
+    protected $listeners = [
+        'refresh' => '$refresh',
+    ];
+
     public function ready()
     {
         $this->loaded = true;
