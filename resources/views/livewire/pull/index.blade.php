@@ -1,6 +1,37 @@
 <x-container class="flex flex-col gap-12 py-12">
+    @if ($filters->filters->isNotEmpty())
+        <div class="pb-4 md:pb-0 md:flex justify-between gap-4 pl-4 pr-2">
+            <div class="w-full md:w-fit flex flex-wrap gap-4">
+                @foreach ($filters->filters as $filter)
+                    <x-tag
+                        class="flex gap-3 !py-2 !px-4 !text-base"
+                        wire:click="toggleFilter({{ json_encode($filter->type) }}, {{ $filter->id }})"
+                    >
+                        @switch ($filter->type)
+                            @case (App\Models\Tag::class) <x-heroicon-o-tag class="w-5 h-5" /> @break
+                            @case (App\Models\Artist::class) <x-heroicon-o-user-group class="w-5 h-5" /> @break
+                            @case (App\Models\Folder::class) <x-heroicon-o-folder-open class="w-5 h-5" /> @break
+                            @case ('query') <x-heroicon-o-magnifying-glass class="w-5 h-5" /> @break
+                        @endswitch
+
+                        {{ $filter->value }}
+                    </x-tag>
+                @endforeach
+            </div>
+
+            <div class="w-fit mt-4 md:w-auto md:mt-0">
+                <x-form.button
+                    text="Save as dynamic folder"
+                    x-on:click="window.openModal('new-folder', {
+                        filters: '{{ $filters->buildQueryString() }}',
+                    })"
+                />
+            </div>
+        </div>
+    @endif
+
     <div
-        class="w-full border-b border-border pb-4"
+        class="w-full border-b border-border pb-8"
         x-data="{ open: false }"
     >
         <div class="flex items-center justify-between">
@@ -13,7 +44,7 @@
             >
                 <x-heroicon-o-adjustments-horizontal x-show="! open" class="w-6 h-6" />
                 <x-heroicon-s-adjustments-horizontal x-show="open" class="w-6 h-6" />
-                <span>Filters</span>
+                <span>Extra filters</span>
             </div>
 
             <p class="p-4">
@@ -62,30 +93,6 @@
             </form>
         </div>
     </div>
-
-    @if ($filters->filters->isNotEmpty())
-        <div class="w-full pt-4 flex flex-col gap-4">
-            @foreach ($filters->filters->groupBy('type') as $filters)
-                <div class="w-full flex gap-4">
-                    @foreach ($filters as $filter)
-                        <x-tag
-                            class="flex gap-3 !py-2 !px-4 !text-base"
-                            wire:click="toggleFilter({{ json_encode($filter->type) }}, {{ $filter->id }})"
-                        >
-                            @switch ($filter->type)
-                                @case (App\Models\Tag::class) <x-heroicon-o-tag class="w-5 h-5" /> @break
-                                @case (App\Models\Artist::class) <x-heroicon-o-user-group class="w-5 h-5" /> @break
-                                @case (App\Models\Folder::class) <x-heroicon-o-folder-open class="w-5 h-5" /> @break
-                                @case ('query') <x-heroicon-o-magnifying-glass class="w-5 h-5" /> @break
-                            @endswitch
-
-                            {{ $filter->value }}
-                        </x-tag>
-                    @endforeach
-                </div>
-            @endforeach
-        </div>
-    @endif
 
     <div wire:loading.remove wire:target="setFilterValues, toggleFilter">
         <x-alpine.infinite-scroll :enabled="$hasMore">

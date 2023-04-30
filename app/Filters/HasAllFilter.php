@@ -1,8 +1,6 @@
 <?php
 
-namespace App\Entities;
-
-use App\Enums\FilterTypes;
+namespace App\Filters;
 
 class HasAllFilter extends Filter
 {

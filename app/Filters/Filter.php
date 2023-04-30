@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entities;
+namespace App\Filters;
 
 use App\Enums\FilterTypes;
 use App\Models\Tag;

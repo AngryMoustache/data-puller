@@ -11,6 +11,8 @@ Route::get('/pulls/{filterString?}', Livewire\Pull\Index::class)
 
 Route::get('/pull/{pull}', Livewire\Pull\Show::class)->name('pull.show');
 
+Route::get('/folders', Livewire\Folder\Index::class)->name('folder.index');
+
 Route::get('/feed', Livewire\Feed\Index::class)->name('feed.index');
 Route::get('/feed/{pull:id}', Livewire\Feed\Show::class)->name('feed.show');
 

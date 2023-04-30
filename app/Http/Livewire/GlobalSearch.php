@@ -2,7 +2,7 @@
 
 namespace App\Http\Livewire;
 
-use App\Entities\Filter;
+use App\Filters\Filter;
 use App\Models\Artist;
 use App\Models\Folder;
 use App\Models\Tag;

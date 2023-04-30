@@ -36,8 +36,15 @@
         <x-nav.item
             :route="route('pull.index')"
             :active="request()->routeIs('pull.index')"
-            icon="heroicon-o-folder"
+            icon="heroicon-o-archive-box"
             label="Pulls"
+        />
+
+        <x-nav.item
+            :route="route('folder.index')"
+            :active="request()->routeIs('folder.index')"
+            icon="heroicon-o-folder"
+            label="Folders"
         />
 
         @if ($feed)

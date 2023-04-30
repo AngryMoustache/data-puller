@@ -17,6 +17,10 @@ class Folder extends Model
         return $this->belongsToMany(Pull::class);
     }
 
+    public function getAttachmentAttribute()
+    {
+        return $this->pulls->first()?->attachment;
+    }
 
     public static function booted()
     {

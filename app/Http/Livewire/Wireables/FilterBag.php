@@ -2,10 +2,10 @@
 
 namespace App\Http\Livewire\Wireables;
 
-use App\Entities\Filter;
-use App\Entities\HasAllFilter;
-use App\Entities\HasOneFilter;
-use App\Entities\QueryFilter;
+use App\Filters\Filter;
+use App\Filters\HasAllFilter;
+use App\Filters\HasOneFilter;
+use App\Filters\QueryFilter;
 use App\Enums\FilterTypes;
 use App\Enums\Sorting;
 use App\Models\Origin;
