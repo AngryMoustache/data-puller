@@ -19,7 +19,7 @@ class GlobalSearch extends Component
 
     public function fetchOptions()
     {
-        $tags = Tag::where('hidden', false)
+        $tags = Tag::where('is_hidden', false)
             ->whereHas('pulls', fn ($q) => $q->online())
             ->orderBy('long_name')
             ->get();

@@ -11,6 +11,7 @@ enum Origin: string
     case DEVIANTART = 'deviant-art';
     case PIXIV = 'pixiv';
     case SCRAPER = 'scraper';
+    case PROMPT = 'prompt';
     case EXTERNAL = 'external';
 
     public function label()
@@ -20,6 +21,7 @@ enum Origin: string
             self::DEVIANTART => 'DeviantArt',
             self::PIXIV => 'Pixiv',
             self::SCRAPER => 'Scraper',
+            self::PROMPT => 'Prompt',
             self::EXTERNAL => 'External',
         };
     }
@@ -37,6 +39,7 @@ enum Origin: string
             self::DEVIANTART => 'fab fa-deviantart',
             self::PIXIV => 'fab fa-pinterest-p',
             self::SCRAPER => 'fas fa-rss',
+            self::PROMPT => 'fas fa-pencil-alt',
             self::EXTERNAL => 'fas fa-robot',
         };
     }
@@ -48,6 +51,7 @@ enum Origin: string
             self::TWITTER => 'background: #1da1f2 !important; color: #fff !important;',
             self::PIXIV => 'background: #166392 !important; color: #fff !important;',
             self::SCRAPER => 'background: #d12b9c !important; color: #fff !important;',
+            self::PROMPT => 'background: #f2d41d !important; color: #000 !important;',
             self::EXTERNAL => 'background: #921616 !important; color: #fff !important;',
         };
     }

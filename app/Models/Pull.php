@@ -5,9 +5,10 @@ namespace App\Models;
 use AngryMoustache\Media\Models\Attachment;
 use App\Enums;
 use App\Enums\Status;
-use App\Pulls;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class Pull extends Model
 {
@@ -107,5 +108,23 @@ class Pull extends Model
     public function scopeOffline($query)
     {
         return $query->where('status', Status::OFFLINE);
+    }
+
+    public static function getAiName(Collection $tags): string | null
+    {
+        $tags = $tags->pluck('long_name')->join(', ');
+
+        $result = OpenAI::completions()->create([
+            'model' => 'text-davinci-003',
+            'prompt' => config('openai.prompt_start') . $tags . '.',
+            'max_tokens' => 150,
+            'temperature' => 0.7,
+            'top_p' => 1,
+        ]);
+
+        return Str::of($result['choices'][0]['text'] ?? '')
+            ->replace('"', '')
+            ->trim()
+            ->__toString();
     }
 }

@@ -41,7 +41,7 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-            @foreach ($pull->tags->where('hidden', 0) as $tag)
+            @foreach ($pull->tags->where('is_hidden', 0) as $tag)
                 <x-tag
                     :text="$tag->long_name"
                     href="{{ $tag->route() }}"

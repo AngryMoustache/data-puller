@@ -36,7 +36,7 @@
         <x-nav.item
             :route="route('pull.index')"
             :active="request()->routeIs('pull.index')"
-            icon="heroicon-o-archive-box"
+            icon="heroicon-o-circle-stack"
             label="Pulls"
         />
 
@@ -56,6 +56,13 @@
                 :number="$feed"
             />
         @endif
+
+        <x-nav.item
+            :route="route('prompt.index')"
+            :active="request()->routeIs('prompt.index')"
+            icon="heroicon-o-pencil"
+            label="Prompts"
+        />
 
         <x-nav.item
             :route="route('history.index')"

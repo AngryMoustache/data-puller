@@ -13,7 +13,11 @@ class Tag extends Model
         'name',
         'slug',
         'long_name',
-        'hidden',
+        'is_hidden',
+    ];
+
+    public $casts = [
+        'is_hidden' => 'boolean',
     ];
 
     public function pulls()

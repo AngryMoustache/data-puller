@@ -115,17 +115,9 @@ class Show extends Component
 
     public function generateName()
     {
-        $tags =  Tag::find(collect($this->fields['tags'])->filter()->keys())
-            ->pluck('long_name')
-            ->join(', ');
+        $tags =  Tag::find(collect($this->fields['tags'])->filter()->keys());
 
-        $result = OpenAI::completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => config('openai.prompt_start') . $tags . '.',
-            'max_tokens' => 150,
-            'temperature' => 0.7,
-            'top_p' => 1,
-        ]);
+        $result = Pull::getAiName($tags);
 
         $this->fields['name'] = Str::replace('"', '', $result['choices'][0]['text']);
     }
