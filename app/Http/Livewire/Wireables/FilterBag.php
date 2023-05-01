@@ -65,14 +65,9 @@ class FilterBag implements Wireable
 
                 return $filters->every(function (Collection $items) use ($pull) {
                     $check = match(get_class($items->first())) {
-                        QueryFilter::class => 'query',
                         HasAllFilter::class => 'every',
-                        HasOneFilter::class => 'first',
+                        HasOneFilter::class, QueryFilter::class => 'first',
                     };
-
-                    if ($check === 'query') {
-                        return $items->first()->matches($pull);
-                    }
 
                     return $items->{$check}->matches($pull);
                 });
