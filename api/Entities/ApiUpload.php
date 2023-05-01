@@ -3,6 +3,7 @@
 namespace Api\Entities;
 
 use Api\Entities\Media\Image;
+use App\Models\Artist;
 
 class ApiUpload extends Pullable
 {
@@ -10,7 +11,7 @@ class ApiUpload extends Pullable
     {
         $this->name = $pull['name'] ?? $pull['images'][0]['name'] ?? 'No name given.';
         $this->source = md5(now()->timestamp);
-        $this->artist = $this->getArtist($pull['artist']);
+        $this->artist = Artist::guess($pull['artist']);
 
         $this->media = collect($pull['images'] ?? [])->map(function (array $image) {
             return Image::make()

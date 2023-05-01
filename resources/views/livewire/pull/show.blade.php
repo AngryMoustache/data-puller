@@ -26,7 +26,7 @@
                 />
             </x-headers.h1>
 
-            <p>
+            <p class="flex items-center">
                 <span class="opacity-50">Pulled</span>
                 <span class="mx-1">{{ $pull->verdict_at->diffForHumans() }}</span>
                 <span class="opacity-50">from</span>
@@ -34,9 +34,21 @@
                 <x-origin
                     class="mx-2"
                     :origin="$pull->origin"
-                    :href="$pull->source_url"
+                    :href="$pull->artist?->route()"
                     :label="$pull->artist?->name"
                 />
+
+                @if ($pull->source_url)
+                    <a
+                        href="{{ $pull->source_url }}"
+                        target="_blank"
+                    >
+                        <x-heroicon-o-link
+                            class="w-4 h-4"
+                            href="{{ $pull->source_url }}"
+                        />
+                    </a>
+                @endif
             </p>
         </div>
 

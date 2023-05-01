@@ -3,6 +3,7 @@
 namespace Api\Entities;
 
 use Api\Entities\Media\Image;
+use App\Models\Artist;
 
 class Deviantion extends Pullable
 {
@@ -10,7 +11,7 @@ class Deviantion extends Pullable
     {
         $this->name = $this->checkJapanese($pull['title'])->limit(50);
         $this->source = $pull['url'];
-        $this->artist = $this->getArtist($pull['author']['username'] ?? '');
+        $this->artist = Artist::guess($pull['author']['username'] ?? '');
 
         $this->media = Image::make()
             ->source($pull['content']['src'])

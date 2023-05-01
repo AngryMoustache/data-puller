@@ -15,6 +15,7 @@
         flex gap-4
         flex-row justify-between
         md:flex-col
+        overflow-x-auto md:overflow-x-hidden
     ">
         <span
             @click="toggle"

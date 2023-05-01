@@ -1,9 +1,10 @@
-<x-container class="flex flex-col md:flex-row gap-8">
+<x-container class="flex flex-col md:flex-row gap-12">
     <div class="w-full md:w-1/2 flex flex-col gap-8">
         <x-headers.h2 text="Today's prompt" />
 
-        <div class="flex flex-wrap gap-4">
+        <div class="flex flex-col gap-4">
             @foreach ($prompt->groupedTags as $group => $tags)
+                <x-headers.h3 :text="$group" />
                 <div class="flex flex-wrap gap-4">
                     @foreach ($tags as $tag)
                         <x-tag
@@ -19,10 +20,6 @@
 
         <div class="flex flex-col md:flex-row gap-2">
             <x-form.input type="file" wire:model="sketch" />
-
-            <x-form.button class="w-1/2 flex items-center justify-center" wire:click="uploadSketch">
-                Upload finished sketch
-            </x-form.button>
         </div>
 
         <x-headers.h2 text="Similar pulls for today's prompt" />
@@ -34,6 +31,13 @@
         </x-list>
     </div>
 
-    <div class="w-full md:w-1/2">
+    <div class="w-full md:w-1/2 flex flex-col gap-8">
+        <x-headers.h2 text="Previous prompts" />
+
+        <x-list>
+            @foreach ($previous as $prompt)
+                <x-lists.pull :pull="$prompt->pull" />
+            @endforeach
+        </x-list>
     </div>
 </x-container>

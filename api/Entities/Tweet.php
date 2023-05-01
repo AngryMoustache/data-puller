@@ -4,6 +4,7 @@ namespace Api\Entities;
 
 use Api\Entities\Media\Image;
 use Api\Entities\Media\Video;
+use App\Models\Artist;
 use Illuminate\Support\Str;
 
 class Tweet extends Pullable
@@ -17,7 +18,7 @@ class Tweet extends Pullable
 
         $this->source = $pull['entities']['urls'][0]['url'];
         $this->media = $pull['attachments'];
-        $this->artist = $this->getArtist($pull['author_id']['username'] ?? '');
+        $this->artist = Artist::guess($pull['author_id']['username'] ?? '');
 
         $this->media = $this->media->map(function ($media, $key) {
             $name = $this->name;

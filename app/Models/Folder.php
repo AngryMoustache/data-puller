@@ -14,7 +14,8 @@ class Folder extends Model
 
     public function pulls()
     {
-        return $this->belongsToMany(Pull::class);
+        return $this->belongsToMany(Pull::class)
+            ->orderBy('pulls.verdict_at', 'desc');
     }
 
     public function getAttachmentAttribute()

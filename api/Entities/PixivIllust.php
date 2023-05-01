@@ -3,6 +3,7 @@
 namespace Api\Entities;
 
 use Api\Entities\Media\Image;
+use App\Models\Artist;
 
 class PixivIllust extends Pullable
 {
@@ -18,7 +19,7 @@ class PixivIllust extends Pullable
         $this->name = $this->checkJapanese($pull['title'], $pull['id'])->limit(50);
         $this->source = "https://www.pixiv.net/en/artworks/{$pull['id']}";
         $this->media = collect($media);
-        $this->artist = $this->getArtist($pull['user']['account'] ?? '');
+        $this->artist = Artist::guess($pull['user']['account'] ?? '');
 
         $this->media = $this->media->map(function ($media, $key) {
             $name = $this->name;

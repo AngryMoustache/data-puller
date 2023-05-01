@@ -34,18 +34,4 @@ class Pullable
 
         return Str::of($value)->trim();
     }
-
-    public function getArtist(null|string $name): null|Artist
-    {
-        if (empty($name)) {
-            return null;
-        }
-
-        $artist = Artist::firstOrCreate([
-            'name' => $name,
-            'slug' => Str::slug($name),
-        ]);
-
-        return $artist->parent ?? $artist;
-    }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Artist extends Model
 {
@@ -24,6 +25,20 @@ class Artist extends Model
 
     public function route()
     {
-        return route('pull.index', "artist:{$this->slug}");
+        return route('pull.index', "artists:{$this->slug}");
+    }
+
+    public static function guess(null|string $name): null|Artist
+    {
+        if (empty($name)) {
+            return null;
+        }
+
+        $artist = Artist::firstOrCreate([
+            'name' => $name,
+            'slug' => Str::slug($name),
+        ]);
+
+        return $artist->parent ?? $artist;
     }
 }

@@ -10,7 +10,6 @@ use App\Models\Pull;
 use App\Models\Tag;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class Show extends Component
 {
@@ -117,8 +116,6 @@ class Show extends Component
     {
         $tags =  Tag::find(collect($this->fields['tags'])->filter()->keys());
 
-        $result = Pull::getAiName($tags);
-
-        $this->fields['name'] = Str::replace('"', '', $result['choices'][0]['text']);
+        $this->fields['name'] = Pull::getAiName($tags);
     }
 }

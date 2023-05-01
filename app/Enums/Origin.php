@@ -40,7 +40,7 @@ enum Origin: string
             self::PIXIV => 'fab fa-pinterest-p',
             self::SCRAPER => 'fas fa-rss',
             self::PROMPT => 'fas fa-pencil-alt',
-            self::EXTERNAL => 'fas fa-robot',
+            self::EXTERNAL => 'fab fa-discord',
         };
     }
 
@@ -52,7 +52,7 @@ enum Origin: string
             self::PIXIV => 'background: #166392 !important; color: #fff !important;',
             self::SCRAPER => 'background: #d12b9c !important; color: #fff !important;',
             self::PROMPT => 'background: #f2d41d !important; color: #000 !important;',
-            self::EXTERNAL => 'background: #921616 !important; color: #fff !important;',
+            self::EXTERNAL => 'background: #4a5577 !important; color: #fff !important;',
         };
     }
 
