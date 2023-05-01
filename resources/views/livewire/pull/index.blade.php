@@ -32,6 +32,7 @@
     @endif
 
     <div
+        wire:key="extra-filters"
         class="w-full border-b border-border pb-8"
         x-data="{ extraFiltersOpen: false }"
     >
@@ -56,6 +57,7 @@
         </div>
 
         <div
+            wire:key="extra-filters-content"
             class="flex flex-col gap-4 md:p-4"
             x-show="extraFiltersOpen"
             x-transition

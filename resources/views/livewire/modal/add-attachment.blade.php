@@ -28,13 +28,16 @@
 
                     <div class="grid grid-cols-3 md:grid-cols-6 gap-4" wire:loading.remove>
                         @foreach ($attachments as $attachment)
-                            <div wire:key="attachment-{{ $attachment->id }}">
+                            <div
+                                wire:key="attachment-{{ $attachment->id }}"
+                                class="rounded cursor-pointer"
+                                x-bind:class="{
+                                    'p-2 border border-primary': selected.includes({{ $attachment->id }}),
+                                }"
+                            >
                                 <x-img
                                     :src="$attachment->format('thumb')"
                                     class="rounded"
-                                    x-bind:class="{
-                                        'border border-primary': selected.includes({{ $attachment->id }}),
-                                    }"
                                     x-on:click="selected.includes({{ $attachment->id }})
                                         ? selected = selected.filter(id => id !== {{ $attachment->id }})
                                         : selected.push({{ $attachment->id }})"
