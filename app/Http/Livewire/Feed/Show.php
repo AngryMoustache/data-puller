@@ -10,6 +10,7 @@ use App\Models\Pull;
 use App\Models\Tag;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use OpenAI\Laravel\Facades\OpenAI;
 
 class Show extends Component
 {
@@ -110,5 +111,22 @@ class Show extends Component
         $this->pull->attachments()->syncWithoutDetaching($selections);
 
         $this->dispatchBrowserEvent('close-modal');
+    }
+
+    public function generateName()
+    {
+        $tags =  Tag::find(collect($this->fields['tags'])->filter()->keys())
+            ->pluck('long_name')
+            ->join(', ');
+
+        $result = OpenAI::completions()->create([
+            'model' => 'text-davinci-003',
+            'prompt' => config('openai.prompt_start') . $tags,
+            'max_tokens' => 150,
+            'temperature' => 0.7,
+            'top_p' => 1,
+        ]);
+
+        $this->fields['name'] = $result['choices'][0]['text'];
     }
 }

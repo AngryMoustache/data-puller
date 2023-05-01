@@ -5,7 +5,7 @@
 <a
     href="{{ $pull->route() }}"
     {{ $attributes->except('pull')->merge([
-        'class' => 'bg-surface rounded p-4 p-2 w-full flex flex-col gap-2',
+        'class' => 'bg-surface rounded p-4 pb-3 w-full flex flex-col gap-2',
     ]) }}
 >
     <div class="overflow-hidden rounded flex items-center" style="aspect-ratio: 3/2.5">

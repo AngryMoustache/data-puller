@@ -32,11 +32,17 @@
 
         <x-alpine.collapsible :open="true" title="General information">
             <div class="flex flex-col gap-4">
-                <x-form.input
-                    label="Name"
-                    placeholder="Name of the pull"
-                    wire:model.defer="fields.name"
-                />
+                <div class="flex gap-2">
+                    <x-form.input
+                        label="Name"
+                        placeholder="Name of the pull"
+                        wire:model.defer="fields.name"
+                    />
+
+                    <x-form.button class="flex items-center" wire:click.prevent="generateName">
+                        <x-heroicon-o-arrow-path class="w-5 h-5" />
+                    </x-form.button>
+                </div>
 
                 <x-form.input
                     label="Artist name"
