@@ -19,6 +19,6 @@ class QueryFilter extends Filter
 
     public function matches(array $pull): bool
     {
-        return Str::contains($pull['name'], $this->value);
+        return Str::contains($pull['name'], $this->value, true);
     }
 }
