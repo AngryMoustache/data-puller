@@ -121,12 +121,12 @@ class Show extends Component
 
         $result = OpenAI::completions()->create([
             'model' => 'text-davinci-003',
-            'prompt' => config('openai.prompt_start') . $tags,
+            'prompt' => config('openai.prompt_start') . $tags . '.',
             'max_tokens' => 150,
             'temperature' => 0.7,
             'top_p' => 1,
         ]);
 
-        $this->fields['name'] = $result['choices'][0]['text'];
+        $this->fields['name'] = Str::replace('"', '', $result['choices'][0]['text']);
     }
 }
