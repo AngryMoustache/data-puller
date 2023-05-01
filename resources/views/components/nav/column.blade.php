@@ -53,6 +53,7 @@
                 :active="request()->routeIs('feed.index')"
                 icon="heroicon-o-bell-alert"
                 label="Feed"
+                :number="$feed"
             />
         @endif
 
