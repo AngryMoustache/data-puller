@@ -5,7 +5,6 @@ namespace App\Http\Livewire\Sections;
 use App\Http\Livewire\Traits\HasPagination;
 use App\Http\Livewire\Traits\HasPreLoading;
 use App\Models\Pull;
-use App\Pulls;
 use Livewire\Component;
 
 class Related extends Component
@@ -28,13 +27,7 @@ class Related extends Component
             return $this->renderLoadingList($this->perPage);
         }
 
-        $tags = Pull::find($this->pullId)->tags->pluck('slug')->toArray();
-
-        $pulls = Pulls::make()
-            ->where('id', '!=', $this->pullId)
-            ->sortByDesc(fn (array $pull) => collect($pull['tags'])->intersect($tags)->count())
-            ->limit($this->page * $this->perPage)
-            ->fetch();
+        $pulls = Pull::find($this->pullId)->related($this->page * $this->perPage);
 
         return view('livewire.sections.related', [
             'pulls' => $pulls,

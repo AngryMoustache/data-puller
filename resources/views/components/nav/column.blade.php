@@ -48,6 +48,13 @@
             label="Folders"
         />
 
+        <x-nav.item
+            :route="route('pull.random')"
+            :active="request()->routeIs('pull.random')"
+            icon="heroicon-o-light-bulb"
+            label="Random"
+        />
+
         @if ($feed)
             <x-nav.item
                 :route="route('feed.index')"

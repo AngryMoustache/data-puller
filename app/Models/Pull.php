@@ -5,6 +5,7 @@ namespace App\Models;
 use AngryMoustache\Media\Models\Attachment;
 use App\Enums;
 use App\Enums\Status;
+use App\Pulls;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -76,6 +77,17 @@ class Pull extends Model
         return 'slug';
     }
 
+    public function related(int $amount = 12)
+    {
+        $tags = $this->tags->pluck('slug')->toArray();
+
+        return Pulls::make()
+            ->where('id', '!=', $this->id)
+            ->sortByDesc(fn (array $pull) => collect($pull['tags'])->intersect($tags)->count())
+            ->limit($amount)
+            ->fetch();
+    }
+
     public function getAttachmentAttribute()
     {
         return $this->attachments->first()
@@ -126,5 +138,12 @@ class Pull extends Model
             ->replace('"', '')
             ->trim()
             ->__toString();
+    }
+
+    public static function random()
+    {
+        return static::online()
+            ->inRandomOrder()
+            ->first();
     }
 }

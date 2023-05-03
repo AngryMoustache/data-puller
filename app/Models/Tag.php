@@ -14,10 +14,12 @@ class Tag extends Model
         'slug',
         'long_name',
         'is_hidden',
+        'is_highlighted',
     ];
 
     public $casts = [
         'is_hidden' => 'boolean',
+        'is_highlighted' => 'boolean',
     ];
 
     public function pulls()

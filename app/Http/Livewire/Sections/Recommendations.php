@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Sections;
 use App\Pulls;
 use App\Http\Livewire\Traits\HasPreLoading;
 use App\Models\History;
+use App\Models\Pull;
 use Livewire\Component;
 
 class Recommendations extends Component
@@ -14,32 +15,18 @@ class Recommendations extends Component
     public function render()
     {
         if (! $this->loaded) {
-            return $this->renderLoadingGrid(18);
+            return $this->renderLoadingGrid(6);
         }
 
-        $history = History::limit(5)
-            ->orderBy('last_viewed_at', 'desc')
-            ->pluck('pull_id');
-
-        $tags = Pulls::make()
-            ->whereIn('id', $history)
-            ->pluck('tags.*.id')
-            ->flatten()
-            ->countBy();
-
-        $pulls = Pulls::make()
-            ->sortByDesc(function (array $pull) use ($tags) {
-                return collect($pull['tags'])
-                    ->pluck('id')
-                    ->sum(fn ($id) => $tags[$id] ?? 0);
-            })
-            ->whereNotIn('id', $history)
-            ->limit(18)
-            ->fetch()
-            ->shuffle();
+        $newestPulls = Pulls::make()
+            ->sortByDesc('verdict_at')
+            ->limit(6)
+            ->fetch();
 
         return view('livewire.sections.recommendations', [
-            'pulls' => $pulls,
+            'pulls' => $newestPulls
+                ->map(fn (Pull $pull) => $pull->related()->take(5)->random())
+                ->shuffle(),
         ]);
     }
 }

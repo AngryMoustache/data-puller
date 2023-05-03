@@ -1,11 +1,13 @@
 <x-container class="flex flex-col gap-12 py-12">
-    <div class="flex flex-col gap-8">
-        <x-headers.h2 text="Based on recent viewings" />
-        <livewire:sections.recommendations />
-    </div>
-
-    <div class="flex flex-col gap-8">
-        <x-headers.h2 text="Newest pulls" />
+    <x-section label="Newest pulls">
         <livewire:sections.newest />
-    </div>
+    </x-section>
+
+    <x-section label="Recommendations">
+        <livewire:sections.recommendations />
+    </x-section>
+
+    <x-section label="Based on recent viewings">
+        <livewire:sections.history-recommendations />
+    </x-section>
 </x-container>

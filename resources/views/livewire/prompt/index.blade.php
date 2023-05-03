@@ -18,8 +18,12 @@
             @endforeach
         </div>
 
-        <div class="flex flex-col md:flex-row gap-2">
+        <div class="flex flex-col md:flex-row gap-2" wire:loading.remove>
             <x-form.input type="file" wire:model="sketch" />
+        </div>
+
+        <div wire:loading>
+            <x-headers.h3 text="Uploading sketch..." />
         </div>
 
         <x-headers.h2 text="Similar pulls for today's prompt" />
