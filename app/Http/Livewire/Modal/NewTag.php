@@ -3,11 +3,14 @@
 namespace App\Http\Livewire\Modal;
 
 use App\Http\Livewire\Feed\Show;
+use App\Http\Livewire\Traits\CanToast;
 use App\Models\Tag;
 use Livewire\Component;
 
 class NewTag extends Component
 {
+    use CanToast;
+
     public string $name = '';
 
     public string | int $parent = '';
@@ -42,5 +45,7 @@ class NewTag extends Component
 
         $this->dispatchBrowserEvent('close-modal');
         $this->emitTo(Show::class, 'refresh');
+
+        $this->toast('success', 'Tag has been created');
     }
 }

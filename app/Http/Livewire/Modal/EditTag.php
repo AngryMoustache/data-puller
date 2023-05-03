@@ -2,11 +2,14 @@
 
 namespace App\Http\Livewire\Modal;
 
+use App\Http\Livewire\Traits\CanToast;
 use App\Models\Tag;
 use Livewire\Component;
 
 class EditTag extends Component
 {
+    use CanToast;
+
     public int $tagId;
     public string $name;
     public string | int $parent = '';
@@ -44,5 +47,7 @@ class EditTag extends Component
 
         $this->dispatchBrowserEvent('close-modal');
         $this->emitTo(Show::class, 'refresh');
+
+        $this->toast('success', 'Tag has been updated');
     }
 }

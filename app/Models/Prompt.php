@@ -11,6 +11,7 @@ class Prompt extends Model
 {
     protected $fillable = [
         'date',
+        'pull_id',
         'discord_pinged',
     ];
 

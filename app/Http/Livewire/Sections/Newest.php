@@ -16,12 +16,11 @@ class Newest extends Component
             return $this->renderLoadingGrid(12);
         }
 
-        $pulls = Pulls::make()
-            ->sortByDesc('verdict_at')
-            ->take(12);
-
         return view('livewire.sections.newest', [
-            'pulls' => $pulls->fetch(),
+            'pulls' => Pulls::make()
+                ->sortByDesc('verdict_at')
+                ->limit(12)
+                ->fetch(),
         ]);
     }
 }

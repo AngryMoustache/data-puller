@@ -1,7 +1,6 @@
 @props([
     'label' => null,
     'options' => collect(),
-    'nullable' => false,
     'selected' => null,
 ])
 
@@ -10,24 +9,6 @@
 ']) }}>
     @if ($label)
         <x-headers.h2>{{ $label }}</x-headers.h2>
-    @endif
-
-    @if ($nullable)
-        <label class="inline-flex items-center">
-            <input
-                type="radio"
-                value=""
-                {{ $attributes->whereStartsWith(['wire:model', 'x-model']) }}
-                class="peer hidden"
-            >
-
-            <span class="
-                opacity-50 cursor-pointer
-                peer-checked:opacity-100 peer-checked:font-semibold
-            ">
-                Show all
-            </span>
-        </label>
     @endif
 
     @foreach ($options as $key => $value)

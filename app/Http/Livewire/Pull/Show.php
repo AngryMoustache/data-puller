@@ -4,6 +4,7 @@ namespace App\Http\Livewire\Pull;
 
 use Api\Jobs\RebuildCache;
 use App\Enums\Status;
+use App\Http\Livewire\Traits\CanToast;
 use App\Models\Folder;
 use App\Models\History;
 use App\Models\Pull;
@@ -12,6 +13,8 @@ use Livewire\Component;
 
 class Show extends Component
 {
+    use CanToast;
+
     public Pull $pull;
 
     public Collection $folders;
@@ -40,5 +43,7 @@ class Show extends Component
         $this->emitSelf('refresh');
 
         RebuildCache::dispatch();
+
+        $this->toast('Folder successfully updated');
     }
 }

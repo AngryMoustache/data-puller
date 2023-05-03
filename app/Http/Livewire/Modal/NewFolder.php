@@ -4,12 +4,15 @@ namespace App\Http\Livewire\Modal;
 
 use Api\Jobs\RebuildCache;
 use App\Http\Livewire\Pull\Show;
+use App\Http\Livewire\Traits\CanToast;
 use App\Models\DynamicFolder;
 use App\Models\Folder;
 use Livewire\Component;
 
 class NewFolder extends Component
 {
+    use CanToast;
+
     public string $name = '';
 
     public null | int $pullId = null;
@@ -42,6 +45,8 @@ class NewFolder extends Component
 
         $this->dispatchBrowserEvent('close-modal');
         $this->emitTo(Show::class, 'refresh');
+
+        $this->toast('success', 'Folder has been created');
     }
 
     public function saveDynamicFolder()

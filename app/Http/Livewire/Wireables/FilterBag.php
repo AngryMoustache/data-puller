@@ -52,13 +52,15 @@ class FilterBag implements Wireable
         }
     }
 
-    public function toPulls()
+    public function toPulls(): Pulls
     {
         // Set the randomizer seed
         srand($this->randomizerSeed);
 
         // Loop over the filters and filter/sort them
         return Pulls::make()
+            // Filter out prompts when not filtering on origins
+            ->withPrompts($this->getOrigins()->count() > 0)
             ->when($this->sort, fn ($items) => $this->sort->sortCollection($items))
             ->filter(function (array $pull) {
                 $filters = $this->filters->groupBy('type');
@@ -83,18 +85,28 @@ class FilterBag implements Wireable
         }
     }
 
-    public function setOrigin(string $origin)
+    public function resetOrigins()
     {
-        // Unset the existing origin if there is one
-        $this->filters = $this->filters->reject(fn (Filter $filter) => $filter->type === FilterTypes::ORIGIN->value);
-        if (! empty($origin)) {
-            $this->filters->push(Filter::fromModel(Origin::whereSlug($origin)->first()));
+        $this->filters = $this->filters->reject(fn (Filter $filter) =>
+            $filter->type === FilterTypes::ORIGIN->value
+        );
+    }
+
+    public function setOrigins(array $origins)
+    {
+        // First remove all origins
+        $this->resetOrigins();
+
+        foreach ($origins as $origin) {
+            $origin = Origin::whereSlug($origin)->first();
+
+            $this->filters->push(Filter::fromModel($origin));
         }
     }
 
-    public function getOrigin(): null | Filter
+    public function getOrigins(): Collection
     {
-        return $this->filters->firstWhere(fn (Filter $filter) => $filter->type === FilterTypes::ORIGIN->value);
+        return $this->filters->where(fn (Filter $filter) => $filter->type === FilterTypes::ORIGIN->value);
     }
 
     public function toggleFilter(string $type, $id)

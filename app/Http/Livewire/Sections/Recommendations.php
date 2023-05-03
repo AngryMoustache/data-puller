@@ -34,10 +34,12 @@ class Recommendations extends Component
                     ->sum(fn ($id) => $tags[$id] ?? 0);
             })
             ->whereNotIn('id', $history)
-            ->take(18);
+            ->limit(18)
+            ->fetch()
+            ->shuffle();
 
         return view('livewire.sections.recommendations', [
-            'pulls' => $pulls->fetch()->shuffle(),
+            'pulls' => $pulls,
         ]);
     }
 }

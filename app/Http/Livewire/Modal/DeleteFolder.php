@@ -3,10 +3,13 @@
 namespace App\Http\Livewire\Modal;
 
 use Api\Jobs\RebuildCache;
+use App\Http\Livewire\Traits\CanToast;
 use Livewire\Component;
 
 class DeleteFolder extends Component
 {
+    use CanToast;
+
     public string $folderClass;
     public int $folderId;
     public string $name;
@@ -25,5 +28,7 @@ class DeleteFolder extends Component
         RebuildCache::dispatch();
         $this->dispatchBrowserEvent('close-modal');
         $this->emit('refresh');
+
+        $this->toast('success', 'Folder has been deleted');
     }
 }

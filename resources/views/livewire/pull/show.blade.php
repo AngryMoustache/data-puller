@@ -26,7 +26,7 @@
                 />
             </x-headers.h1>
 
-            <p class="flex items-center">
+            <p class="flex flex-wrap items-center">
                 <span class="opacity-50">Pulled</span>
                 <span class="mx-1">{{ $pull->verdict_at->diffForHumans() }}</span>
                 <span class="opacity-50">from</span>

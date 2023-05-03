@@ -37,7 +37,7 @@
         <x-nav.item
             :route="route('pull.index')"
             :active="request()->routeIs('pull.index')"
-            icon="heroicon-o-circle-stack"
+            icon="heroicon-o-inbox-arrow-down"
             label="Pulls"
         />
 

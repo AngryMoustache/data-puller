@@ -26,7 +26,7 @@ class Index extends Component
     public function mount()
     {
         $this->prompt = Prompt::getDay();
-        $this->previous = Prompt::orderBy('date')
+        $this->previous = Prompt::orderBy('date', 'desc')
             ->whereHas('pull', fn ($q) => $q->online())
             ->get();
     }

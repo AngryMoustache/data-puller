@@ -5,7 +5,7 @@
 <a
     href="{{ $folder->route() }}"
     {{ $attributes->except('folder')->merge([
-        'class' => 'bg-surface rounded p-4 p-2 w-full flex flex-col gap-2',
+        'class' => 'bg-surface rounded p-4 pb-3 p-2 w-full flex flex-col gap-2',
     ]) }}
 >
     <div class="overflow-hidden rounded flex items-center" style="aspect-ratio: 3/2.5">
@@ -16,14 +16,16 @@
         />
     </div>
 
-    <div class="flex justify-between items-center p-1">
+    <div class="flex justify-between items-center p-1 pt-2">
         <div class="flex flex-col">
             <span class="font-bold line-clamp-1">
                 {{ $folder->name }}
             </span>
 
             <div class="text-sm opacity-75">
-                {{ optional($folder->created_at)->diffForHumans() }}
+                Contains
+                {{ $folder->pulls?->count() ?? $folder->getPulls()->count() }}
+                {{ Str::plural('pull', $folder->pulls?->count()) ?? $folder->getPulls()->count() }}
             </div>
         </div>
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use AngryMoustache\Media\Models\Attachment;
 use Api\Entities\Pullable;
 use App\Enums;
+use App\Enums\Origin as EnumsOrigin;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 
@@ -44,6 +45,11 @@ class Origin extends Model
         $this->type->pull($this)?->each(function (Pullable $pull) {
             $pull->save($this);
         });
+    }
+
+    public function scopePrompts($query)
+    {
+        return $query->where('type', EnumsOrigin::PROMPT);
     }
 
     public function getIconNameAttribute()

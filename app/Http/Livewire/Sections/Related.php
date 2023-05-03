@@ -33,10 +33,11 @@ class Related extends Component
         $pulls = Pulls::make()
             ->where('id', '!=', $this->pullId)
             ->sortByDesc(fn (array $pull) => collect($pull['tags'])->intersect($tags)->count())
-            ->take($this->page * $this->perPage);
+            ->limit($this->page * $this->perPage)
+            ->fetch();
 
         return view('livewire.sections.related', [
-            'pulls' => $pulls->fetch(),
+            'pulls' => $pulls,
         ]);
     }
 }

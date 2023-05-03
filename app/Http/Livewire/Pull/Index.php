@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Pull;
 
-use App\Enums\FilterTypes;
 use App\Enums\Sorting;
 use App\Http\Livewire\Traits\HasPagination;
 use App\Http\Livewire\Traits\HasPreLoading;
@@ -43,7 +42,7 @@ class Index extends Component
         $pulls = $this->filters->toPulls();
 
         return view('livewire.pull.index', [
-            'pulls' => $pulls->take($this->page * $this->perPage)->fetch(),
+            'pulls' => $pulls->limit($this->page * $this->perPage)->fetch(),
             'count' => $pulls->count(),
             'hasMore' => $pulls->count() > ($this->page * $this->perPage),
             'sortOptions' => Sorting::list(),
@@ -53,13 +52,10 @@ class Index extends Component
         ]);
     }
 
-    public function setFilterValues($sort, $origin)
+    public function setFilterValues($sort, $origins)
     {
         $this->filters->setSorting($sort);
-
-        if ($origin) {
-            $this->filters->setOrigin($origin);
-        }
+        $this->filters->setOrigins($origins);
     }
 
     public function toggleFilter(string $type, $id)

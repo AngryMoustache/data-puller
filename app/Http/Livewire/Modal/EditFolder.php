@@ -3,10 +3,13 @@
 namespace App\Http\Livewire\Modal;
 
 use Api\Jobs\RebuildCache;
+use App\Http\Livewire\Traits\CanToast;
 use Livewire\Component;
 
 class EditFolder extends Component
 {
+    use CanToast;
+
     public string $folderClass;
     public int $folderId;
     public string $name;
@@ -35,5 +38,7 @@ class EditFolder extends Component
         RebuildCache::dispatch();
         $this->dispatchBrowserEvent('close-modal');
         $this->emit('refresh');
+
+        $this->toast('success', 'Folder has been updated');
     }
 }

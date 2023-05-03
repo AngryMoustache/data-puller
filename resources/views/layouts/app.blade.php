@@ -11,6 +11,7 @@
     </head>
     <body class="bg-background">
         <livewire:modal-controller />
+        <x-toasts />
 
         <x-main>
             {{ $slot }}
