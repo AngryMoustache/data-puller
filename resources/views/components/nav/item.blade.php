@@ -25,7 +25,7 @@
             <span class="
                 absolute -right-2 -top-3 rounded-full px-2 py-1
                 text-white bg-primary text-xs
-                border border-background
+                border-2 border-background
             ">
                 {{ $number }}
             </span>

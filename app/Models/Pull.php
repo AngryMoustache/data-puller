@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use AngryMoustache\Media\Models\Attachment;
+use Api\Clients\OpenAI;
 use App\Enums;
 use App\Enums\Status;
 use App\Pulls;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use OpenAI\Laravel\Facades\OpenAI;
 
 class Pull extends Model
 {
@@ -83,7 +83,12 @@ class Pull extends Model
 
         return Pulls::make()
             ->where('id', '!=', $this->id)
-            ->sortByDesc(fn (array $pull) => collect($pull['tags'])->intersect($tags)->count())
+            ->sortByDesc(fn (array $pull) =>
+                max(
+                    collect($pull['tags'])->intersect($tags)->count() - $pull['views'],
+                    0
+                )
+            )
             ->limit($amount)
             ->fetch();
     }
@@ -109,7 +114,9 @@ class Pull extends Model
 
     public function scopePending($query)
     {
-        return $query->where('status', Status::PENDING);
+        return $query->where('status', Status::PENDING)->where(function ($query) {
+            $query->whereHas('attachments')->orWhereHas('videos');
+        });
     }
 
     public function scopeOnline($query)
@@ -124,20 +131,7 @@ class Pull extends Model
 
     public static function getAiName(Collection $tags): string | null
     {
-        $tags = $tags->pluck('long_name')->join(', ');
-
-        $result = OpenAI::completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => config('openai.prompt_start') . $tags . '.',
-            'max_tokens' => 150,
-            'temperature' => 0.7,
-            'top_p' => 1,
-        ]);
-
-        return Str::of($result['choices'][0]['text'] ?? '')
-            ->replace('"', '')
-            ->trim()
-            ->__toString();
+        return OpenAI::getNameBasedOnTags($tags);
     }
 
     public static function random()

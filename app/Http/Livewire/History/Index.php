@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\History;
 
-use App\Http\Livewire\Traits\HasPagination;
 use App\Http\Livewire\Traits\HasPreLoading;
 use App\Models\History;
 use Livewire\Component;

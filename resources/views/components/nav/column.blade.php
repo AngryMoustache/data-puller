@@ -49,21 +49,19 @@
         />
 
         <x-nav.item
-            :route="route('pull.random')"
-            :active="request()->routeIs('pull.random')"
-            icon="heroicon-o-light-bulb"
-            label="Random"
+            :route="route('feed.index')"
+            :active="request()->routeIs('feed.index')"
+            icon="heroicon-o-bell-alert"
+            label="Feed"
+            :number="$feed"
         />
 
-        @if ($feed)
-            <x-nav.item
-                :route="route('feed.index')"
-                :active="request()->routeIs('feed.index')"
-                icon="heroicon-o-bell-alert"
-                label="Feed"
-                :number="$feed"
-            />
-        @endif
+        <x-nav.item
+            :route="route('pull.random')"
+            :active="request()->routeIs('pull.random')"
+            icon="heroicon-o-question-mark-circle"
+            label="Random"
+        />
 
         <x-nav.item
             :route="route('prompt.index')"

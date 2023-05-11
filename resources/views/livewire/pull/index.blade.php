@@ -40,7 +40,6 @@
                         $watch('origins', () => this.search())
                     },
                     search () {
-                        console.log(this.sort, this.origins)
                         $wire.setFilterValues(this.sort, this.origins)
                     },
                 }"

@@ -2,6 +2,7 @@
 
 namespace Api\Entities;
 
+use Api\Clients\OpenAI;
 use Api\Entities\Media\Media;
 use Api\Jobs\SyncPull;
 use App\Models\Artist;
@@ -29,7 +30,11 @@ class Pullable
     public function checkJapanese($value, $fallback = null)
     {
         if (empty($value) || mb_detect_encoding($value) !== 'ASCII') {
-            $value = $fallback ?? rand(10000, 99999);
+            $value = OpenAI::translateToEnglish($value);
+        }
+
+        if (empty($value)) {
+            $value = $fallback;
         }
 
         return Str::of($value)->trim();

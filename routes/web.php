@@ -16,6 +16,7 @@ Route::get('/pull/random', fn () => redirect()->route('pull.show', ['pull' => Pu
 Route::get('/pull/{pull}', Livewire\Pull\Show::class)->name('pull.show');
 
 Route::get('/prompts', Livewire\Prompt\Index::class)->name('prompt.index');
+Route::get('/prompts/{prompt}', Livewire\Prompt\Show::class)->name('prompt.show');
 
 Route::get('/folders', Livewire\Folder\Index::class)->name('folder.index');
 

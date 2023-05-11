@@ -83,7 +83,10 @@
                             </div>
 
                             <div class="grow">
-                                <p class="line-clamp-1">{{ $image->original_name }}</p>
+                                <p class="line-clamp-1">
+                                    {{ Str::limit($image->original_name, 10) }}
+                                </p>
+
                                 <p class="opacity-50 text-sm">
                                     {{ $image->width }}px x {{ $image->height }}px
                                 </p>

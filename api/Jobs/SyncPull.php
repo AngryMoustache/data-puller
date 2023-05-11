@@ -30,8 +30,8 @@ class SyncPull implements ShouldQueue
             'source_url' => $this->pull->source
         ], [
             'name' => $this->pull->name,
-            'artist_id' => $this->pull->artist->id,
-            'origin_id' => $this->pull->origin->id,
+            'artist_id' => $this->pull->artist?->id,
+            'origin_id' => $this->pull->origin?->id,
         ]);
 
         // Don't save the media if it was not created now

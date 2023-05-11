@@ -44,7 +44,7 @@ class DeviantArt
         }
 
         return collect($items)
-            ->filter(fn ($item) => isset($item['content']))
+            ->filter(fn ($item) => isset($item['content']) || isset($item['videos']))
             ->mapInto(Deviantion::class);
     }
 }

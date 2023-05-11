@@ -13,6 +13,7 @@ return [
     */
 
     'api_key' => env('OPENAI_API_KEY'),
-    'prompt_start' => env('OPENAI_PROMPT_START'),
+    'name_generation_prompt' => env('OPENAI_NAME_GENERATION_PROMPT'),
+    'drawing_prompt' => env('OPENAI_DRAWING_PROMPT'),
 
 ];

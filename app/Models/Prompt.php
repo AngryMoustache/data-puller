@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Api\Clients\OpenAI;
 use App\Pulls;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -11,14 +12,18 @@ class Prompt extends Model
 {
     protected $fillable = [
         'date',
+        'description',
         'pull_id',
-        'discord_pinged',
     ];
 
     public $casts = [
         'date' => 'date',
-        'discord_pinged' => 'integer',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'date';
+    }
 
     public function pull()
     {
@@ -34,19 +39,6 @@ class Prompt extends Model
     {
         return $this->belongsToMany(Tag::class)
             ->orderBy('tags.long_name');
-    }
-
-    public static function getDay(null | Carbon $day = null): static
-    {
-        $prompt = static::firstOrCreate([
-            'date' => ($day ?? now())->format('Y-m-d'),
-        ]);
-
-        if ($prompt->tags->isEmpty()) {
-            $prompt->tags()->sync(static::getTagList()->pluck('id'));
-        }
-
-        return $prompt->refresh();
     }
 
     public function getGroupedTagsAttribute()
@@ -66,6 +58,36 @@ class Prompt extends Model
             )
             ->take($amount)
             ->fetch();
+    }
+
+    public function route()
+    {
+        return route('prompt.show', $this->date->format('Y-m-d'));
+    }
+
+    public function generateNameDescription()
+    {
+        $this->name = OpenAI::getNameBasedOnTags($this->tags);
+        $this->description = OpenAI::getPromptBasedOnTags($this->tags);
+
+        $this->saveQuietly();
+    }
+
+    public static function getDay(null | Carbon $day = null): static
+    {
+        $prompt = static::firstOrCreate([
+            'date' => ($day ?? now())->format('Y-m-d'),
+        ]);
+
+        if ($prompt->tags->isEmpty()) {
+            $prompt->tags()->sync(static::getTagList()->pluck('id'));
+        }
+
+        $prompt = $prompt->refresh();
+
+        $prompt->generateNameDescription();
+
+        return $prompt;
     }
 
     // Doing this hard-coded for now, don't judge

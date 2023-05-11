@@ -7,6 +7,10 @@
         <livewire:sections.recommendations />
     </x-section>
 
+    <x-section label="Hidden gems">
+        <livewire:sections.hidden-gems />
+    </x-section>
+
     <x-section label="Based on recent viewings">
         <livewire:sections.history-recommendations />
     </x-section>
