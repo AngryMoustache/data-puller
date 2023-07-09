@@ -1,21 +1,6 @@
 <x-container class="w-full flex flex-col relative md:flex-row gap-8">
-    <div class="
-        w-full flex flex-col gap-4
-        md:sticky md:top-2 md:w-1/3 md:min-h-feed
-    ">
-        @foreach ($pull->videos as $video)
-            <x-video :src="$video->path()" class="w-full rounded" />
-        @endforeach
-
-        @foreach ($attachments as $image)
-            <x-img
-                wire:key="image-list-{{ $image->id }}"
-                class="rounded"
-                :src="$image->path()"
-                :width="$image->width"
-                :height="$image->height"
-            />
-        @endforeach
+    <div class="hidden-scroll w-full md:sticky md:top-2 md:w-1/3 md:min-h-feed">
+        <livewire:feed.media-list :media="$media" />
     </div>
 
     <div class="w-full md:w-2/3 flex flex-col gap-8 py-4">
@@ -26,7 +11,11 @@
                 <span class="opacity-50">Pulled</span>
                 <span class="mx-1">{{ $pull->created_at->diffForHumans() }}</span>
                 <span class="opacity-50">by</span>
-                <x-origin class="mx-2" :origin="$pull->origin" href="{{ $pull->source_url }}" />
+                <x-origin class="mx-2"
+                    href="{{ $pull->source_url }}"
+                    :origin="$pull->origin"
+                    :label="$pull->artist?->name"
+                />
             </p>
         </div>
 
@@ -54,57 +43,108 @@
         </x-alpine.collapsible>
 
         <x-alpine.collapsible title="Media" :open="true">
-            <div class="flex flex-col gap-4">
+            <div
+                class="flex flex-col gap-4"
+                x-data="{
+                    list: @entangle('media').defer,
+                    thumbnail: @entangle('thumbnail').defer,
+                    sortable: null,
+                    config: {
+                        animation: 150,
+                        ghostClass: 'opacity-20',
+                        handle: '.sortable-handle',
+                    },
+                    init () {
+                        this.sortable = Sortable.create(this.$refs.items, this.config)
+                        this.thumbnail = this.list.filter(media => media.is_thumbnail)[0]?.id || null
+                    },
+                    removeMedia (key) {
+                        this.list.splice(key, 1)
+
+                        $wire.emit('update-media-list', this.list)
+                    },
+                    toggleThumbnail (id) {
+                        this.thumbnail = id
+
+                        $wire.emit('update-cropper-attachment', this.thumbnail)
+                    },
+                    reorder (e) {
+                        const list = Alpine.raw(this.sortable.toArray().splice(1))
+                            .map(id => this.list.find(media => 'media-' + media.id === id))
+
+                        this.list = []
+
+                        window.setTimeout(() => {
+                            this.list = list
+
+                            $wire.emit('update-media-list', this.list)
+                        }, 0)
+                    },
+                }"
+            >
                 <div
                     class="flex flex-col gap-4"
-                    wire:sortable="updateMediaOrder"
-                    wire:loading.class="opacity-50"
-                    wire:key="attachments-{{ $attachments->pluck('id')->join('-') }}"
+                    x-ref="items"
+                    x-on:update="reorder"
                 >
-                    @foreach ($attachments as $key =>  $image)
+                    <template x-for="(media, key) in list" :key="media.id">
                         <div
-                            wire:sortable.item="{{ $image->id }}"
-                            wire:key="media-{{ $key }}-{{ $image->id }}"
+                            :data-id="'media-' + media.id"
+                            :wire:key="'media-' + media.id"
                             class="
                                 flex items-center gap-4
                                 p-2 border border-border rounded-lg bg-surface
                             "
                         >
                             <x-heroicon-o-bars-3
-                                wire:sortable.handle
-                                class="w-12 h-6 cursor-move"
+                                class="sortable-handle w-12 h-6 cursor-move"
                             />
 
                             <div class="w-16 h-16">
-                                <x-img
-                                    :src="$image->format('thumb')"
-                                    class="rounded-lg"
+                                <img
+                                    class="w-full bg-border rounded-lg aspect-square"
+                                    :src="media.thumbnail"
                                 />
                             </div>
 
                             <div class="grow">
                                 <p class="line-clamp-1">
-                                    {{ Str::limit($image->original_name, 10) }}
+                                    <span x-text="media.name"></span>
                                 </p>
 
                                 <p class="opacity-50 text-sm">
-                                    {{ $image->width }}px x {{ $image->height }}px
+                                    <span x-text="media.width"></span>px x
+                                    <span x-text="media.height"></span>px
                                 </p>
+                            </div>
+
+                            <div x-show="thumbnail === media.id">
+                                <x-heroicon-o-photo
+                                    class="w-12 h-6 cursor-pointer hover:text-primary"
+                                    x-on:click="toggleThumbnail(media.id)"
+                                />
+                            </div>
+
+                            <div x-show="thumbnail !== media.id">
+                                <x-heroicon-o-photo
+                                    class="opacity-25 w-12 h-6 cursor-pointer hover:text-primary"
+                                    x-on:click="toggleThumbnail(media.id)"
+                                />
                             </div>
 
                             <x-heroicon-o-trash
                                 class="w-12 h-6 cursor-pointer hover:text-primary"
-                                wire:click="removeAttachment({{ $image->id }})"
+                                x-on:click="removeMedia(key)"
                             />
                         </div>
-                    @endforeach
+                    </template>
                 </div>
 
-                <div class="flex">
+                <div class="flex gap-4">
                     <x-form.button-secondary
-                        text="Add attachment"
+                        text="Add more media"
                         x-on:click="window.openModal('add-attachment', {
-                            selected: {{ json_encode($pull->attachments->pluck('id')->toArray()) }},
+                            selected: list.map(media => media.id),
                         })"
                     />
                 </div>

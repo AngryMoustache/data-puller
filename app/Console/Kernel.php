@@ -18,7 +18,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('sync:origins')->cron('0 * * * *');
         $schedule->command('rebuild:cache')->cron('10 * * * *');
-        $schedule->call(fn () => Prompt::getDay())->cron('0 1 * * *');
+        // $schedule->call(fn () => Prompt::getDay())->cron('0 1 * * *');
     }
 
     /**

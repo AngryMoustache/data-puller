@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Api\Clients\OpenAI;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -32,6 +33,10 @@ class Artist extends Model
     {
         if (empty($name)) {
             return null;
+        }
+
+        if (mb_detect_encoding($name) !== 'ASCII') {
+            $name = OpenAI::translateToEnglish($name);
         }
 
         $artist = Artist::firstOrCreate([

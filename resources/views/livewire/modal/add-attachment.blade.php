@@ -1,6 +1,9 @@
 <x-modal class="w-screen">
     <x-surface class="flex flex-col gap-4" x-data="{
         selected: {{ json_encode($selected) }},
+        init () {
+            console.log(this.selected)
+        },
     }">
         <x-headers.h2 text="Select an attachment" class="p-2" />
 
@@ -32,15 +35,15 @@
                                 wire:key="attachment-{{ $attachment->id }}"
                                 class="rounded cursor-pointer"
                                 x-bind:class="{
-                                    'p-2 border border-primary': selected.includes({{ $attachment->id }}),
+                                    'p-2 border border-primary': selected.includes({{ $attachment->jsonId() }}),
                                 }"
                             >
                                 <x-img
                                     :src="$attachment->format('thumb')"
                                     class="rounded"
-                                    x-on:click="selected.includes({{ $attachment->id }})
-                                        ? selected = selected.filter(id => id !== {{ $attachment->id }})
-                                        : selected.push({{ $attachment->id }})"
+                                    x-on:click="selected.includes({{ $attachment->jsonId() }})
+                                        ? selected = selected.filter(id => id !== {{ $attachment->jsonId() }})
+                                        : selected.push({{ $attachment->jsonId() }})"
                                 />
                             </div>
                         @endforeach

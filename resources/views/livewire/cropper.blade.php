@@ -1,9 +1,20 @@
 <div x-data="{
     init () {
-        const image = document.getElementById('cropper')
+        this.initCropper()
+
+        window.addEventListener('init-cropper', ({ detail }) => {
+            this.initCropper()
+        })
+    },
+    initCropper () {
+        const image = document.getElementById('cropper-frame')
 
         image.style.maxWidth = image.parentElement.clientWidth + 'px'
         image.style.minHeight = image.parentElement.clientHeight + 'px'
+
+        if (window.cropper !== undefined) {
+            window.cropper.destroy()
+        }
 
         window.cropper = new Cropper(image, {
             ...@js($options),
@@ -11,7 +22,7 @@
             dragMode: 'move',
             ready() { this.cropper.setData(@js($initial)) },
         })
-    }
+    },
 }">
     <div wire:loading.flex>
         <x-loading />
@@ -21,9 +32,9 @@
         <div class="w-full flex gap-4">
             <div class="w-full aspect-square block overflow-hidden">
                 <img
-                    id="cropper"
+                    id="cropper-frame"
                     src="{{ $attachment->path() }}"
-                    wire:key="{{ $current }}"
+                    wire:key="cropper-{{ $attachment->id }}"
                 />
             </div>
 

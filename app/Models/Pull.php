@@ -6,6 +6,7 @@ use AngryMoustache\Media\Models\Attachment;
 use Api\Clients\OpenAI;
 use App\Enums;
 use App\Enums\Status;
+use App\PullMedia;
 use App\Pulls;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -58,13 +59,21 @@ class Pull extends Model
     public function attachments()
     {
         return $this->morphedByMany(Attachment::class, 'media', 'media_pull')
-            ->withPivot('sort_order')
+            ->withPivot(['sort_order', 'is_thumbnail'])
             ->orderByPivot('sort_order');
     }
 
     public function videos()
     {
-        return $this->morphedByMany(Video::class, 'media', 'media_pull');
+        return $this->morphedByMany(Video::class, 'media', 'media_pull')
+            ->withPivot(['sort_order', 'is_thumbnail'])
+            ->orderByPivot('sort_order');
+    }
+
+    public function ratings()
+    {
+        return $this->belongsToMany(RatingCategory::class, 'category_rating_pull')
+            ->withPivot('rating');
     }
 
     public function route()
@@ -95,8 +104,17 @@ class Pull extends Model
 
     public function getAttachmentAttribute()
     {
-        return $this->attachments->first()
+        return $this->attachments()->where('is_thumbnail')->first()
+            ?? $this->attachments->first()
             ?? $this->videos->first()?->preview;
+    }
+
+    public function getMediaAttribute()
+    {
+        return $this->videos->merge($this->attachments)
+            ->sortBy('pivot.sort_order')
+            ->values()
+            ->mapInto(PullMedia::class);
     }
 
     public function getPulledWhenAttribute()

@@ -40,7 +40,7 @@ class Twitter
     public function likes($page = 1)
     {
         // Get the user ID
-        $id = $this->call("/users/by/username/{$this->origin->api_target}", [])['data']['id'];
+        $id = dd($this, $this->call("/users/by/username/{$this->origin->api_target}", []))['data']['id'];
 
         // Get the Twitter API data
         for ($i = 0; $i < $page; $i++) {

@@ -20,9 +20,10 @@ class HiddenGems extends Component
         return view('livewire.sections.recommendations', [
             'pulls' => Pulls::make()
                 ->sortBy('views')
-                ->limit(6)
+                ->limit(24)
                 ->fetch()
-                ->shuffle(),
+                ->shuffle()
+                ->take(6),
         ]);
     }
 }

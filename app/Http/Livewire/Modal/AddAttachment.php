@@ -24,13 +24,14 @@ class AddAttachment extends Component
     public function render()
     {
         $pulls = Pull::whereHas('attachments')
+            ->orWhereHas('videos')
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
         $this->pullId ??= $pulls->first()?->id;
 
         return view('livewire.modal.add-attachment', [
-            'attachments' => Pull::find($this->pullId)?->attachments,
+            'attachments' => Pull::find($this->pullId)?->media,
             'pulls' => $pulls,
         ]);
     }
@@ -43,7 +44,7 @@ class AddAttachment extends Component
     public function addSelected(array $selected)
     {
         // We close the modal in the target
-        $this->emit('add-attachments', $selected);
+        $this->emit('set-media', $selected);
         $this->forceLoading = true;
     }
 }

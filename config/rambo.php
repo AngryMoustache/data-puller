@@ -13,6 +13,7 @@ return [
         Rambo\Pull::class,
         Rambo\Origin::class,
         Rambo\Video::class,
+        Rambo\RatingCategory::class,
     ],
     'navigation' => [
         'General' => [
@@ -24,6 +25,7 @@ return [
         ],
         Rambo\Origin::class,
         Rambo\Pull::class,
+        Rambo\RatingCategory::class,
     ],
     'cropper' => [
         'formats' => [

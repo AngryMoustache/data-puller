@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "alpinejs": "^3.10.5",
-        "cropperjs": "^1.5.13"
+        "cropperjs": "^1.5.13",
+        "sortablejs": "^1.15.0"
     }
 }
