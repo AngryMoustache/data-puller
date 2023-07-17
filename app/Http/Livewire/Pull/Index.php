@@ -52,10 +52,11 @@ class Index extends Component
         ]);
     }
 
-    public function setFilterValues($sort, $origins)
+    public function setFilterValues($sort, $origins, $mediaType)
     {
         $this->filters->setSorting($sort);
         $this->filters->setOrigins($origins);
+        $this->filters->setMediaType($mediaType);
     }
 
     public function toggleFilter(string $type, $id)

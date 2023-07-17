@@ -5,7 +5,6 @@ namespace App\Models;
 use AngryMoustache\Media\Models\Attachment;
 use Api\Clients\OpenAI;
 use App\Enums;
-use App\Enums\Status;
 use App\PullMedia;
 use App\Pulls;
 use Illuminate\Database\Eloquent\Model;
@@ -132,19 +131,28 @@ class Pull extends Model
 
     public function scopePending($query)
     {
-        return $query->where('status', Status::PENDING)->where(function ($query) {
+        return $query->where('status', Enums\Status::PENDING)->where(function ($query) {
             $query->whereHas('attachments')->orWhereHas('videos');
         });
     }
 
     public function scopeOnline($query)
     {
-        return $query->where('status', Status::ONLINE);
+        return $query->where('status', Enums\Status::ONLINE);
     }
 
     public function scopeOffline($query)
     {
-        return $query->where('status', Status::OFFLINE);
+        return $query->where('status', Enums\Status::OFFLINE);
+    }
+
+    public function canHaveSourceUrl()
+    {
+        if (! $this->origin || ! $this->origin->type) {
+            return false;
+        }
+
+        return $this->origin->type !== Enums\Origin::EXTERNAL;
     }
 
     public static function getAiName(Collection $tags): string | null

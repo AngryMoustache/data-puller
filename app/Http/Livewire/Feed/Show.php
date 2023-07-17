@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Feed;
 use AngryMoustache\Media\Models\Attachment;
 use Api\Jobs\RebuildCache;
 use App\Enums\Status;
+use App\Http\Livewire\Traits\CanToast;
 use App\Http\Livewire\Traits\HasPreLoading;
 use App\Models\Artist;
 use App\Models\Pull;
@@ -18,6 +19,7 @@ use Livewire\Component;
 class Show extends Component
 {
     use HasPreLoading;
+    use CanToast;
 
     public Pull $pull;
 
@@ -38,6 +40,7 @@ class Show extends Component
         $this->fields = [
             'name' => $this->pull->name,
             'artist' => $this->pull->artist?->name ?? 'Unknown',
+            'source_url' => $this->pull->source_url,
             'tags' => $this->pull->tags->pluck('id')->mapWithKeys(fn (int $id) => [$id => true])->toArray(),
         ];
 
@@ -99,6 +102,7 @@ class Show extends Component
         $this->pull->update([
             'name' => $this->fields['name'],
             'artist_id' => $artist->id,
+            'source_url' => $this->fields['source_url'],
             'status' => $status,
             'verdict_at' => $this->pull->verdict_at ?? now(),
         ]);
@@ -113,6 +117,8 @@ class Show extends Component
 
         if ($status !== Status::PENDING->value) {
             return redirect()->route('feed.index');
+        } else {
+            $this->toast('Pull saved with the pending status');
         }
     }
 

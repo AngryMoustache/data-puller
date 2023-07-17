@@ -27,7 +27,7 @@
                     :label="$pull->artist?->name"
                 />
 
-                @if ($pull->source_url)
+                @if ($pull->source_url && $pull->canHaveSourceUrl())
                     <a
                         href="{{ $pull->source_url }}"
                         target="_blank"

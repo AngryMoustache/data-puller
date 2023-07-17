@@ -11,6 +11,7 @@ enum FilterTypes: string
     case FOLDER = Models\Folder::class;
     case ARTIST = Models\Artist::class;
     case ORIGIN = Models\Origin::class;
+    case MEDIATYPE = MediaType::class;
 
     public static function fromString(string $type): null | string
     {
@@ -20,6 +21,7 @@ enum FilterTypes: string
             'folders' => self::FOLDER->value,
             'artists' => self::ARTIST->value,
             'origins' => self::ORIGIN->value,
+            'media-type' => self::MEDIATYPE->value,
             default => null,
         };
     }
@@ -32,6 +34,7 @@ enum FilterTypes: string
             self::FOLDER->value => 'folders',
             self::ARTIST->value => 'artists',
             self::ORIGIN->value => 'origins',
+            self::MEDIATYPE->value => 'media-type',
             default => null,
         };
     }

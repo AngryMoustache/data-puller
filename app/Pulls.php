@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\MediaType;
 use App\Models\Origin;
 use App\Models\Pull;
 use Illuminate\Support\Collection;
@@ -77,6 +78,10 @@ class Pulls extends Collection
                     'origins' => [$pull->origin?->slug],
                     'tags' => $pull->tags->pluck('slug'),
                     'folders' => $pull->folders->pluck('slug'),
+                    'media_type' => [
+                        MediaType::IMAGE->value => $pull->attachments->isEmpty(),
+                        MediaType::VIDEO->value => $pull->videos->isEmpty(),
+                    ],
                 ]);
             });
     }

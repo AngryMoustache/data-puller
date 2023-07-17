@@ -211,6 +211,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         'Display' => App\Enums\Display::class,
         'Sorting' => App\Enums\Sorting::class,
+        'MediaType' => App\Enums\MediaType::class,
         'GridBuilder' => App\GridBuilder::class,
     ])->toArray(),
 

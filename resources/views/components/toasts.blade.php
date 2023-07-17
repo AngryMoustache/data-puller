@@ -8,7 +8,7 @@
         let $toastMessage = document.createElement('p')
 
         $toastMessage.appendChild(document.createTextNode(event.detail.message))
-        $toast.classList.add('toasts-toast', 'bg-' + event.detail.color)
+        $toast.classList.add('toasts-toast', 'border', 'border-background', 'bg-' + event.detail.color)
         $toast.appendChild($toastMessage)
         document.getElementById('toasts').appendChild($toast)
 

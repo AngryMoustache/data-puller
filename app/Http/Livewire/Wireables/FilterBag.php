@@ -7,10 +7,13 @@ use App\Filters\HasAllFilter;
 use App\Filters\HasOneFilter;
 use App\Filters\QueryFilter;
 use App\Enums\FilterTypes;
+use App\Enums\MediaType;
 use App\Enums\Sorting;
 use App\Models\Origin;
 use App\Pulls;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Livewire\Wireable;
 
 class FilterBag implements Wireable
@@ -18,6 +21,8 @@ class FilterBag implements Wireable
     public Collection $filters;
 
     public Sorting $sort = Sorting::NEWEST;
+
+    public MediaType $mediaType = MediaType::ALL;
 
     public null | int $randomizerSeed = null;
 
@@ -30,7 +35,7 @@ class FilterBag implements Wireable
 
         // Get filters that come from models
         $this->filters = $filters
-            ->filter(fn ($i, $type) => $type !== 'query' && FilterTypes::fromString($type))
+            ->filter(fn ($i, $type) => $type !== 'query' && Str::contains(FilterTypes::fromString($type), 'Model'))
             ->map(fn ($items, $type) => FilterTypes::fromString($type)::whereIn('slug', $items)->get())
             ->flatten()
             ->map(fn ($item) => Filter::fromModel($item));
@@ -50,6 +55,11 @@ class FilterBag implements Wireable
         if (isset($filters['sort'])) {
             $this->sort = Sorting::tryFrom($filters['sort'][0]) ?? Sorting::NEWEST;
         }
+
+        // Is there a media type?
+        if (isset($filters['media-type'])) {
+            $this->mediaType = MediaType::tryFrom($filters['media-type'][0]) ?? MediaType::ALL;
+        }
     }
 
     public function toPulls(): Pulls
@@ -62,6 +72,7 @@ class FilterBag implements Wireable
             // Filter out prompts when not filtering on origins
             ->withPrompts($this->getOrigins()->count() > 0)
             ->when($this->sort, fn ($items) => $this->sort->sortCollection($items))
+            ->when($this->mediaType, fn ($items) => $this->mediaType->filter($items))
             ->filter(function (array $pull) {
                 $filters = $this->filters->groupBy('type');
 
@@ -85,11 +96,9 @@ class FilterBag implements Wireable
         }
     }
 
-    public function resetOrigins()
+    public function setMediaType(string $mediaType)
     {
-        $this->filters = $this->filters->reject(fn (Filter $filter) =>
-            $filter->type === FilterTypes::ORIGIN->value
-        );
+        $this->mediaType = is_string($mediaType) ? MediaType::from($mediaType) : $mediaType;
     }
 
     public function setOrigins(array $origins)
@@ -102,6 +111,13 @@ class FilterBag implements Wireable
 
             $this->filters->push(Filter::fromModel($origin));
         }
+    }
+
+    public function resetOrigins()
+    {
+        $this->filters = $this->filters->reject(fn (Filter $filter) =>
+            $filter->type === FilterTypes::ORIGIN->value
+        );
     }
 
     public function getOrigins(): Collection
@@ -145,6 +161,10 @@ class FilterBag implements Wireable
             ->when(
                 ! in_array($this->sort, [Sorting::RANDOM, Sorting::NEWEST]),
                 fn ($items) => $items->push("sort:{$this->sort->value}")
+            )
+            ->when(
+                $this->mediaType !== MediaType::ALL,
+                fn ($items) => $items->push("media-type:{$this->mediaType->value}")
             )
             ->implode('/');
     }

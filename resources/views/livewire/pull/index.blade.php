@@ -35,12 +35,18 @@
                 x-data="{
                     sort: @js($filters->sort->value),
                     origins: @js($filters->getOrigins()->pluck('key')->toArray()),
+                    mediaType: @js($filters->mediaType->value),
                     init () {
                         $watch('sort', () => this.search())
                         $watch('origins', () => this.search())
+                        $watch('mediaType', () => this.search())
                     },
                     search () {
-                        $wire.setFilterValues(this.sort, this.origins)
+                        $wire.setFilterValues(
+                            this.sort,
+                            this.origins,
+                            this.mediaType,
+                        )
                     },
                 }"
             >
@@ -50,6 +56,13 @@
                         label="Sort by"
                         :options="Sorting::list()"
                         x-model="sort"
+                    />
+
+                    <x-form.radio-list
+                        class="w-full md:w-1/2"
+                        label="Media type"
+                        :options="MediaType::list()"
+                        x-model="mediaType"
                     />
 
                     <div class="w-full md:w-1/2 flex flex-col gap-2 p-4 w-full">
@@ -78,7 +91,7 @@
         </div>
     </div>
 
-        @if ($filters->filters->isNotEmpty())
+    @if ($filters->filters->isNotEmpty())
         <div class="pb-4 md:pb-0 md:flex justify-between gap-4 pl-4 pr-2">
             <div class="w-full md:w-fit flex flex-wrap gap-4">
                 @foreach ($filters->filters as $filter)

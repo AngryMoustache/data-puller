@@ -8,14 +8,14 @@ use AngryMoustache\Rambo\Resource;
 
 class Video extends Resource
 {
-    public $displayName = 'name';
+    public $displayName = 'original_name';
 
     public function fields()
     {
         return [
             Fields\IDField::make(),
 
-            Fields\TextField::make('name')
+            Fields\TextField::make('original_name')
                 ->sortable()
                 ->searchable()
                 ->rules('required'),

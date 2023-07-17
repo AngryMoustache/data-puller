@@ -39,6 +39,13 @@
                     :value="$pull->name"
                     wire:model.defer="fields.artist"
                 />
+
+                <x-form.input
+                    label="Source URL"
+                    placeholder="Source URL"
+                    :value="$pull->source_url"
+                    wire:model.defer="fields.source_url"
+                />
             </div>
         </x-alpine.collapsible>
 

@@ -10,7 +10,7 @@ class PullMedia
 {
     public string $id;
 
-    public Attachment $image;
+    public null | Attachment $image;
 
     public function __construct(public Video | Attachment $media)
     {

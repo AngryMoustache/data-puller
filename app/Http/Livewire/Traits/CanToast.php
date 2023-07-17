@@ -8,7 +8,7 @@ trait CanToast
     {
         $this->dispatchBrowserEvent('toast', [
             'message' => $message,
-            'color' => 'primary',
+            'color' => 'dark',
         ]);
     }
 }
