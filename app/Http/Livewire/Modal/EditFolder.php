@@ -39,6 +39,6 @@ class EditFolder extends Component
         $this->dispatchBrowserEvent('close-modal');
         $this->emit('refresh');
 
-        $this->toast('success', 'Folder has been updated');
+        $this->toast('Folder has been updated');
     }
 }

@@ -30,6 +30,8 @@ class Index extends Component
 
     public function render()
     {
+        app('site')->title('Folders');
+
         if (! $this->loaded) {
             return $this->renderLoadingGridContainer(18);
         }

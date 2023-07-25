@@ -10,8 +10,9 @@ Route::get('/pulls/{filterString?}', Livewire\Pull\Index::class)
     ->where('filterString', '.*')
     ->name('pull.index');
 
-Route::get('/pull/random', fn () => redirect()->route('pull.show', ['pull' => Pull::random()]))
-    ->name('pull.random');
+Route::get('/pull/random', fn () => redirect()->route('pull.show', [
+    'pull' => Pull::online()->inRandomOrder()->first(),
+]))->name('pull.random');
 
 Route::get('/pull/{pull}', Livewire\Pull\Show::class)->name('pull.show');
 

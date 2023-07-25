@@ -63,12 +63,12 @@
             :number="$feed"
         />
 
-        <x-nav.item
+        {{-- <x-nav.item
             :route="route('prompt.index')"
             :active="request()->routeIs('prompt.index')"
             icon="heroicon-o-pencil"
             label="Prompts"
-        />
+        /> --}}
 
         <x-nav.item
             :route="route('history.index')"

@@ -25,6 +25,8 @@ class Show extends Component
 
     public function mount(Pull $pull)
     {
+        app('site')->title($pull->name);
+
         if ($pull->status !== Status::ONLINE) {
             abort(404);
         }
@@ -35,15 +37,5 @@ class Show extends Component
             ->get();
 
         History::add($pull);
-    }
-
-    public function toggleFromFolder(int $folderId)
-    {
-        $this->pull->folders()->toggle($folderId);
-        $this->emitSelf('refresh');
-
-        RebuildCache::dispatch();
-
-        $this->toast('Folder successfully updated');
     }
 }

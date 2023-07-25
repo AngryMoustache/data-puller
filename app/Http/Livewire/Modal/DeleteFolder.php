@@ -29,6 +29,6 @@ class DeleteFolder extends Component
         $this->dispatchBrowserEvent('close-modal');
         $this->emit('refresh');
 
-        $this->toast('success', 'Folder has been deleted');
+        $this->toast('Folder has been deleted');
     }
 }

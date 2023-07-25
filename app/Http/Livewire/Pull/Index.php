@@ -29,6 +29,8 @@ class Index extends Component
 
     public function render()
     {
+        app('site')->title('Gallery');
+
         if (! $this->loaded) {
             return $this->renderLoadingGridContainer(18);
         }

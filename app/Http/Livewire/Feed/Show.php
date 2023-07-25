@@ -53,6 +53,8 @@ class Show extends Component
 
     public function render()
     {
+        app('site')->title($this->pull->name);
+
         if (! $this->loaded) {
             return $this->renderLoading();
         }

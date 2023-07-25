@@ -48,6 +48,6 @@ class EditTag extends Component
         $this->dispatchBrowserEvent('close-modal');
         $this->emitTo(Show::class, 'refresh');
 
-        $this->toast('success', 'Tag has been updated');
+        $this->toast('Tag has been updated');
     }
 }

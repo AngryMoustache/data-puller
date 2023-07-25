@@ -3,6 +3,7 @@
 ])
 
 <a
+    wire:key="folder-card-{{ $folder->id }}"
     href="{{ $folder->route() }}"
     {{ $attributes->except('folder')->merge([
         'class' => 'bg-surface rounded p-4 pb-3 p-2 w-full flex flex-col gap-2',

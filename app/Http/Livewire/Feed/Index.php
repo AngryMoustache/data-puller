@@ -27,6 +27,8 @@ class Index extends Component
 
     public function render()
     {
+        app('site')->title('Feed');
+
         if (! $this->loaded) {
             return $this->renderLoadingListContainer();
         }
@@ -93,6 +95,6 @@ class Index extends Component
 
         $pull->save($origin);
 
-        $this->toast('Tweet has been pulled! Give it a minute to process.');
+        $this->toast('Tweet has been pulled! Give it a minute to process');
     }
 }

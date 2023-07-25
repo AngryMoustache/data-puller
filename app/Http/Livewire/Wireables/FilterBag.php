@@ -11,7 +11,6 @@ use App\Enums\MediaType;
 use App\Enums\Sorting;
 use App\Models\Origin;
 use App\Pulls;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Livewire\Wireable;

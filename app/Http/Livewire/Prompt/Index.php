@@ -16,6 +16,8 @@ class Index extends Component
 
     public function render()
     {
+        app('site')->title('Prompts');
+
         if (! $this->loaded) {
             return $this->renderLoadingListContainer(3);
         }

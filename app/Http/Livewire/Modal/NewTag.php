@@ -46,6 +46,6 @@ class NewTag extends Component
         $this->dispatchBrowserEvent('close-modal');
         $this->emitTo(Show::class, 'refresh');
 
-        $this->toast('success', 'Tag has been created');
+        $this->toast('Tag has been created');
     }
 }

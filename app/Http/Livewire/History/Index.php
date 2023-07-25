@@ -14,6 +14,8 @@ class Index extends Component
 
     public function render()
     {
+        app('site')->title('History');
+
         if (! $this->loaded) {
             return $this->renderLoadingListContainer();
         }

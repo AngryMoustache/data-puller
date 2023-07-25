@@ -103,7 +103,7 @@ class Pull extends Model
 
     public function getAttachmentAttribute()
     {
-        return $this->attachments()->where('is_thumbnail')->first()
+        return $this->attachments()->where('is_thumbnail', 1)->first()
             ?? $this->attachments->first()
             ?? $this->videos->first()?->preview;
     }
@@ -158,12 +158,5 @@ class Pull extends Model
     public static function getAiName(Collection $tags): string | null
     {
         return OpenAI::getNameBasedOnTags($tags);
-    }
-
-    public static function random()
-    {
-        return static::online()
-            ->inRandomOrder()
-            ->first();
     }
 }
