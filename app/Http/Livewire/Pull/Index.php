@@ -7,6 +7,7 @@ use App\Http\Livewire\Traits\HasPagination;
 use App\Http\Livewire\Traits\HasPreLoading;
 use App\Http\Livewire\Wireables\FilterBag;
 use App\Models\Origin;
+use Illuminate\Support\Str;
 use Livewire\Component;
 
 class Index extends Component
@@ -25,6 +26,10 @@ class Index extends Component
     public function mount(string $filterString = '')
     {
         $this->filters = new FilterBag($filterString);
+
+        if (Str::contains($filterString, 'page:')) {
+            $this->page = (int) Str::between($filterString, 'page:', '/') ?? 1;
+        }
     }
 
     public function render()
@@ -32,12 +37,17 @@ class Index extends Component
         app('site')->title('Gallery');
 
         if (! $this->loaded) {
-            return $this->renderLoadingGridContainer(18);
+            return $this->renderLoadingGridContainer($this->page * 18);
         }
+
+        // Build the query string
+        $queryString = $this->filters->buildQueryString(
+            extra: ($this->page > 1) ? 'page:' . $this->page : ''
+        );
 
         // Update the URL
         $this->dispatchBrowserEvent('update-browser-url', [
-            'url' => route('pull.index', $this->filters->buildQueryString()),
+            'url' => route('pull.index', $queryString),
         ]);
 
         // Get the pulls
@@ -59,10 +69,14 @@ class Index extends Component
         $this->filters->setSorting($sort);
         $this->filters->setOrigins($origins);
         $this->filters->setMediaType($mediaType);
+
+        $this->page = 1;
     }
 
     public function toggleFilter(string $type, $id)
     {
         $this->filters->toggleFilter($type, $id);
+
+        $this->page = 1;
     }
 }

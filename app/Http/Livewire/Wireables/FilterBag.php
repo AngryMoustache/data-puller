@@ -143,7 +143,7 @@ class FilterBag implements Wireable
         }
     }
 
-    public function buildQueryString()
+    public function buildQueryString(null|string $extra = null)
     {
         return $this->filters
             ->groupBy('type')
@@ -165,6 +165,7 @@ class FilterBag implements Wireable
                 $this->mediaType !== MediaType::ALL,
                 fn ($items) => $items->push("media-type:{$this->mediaType->value}")
             )
+            ->when(filled($extra), fn ($items) => $items->push($extra))
             ->implode('/');
     }
 
