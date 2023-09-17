@@ -17,6 +17,7 @@ class Image extends Media
         $attachment = Attachment::withoutGlobalScopes()->firstOrCreate([
             'original_name' => $filename,
             'extension' => $extension,
+            'md5' => @md5_file($this->src),
         ], [
             'alt_name' => $name,
             'disk' => config('media.default-disk', 'public'),

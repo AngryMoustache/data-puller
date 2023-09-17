@@ -92,10 +92,7 @@ class Pull extends Model
         return Pulls::make()
             ->where('id', '!=', $this->id)
             ->sortByDesc(fn (array $pull) =>
-                max(
-                    collect($pull['tags'])->intersect($tags)->count() - $pull['views'],
-                    0
-                )
+                max(collect($pull['tags'])->intersect($tags)->count(), 0)
             )
             ->limit($amount)
             ->fetch();
