@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Livewire\Wireables\FilterBag;
+use App\Livewire\Wireables\FilterBag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 

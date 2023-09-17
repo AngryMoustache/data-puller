@@ -1,9 +1,6 @@
 <x-modal class="w-screen">
     <x-surface class="flex flex-col gap-4" x-data="{
         selected: {{ json_encode($selected) }},
-        init () {
-            console.log(this.selected)
-        },
     }">
         <x-headers.h2 text="Select an attachment" class="p-2" />
 

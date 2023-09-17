@@ -5,14 +5,14 @@
         <div class="flex flex-col gap-4 px-2">
             <x-form.select
                 nullable
-                wire:model.defer="parent"
+                wire:model="parent"
                 label="Parent"
                 :options="$tags"
                 class="!bg-background"
             />
 
             <x-form.input
-                wire:model.defer="name"
+                wire:model="name"
                 label="Name"
                 class="!bg-background"
                 placeholder="Name of the tag"

@@ -20,7 +20,9 @@
             ...@js($options),
             viewMode: 1,
             dragMode: 'move',
-            ready() { this.cropper.setData(@js($initial)) },
+            ready() {
+                this.cropper.setData(@js($initial))
+            },
         })
     },
 }">
@@ -42,14 +44,12 @@
                 <x-form.button
                     text="Save format"
                     class="text-center"
-                    x-on:click="$wire.emit('cropped', {
+                    x-on:click="$wire.dispatch('cropped', [{
                         data: window.cropper.getData(),
-                        saveAsNew: false,
-                        crop: window.cropper.getCroppedCanvas({
-                            width: 500,
-                            height: 500,
-                        }).toDataURL('{{ $attachment->mime_type }}'),
-                    })"
+                        crop: window.cropper
+                            .getCroppedCanvas({ width: 500, height: 500})
+                            .toDataURL('{{ $attachment->mime_type }}'),
+                    }])"
                 />
 
                 <x-form.button-secondary

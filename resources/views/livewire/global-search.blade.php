@@ -9,10 +9,10 @@
         isPullIndex: @js($isPullIndex),
         init () {
             $watch('query', (value) => { this.highlight = -1 })
-            $wire.on('options-fetched', (e) => {
-                this.options = e
-                this.loading = false
-            })
+        },
+        setOptions (e) {
+            this.options = e
+            this.loading = false
         },
         filteredOptions () {
             const options = [...this.options]
@@ -38,7 +38,7 @@
             }
 
             if (this.isPullIndex) {
-                $wire.emit('toggleFilter', option.type, option.id || option.key)
+                $wire.dispatch('toggleFilter', [option.type, option.id || option.key])
                 this.query = ''
             } else {
                 let type = ''
@@ -54,6 +54,7 @@
             }
         }
     }"
+    x-on:options-fetched="setOptions($event.detail[0] || [])"
 >
     <form class="
         flex w-full border border-border rounded-xl
@@ -68,7 +69,7 @@
             x-on:keydown.arrow-down.prevent="highlight = (highlight === filteredOptions().length - 1 ? 0 : highlight + 1)"
         />
 
-        <button class="
+        <button wire:click.prevent class="
             flex items-center bg-surface px-3 rounded-r-xl
             hover:bg-dark
         ">

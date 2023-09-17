@@ -4,7 +4,7 @@
 
         <div class="flex flex-col gap-4 px-2">
             <x-form.input
-                wire:model.defer="name"
+                wire:model="name"
                 label="Name"
                 class="!bg-background"
                 placeholder="Name of the folder"

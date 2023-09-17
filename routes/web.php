@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Livewire;
+use App\Livewire;
 use App\Models\Pull;
 use Illuminate\Support\Facades\Route;
 

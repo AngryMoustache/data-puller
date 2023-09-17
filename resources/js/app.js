@@ -1,32 +1,40 @@
-import Alpine from 'alpinejs'
 import Cropper from 'cropperjs';
 import Sortable from 'sortablejs';
-import 'livewire-sortable'
 
-window.Cropper = Cropper
-window.Sortable = Sortable
-window.Alpine = Alpine
+document.addEventListener('DOMContentLoaded', () => {
+  window.Cropper = Cropper
+  window.Sortable = Sortable
 
-Alpine.start()
+  Livewire.on('update-browser-url', (event) => {
+    const url = event[0].url
+    if (url === undefined) {
+      return
+    }
 
-window.addEventListener('update-browser-url', (e) => {
-  history.replaceState(null, null, e.detail.url)
-})
+    // Make sure we save any Alpine states before pushing to the history
+    let state = window.history.state || {}
+    if (!state.alpine) {
+      state.alpine = {}
+    }
 
-window.closeModal = () => {
-  document.querySelector('body').classList.remove('overflow-hidden')
-  document.querySelector('.modal-controller').classList.add('hidden')
+    window.history.pushState(state, '', url)
+  })
 
-  window.Livewire.emit('closeModal')
-}
+  window.closeModal = () => {
+    document.querySelector('body').classList.remove('overflow-hidden')
+    document.querySelector('.modal-controller').classList.add('hidden')
 
-window.openModal = (modal, params) => {
-  document.querySelector('body').classList.add('overflow-hidden')
-  document.querySelector('.modal-controller').classList.remove('hidden')
+    Livewire.dispatch('closeModal')
+  }
 
-  window.Livewire.emit('openModal', modal, params)
-}
+  window.openModal = (modal, params) => {
+    document.querySelector('body').classList.add('overflow-hidden')
+    document.querySelector('.modal-controller').classList.remove('hidden')
 
-window.addEventListener('close-modal', () => {
-  window.closeModal()
+    Livewire.dispatch('openModal', [modal, params])
+  }
+
+  window.addEventListener('close-modal', () => {
+    window.closeModal()
+  })
 })

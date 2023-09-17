@@ -25,7 +25,7 @@
                     <x-form.input
                         label="Name"
                         placeholder="Name of the pull"
-                        wire:model.defer="fields.name"
+                        wire:model="fields.name"
                     />
 
                     <x-form.button class="flex items-center" wire:click.prevent="generateName">
@@ -37,14 +37,14 @@
                     label="Artist name"
                     placeholder="Name of the artist"
                     :value="$pull->name"
-                    wire:model.defer="fields.artist"
+                    wire:model="fields.artist"
                 />
 
                 <x-form.input
                     label="Source URL"
                     placeholder="Source URL"
                     :value="$pull->source_url"
-                    wire:model.defer="fields.source_url"
+                    wire:model="fields.source_url"
                 />
             </div>
         </x-alpine.collapsible>
@@ -53,8 +53,8 @@
             <div
                 class="flex flex-col gap-4"
                 x-data="{
-                    list: @entangle('media').defer,
-                    thumbnail: @entangle('thumbnail').defer,
+                    list: @entangle('media'),
+                    thumbnail: @entangle('thumbnail'),
                     sortable: null,
                     config: {
                         animation: 150,
@@ -68,12 +68,12 @@
                     removeMedia (key) {
                         this.list.splice(key, 1)
 
-                        $wire.emit('update-media-list', this.list)
+                        $wire.dispatch('update-media-list', [this.list])
                     },
                     toggleThumbnail (id) {
                         this.thumbnail = id
 
-                        $wire.emit('update-cropper-attachment', this.thumbnail)
+                        $wire.dispatch('update-cropper-attachment', [this.thumbnail])
                     },
                     reorder (e) {
                         const list = Alpine.raw(this.sortable.toArray().splice(1))
@@ -84,7 +84,7 @@
                         window.setTimeout(() => {
                             this.list = list
 
-                            $wire.emit('update-media-list', this.list)
+                            $wire.dispatch('update-media-list', [list])
                         }, 0)
                     },
                 }"
@@ -97,7 +97,6 @@
                     <template x-for="(media, key) in list" :key="media.id">
                         <div
                             :data-id="'media-' + media.id"
-                            :wire:key="'media-' + media.id"
                             class="
                                 flex items-center gap-4
                                 p-2 border border-border rounded-lg bg-surface

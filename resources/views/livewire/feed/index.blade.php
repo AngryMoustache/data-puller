@@ -5,7 +5,7 @@
 
             <form wire:submit.prevent="pullTweet" class="flex gap-4 w-full mb-4">
                 <x-form.input
-                    wire:model.defer="tweetUrl"
+                    wire:model="tweetUrl"
                     placeholder="Link to a tweet"
                 />
 
