@@ -38,4 +38,13 @@ class Show extends Component
 
         History::add($pull);
     }
+
+    public function render()
+    {
+        return view('livewire.pull.show', [
+            'tagGroups' => $this->pull->tags
+                ->where('is_hidden', 0)
+                ->groupBy('pivot.group'),
+        ]);
+    }
 }

@@ -9,10 +9,10 @@
             :key="md5($modal . json_encode($params))"
         />
     @else
-        <x-modal>
-            <x-surface>
+        <x-modal disable-overlay-click>
+            <x-slot:main>
                 <x-loading class="p-8" />
-            </x-surface>
+            </x-slot>
         </x-modal>
     @endif
 </div>

@@ -4,7 +4,6 @@ namespace Api\Jobs;
 
 use Api\Entities\Media\Media;
 use Api\Entities\Pullable;
-use App\Models\Origin;
 use App\Models\Pull;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,7 +11,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class SyncPull implements ShouldQueue
 {

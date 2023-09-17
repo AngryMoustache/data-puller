@@ -5,6 +5,7 @@ namespace App\Filters;
 use App\Enums\FilterTypes;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 class Filter
 {
@@ -17,7 +18,7 @@ class Filter
         //
     }
 
-    public function matches(array $pull): bool
+    public function matches(array $pull, Collection $filters): bool
     {
         return in_array(
             $this->key,
@@ -28,7 +29,7 @@ class Filter
     public static function fromModel(Model $item)
     {
         $filterClass = match (get_class($item)) {
-            Tag::class => HasAllFilter::class,
+            Tag::class => HasGroupedTagsFilter::class,
             default => HasOneFilter::class,
         };
 

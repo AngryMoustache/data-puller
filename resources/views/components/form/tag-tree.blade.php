@@ -1,10 +1,10 @@
 <div {{ $attributes->except('tag') }} x-data="{
-    open{{ $tag->id }}: $wire.get('fields.tags.{{ $tag->id }}'),
+    open{{ $tag->id }}: $wire.get('selectedTags.{{ $tag->id }}'),
 }">
     <div class="flex items-center">
         <x-form.checkbox
             :label="$tag->name"
-            wire:model.defer="fields.tags.{{ $tag->id }}"
+            wire:model.defer="selectedTags.{{ $tag->id }}"
             x-model="open{{ $tag->id }}"
         />
 

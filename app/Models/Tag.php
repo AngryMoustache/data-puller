@@ -24,7 +24,8 @@ class Tag extends Model
 
     public function pulls()
     {
-        return $this->belongsToMany(Pull::class);
+        return $this->belongsToMany(Pull::class)
+            ->withPivot(['group', 'is_main']);
     }
 
     public function parent()

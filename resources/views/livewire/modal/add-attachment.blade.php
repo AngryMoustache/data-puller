@@ -1,7 +1,7 @@
-<x-modal class="w-screen">
-    <x-surface class="flex flex-col gap-4" x-data="{
-        selected: {{ json_encode($selected) }},
-    }">
+<x-modal class="w-screen" x-data="{
+    selected: {{ json_encode($selected) }},
+}">
+    <x-slot:main>
         <x-headers.h2 text="Select an attachment" class="p-2" />
 
         <div class="flex gap-8">
@@ -52,17 +52,17 @@
                 </div>
             @endif
         </div>
+    </x-slot>
 
-        <div class="flex w-full mt-4 gap-4 justify-end">
-            <x-form.button-secondary
-                text="Cancel"
-                x-on:click="window.closeModal()"
-            />
+    <x-slot:footer>
+        <x-form.button-secondary
+            text="Cancel"
+            x-on:click="window.closeModal()"
+        />
 
-            <x-form.button
-                text="Add selected attachments"
-                x-on:click="$wire.call('addSelected', selected)"
-            />
-        </div>
-    </x-surface>
+        <x-form.button
+            text="Add selected attachments"
+            x-on:click="$wire.call('addSelected', selected)"
+        />
+    </x-slot>
 </x-modal>

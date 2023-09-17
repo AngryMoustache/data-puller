@@ -3,7 +3,7 @@
 namespace App\Livewire\Wireables;
 
 use App\Filters\Filter;
-use App\Filters\HasAllFilter;
+use App\Filters\HasGroupedTagsFilter;
 use App\Filters\HasOneFilter;
 use App\Filters\QueryFilter;
 use App\Enums\FilterTypes;
@@ -25,13 +25,13 @@ class FilterBag implements Wireable
 
     public null | int $randomizerSeed = null;
 
-    public function __construct(array|string $filterString)
+    public function __construct(array|string $filters)
     {
-        if (is_string($filterString)) {
-            $filters = explode('/', $filterString);
+        if (is_string($filters)) {
+            $filters = explode('/', $filters);
         }
 
-        $filters = collect($filterString)
+        $filters = collect($filters)
             ->map(fn ($filter) => explode(':', $filter))
             ->filter(fn ($filter) => count($filter) > 1)
             ->mapWithKeys(fn ($filter) => [$filter[0] => explode(',', $filter[1])]);
@@ -81,11 +81,11 @@ class FilterBag implements Wireable
 
                 return $filters->every(function (Collection $items) use ($pull) {
                     $check = match(get_class($items->first())) {
-                        HasAllFilter::class => 'every',
+                        HasGroupedTagsFilter::class => 'every',
                         HasOneFilter::class, QueryFilter::class => 'first',
                     };
 
-                    return $items->{$check}->matches($pull);
+                    return $items->{$check}->matches($pull, $items);
                 });
             });
     }

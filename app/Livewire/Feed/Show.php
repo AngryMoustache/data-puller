@@ -13,6 +13,7 @@ use App\Models\Tag;
 use App\Models\Video;
 use App\PullMedia;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -30,6 +31,8 @@ class Show extends Component
 
     public null | string $thumbnail = null;
 
+    public int $currentTagGroup = 0;
+
     public function mount(Pull $pull)
     {
         $this->pull = $pull;
@@ -38,7 +41,19 @@ class Show extends Component
             'name' => $this->pull->name,
             'artist' => $this->pull->artist?->name ?? 'Unknown',
             'source_url' => $this->pull->source_url,
-            'tags' => $this->pull->tags->pluck('id')->mapWithKeys(fn (int $id) => [$id => true])->toArray(),
+            'tags' => $this->pull
+                ->tags
+                ->groupBy('pivot.group')
+                ->map(fn (Collection $tags, string $key) => [
+                    'name' => $key,
+                    'is_main' => $tags->first()?->pivot->is_main ?? false,
+                    'tags' => $tags
+                        ->pluck('id')
+                        ->mapWithKeys(fn (int $id) => [$id => true])
+                        ->toArray()
+                ])
+                ->values()
+                ->toArray(),
         ];
 
         $this->media = $this->pull
@@ -60,9 +75,6 @@ class Show extends Component
 
         return view('livewire.feed.show', [
             'attachments' => $this->pull->attachments->sortBy('sort_order'),
-            'tags' => Tag::whereDoesntHave('parent')
-                ->with('children.children.children.children.children')
-                ->get()
         ]);
     }
 
@@ -107,9 +119,22 @@ class Show extends Component
         ]);
 
         // Make sure we don't save any tags where the parent is not in the list
-        $all = Tag::find(collect($this->fields['tags'])->filter()->keys());
-        $tags = $all->filter(fn (Tag $tag) => is_null($tag->parent_id) || $all->contains('id', $tag->parent_id));
-        $this->pull->tags()->sync($tags->pluck('id'));
+        $inserts = collect();
+
+        foreach ($this->fields['tags'] as $group) {
+            $all = Tag::find(collect($group['tags'])->filter()->keys());
+            $tags = $all->filter(fn (Tag $tag) => is_null($tag->parent_id) || $all->contains('id', $tag->parent_id));
+
+            $tags->each(fn (Tag $tag) => $inserts->push([
+                'pull_id' => $this->pull->id,
+                'tag_id' => $tag->id,
+                'group' => $group['name'],
+                'is_main' => $group['is_main'],
+            ]));
+        }
+
+        DB::table('pull_tag')->where('pull_id', $this->pull->id)->delete();
+        DB::table('pull_tag')->insert($inserts->toArray());
 
         // Rebuild cache
         RebuildCache::dispatch();
@@ -132,7 +157,14 @@ class Show extends Component
 
         $this->dispatch('close-modal');
 
-        // $this->dispatch('update-media-list', $this->media);
+        $this->dispatch('update-media-list', $this->media);
+    }
+
+    #[On('updated-tag-group')]
+    public function updatedTagGroup(array $params)
+    {
+        $this->fields['tags'][$params['groupKey']] = $params['group'];
+        $this->fields['tags'][$params['groupKey']]['is_main'] = (bool) $params['isMain'];
     }
 
     public function generateName()
@@ -140,6 +172,21 @@ class Show extends Component
         $tags =  Tag::find(collect($this->fields['tags'])->filter()->keys());
 
         $this->fields['name'] = Pull::getAiName($tags);
+    }
+
+    public function addTagGroup()
+    {
+        $this->fields['tags'][] = [
+            'name' => 'Group ' . (count($this->fields['tags']) + 1),
+            'is_main' => false,
+            'tags' => [],
+        ];
+    }
+
+    public function removeTagGroup(int $key)
+    {
+        unset($this->fields['tags'][$key]);
+        $this->fields['tags'] = array_values($this->fields['tags']);
     }
 
     private function toJson(Attachment | Video $media)

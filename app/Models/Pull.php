@@ -52,7 +52,10 @@ class Pull extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->belongsToMany(Tag::class)
+            ->withPivot(['group', 'is_main'])
+            ->orderByDesc('pivot_is_main')
+            ->orderBy('pivot_group');
     }
 
     public function attachments()
@@ -92,7 +95,7 @@ class Pull extends Model
         return Pulls::make()
             ->where('id', '!=', $this->id)
             ->sortByDesc(fn (array $pull) =>
-                max(collect($pull['tags'])->intersect($tags)->count(), 0)
+                max(collect($pull['tags'])->pluck('tags')->flatten()->intersect($tags)->count(), 0)
             )
             ->limit($amount)
             ->fetch();

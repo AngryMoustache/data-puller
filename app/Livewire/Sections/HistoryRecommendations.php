@@ -28,7 +28,11 @@ class HistoryRecommendations extends Component
             ->countBy();
 
         $pulls = Pulls::make()
-            ->sortByDesc(fn (array $pull) => collect($pull['tags'])->sum(fn ($tag) => $tags[$tag] ?? 0))
+            ->sortByDesc(fn (array $pull) => collect($pull['tags'])
+                ->pluck('tags')
+                ->flatten()
+                ->sum(fn ($tag) => $tags[$tag] ?? 0)
+            )
             ->whereNotIn('id', $history)
             ->limit(18)
             ->fetch()

@@ -163,15 +163,62 @@
             </x-alpine.collapsible>
         @endif
 
-        <x-alpine.collapsible title="Tags">
-            <div class="flex flex-col gap-4">
-                @foreach ($tags as $group)
-                    <x-alpine.collapsible :open="true" :title="$group->name">
-                        <div x-show="open" class="pt-2">
-                            <x-form.tag-tree :tag="$group" />
+        <x-alpine.collapsible title="Tags" :open="true">
+            <div
+                class="flex flex-col gap-4"
+                x-data="{
+                    currentTagGroup: @entangle('currentTagGroup'),
+                }"
+            >
+                @foreach (($fields['tags'] ?? []) as $key => $group)
+                    <div class="
+                        flex items-center gap-4
+                        px-4 py-3 border border-border rounded-lg bg-surface
+                    ">
+                        <div class="flex-grow flex flex-col">
+                            <x-headers.h3 class="gap-2">
+                                @if ($group['is_main'])
+                                    <x-heroicon-s-bookmark
+                                        class="w-4 h-4 text-primary"
+                                    />
+                                @endif
+
+                                {{ $group['name'] }}
+                            </x-headers.h3>
+
+                            <p class="opacity-50">
+                                Contains {{ collect($group['tags'])->filter()->count() }} tags
+                            </p>
                         </div>
-                    </x-alpine.collapsible>
+
+                        <x-heroicon-o-pencil
+                            class="w-12 h-6 cursor-pointer hover:text-primary"
+                            x-on:click="window.openModal('tag-group-selector', {
+                                groupKey: '{{ $key }}',
+                                group: {{ json_encode($group) }},
+                                isMain: {{ (int) $group['is_main'] }},
+                                uniqueNames: {{ json_encode(
+                                    collect($fields['tags'] ?? [])
+                                        ->pluck('name')
+                                        ->except($key)
+                                        ->toArray()
+                                ) }},
+                            })"
+                        />
+
+                        <x-heroicon-o-trash
+                            class="w-12 h-6 cursor-pointer hover:text-primary"
+                            x-on:click="$wire.removeTagGroup('{{ $key }}')"
+                        />
+                    </div>
                 @endforeach
+
+                <div class="flex gap-4">
+                    <x-form.button-secondary
+                        wire:click="addTagGroup"
+                        text="Add new tag group"
+                    />
+                </div>
             </div>
         </x-alpine.collapsible>
 

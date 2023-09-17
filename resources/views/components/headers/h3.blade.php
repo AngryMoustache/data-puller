@@ -2,8 +2,8 @@
     'text' => $slot,
 ])
 
-<h1 {{ $attributes->merge([
-    'class' => 'font-semibold text-md flex gap-8 items-center',
+<h3 {{ $attributes->merge([
+    'class' => 'font-semibold text-md flex items-center',
 ]) }}>
-    <span>{{ $text }}</span>
-</h1>
+    {{ $text }}
+</h3>

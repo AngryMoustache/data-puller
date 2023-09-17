@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class QueryFilter extends Filter
@@ -17,7 +18,7 @@ class QueryFilter extends Filter
         $this->key = Str::slug($value);
     }
 
-    public function matches(array $pull): bool
+    public function matches(array $pull, Collection $filters): bool
     {
         return Str::contains(
             Str::slug($pull['name']),

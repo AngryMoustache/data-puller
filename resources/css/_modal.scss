@@ -26,6 +26,13 @@
         z-index: 100000;
     }
 
+    // Make sure the footer is always visible
+    &-footer {
+        position: sticky;
+        bottom: -1px;
+        z-index: 100000;
+    }
+
     ::-webkit-scrollbar {
         display: none;
     }

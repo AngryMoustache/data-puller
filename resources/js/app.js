@@ -37,4 +37,9 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('close-modal', () => {
     window.closeModal()
   })
+
+  Livewire.on('closeModal', () => {
+    document.querySelector('body').classList.remove('overflow-hidden')
+    document.querySelector('.modal-controller').classList.add('hidden')
+  })
 })

@@ -41,12 +41,20 @@
             </p>
         </div>
 
-        <div class="flex flex-wrap gap-2">
-            @foreach ($pull->tags->where('is_hidden', 0) as $tag)
-                <x-tag
-                    :text="$tag->long_name"
-                    href="{{ $tag->route() }}"
-                />
+        <div class="flex flex-col gap-4">
+            @foreach ($tagGroups as $group)
+                @if ($tagGroups->count() > 1)
+                    <x-headers.h2 text="{{ $group->first()->pivot->group }}" />
+                @endif
+
+                <div class="flex flex-wrap gap-2">
+                    @foreach ($group as $tag)
+                        <x-tag
+                            :text="$tag->long_name"
+                            href="{{ $tag->route() }}"
+                        />
+                    @endforeach
+                </div>
             @endforeach
         </div>
 

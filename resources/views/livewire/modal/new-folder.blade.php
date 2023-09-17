@@ -1,5 +1,5 @@
 <x-modal>
-    <x-surface class="flex flex-col gap-4" x-data="{}">
+    <x-slot:main>
         <x-headers.h2 text="Folder" class="p-2" />
 
         <div class="flex flex-col gap-4 px-2">
@@ -22,5 +22,5 @@
                 wire:click="save"
             />
         </div>
-    </x-surface>
+    </x-slot>
 </x-modal>

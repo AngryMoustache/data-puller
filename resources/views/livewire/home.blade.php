@@ -1,10 +1,10 @@
 <x-container class="flex flex-col gap-12 py-12">
-    <x-section label="Newest pulls">
-        <livewire:sections.newest />
-    </x-section>
-
     <x-section label="Recommendations">
         <livewire:sections.recommendations />
+    </x-section>
+
+    <x-section label="Newest pulls">
+        <livewire:sections.newest />
     </x-section>
 
     <x-section label="Hidden gems">

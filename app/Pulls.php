@@ -76,7 +76,7 @@ class Pulls extends Collection
                     'verdict_at' => $pull->verdict_at,
                     'artists' => [$pull->artist?->slug],
                     'origins' => [$pull->origin?->slug],
-                    'tags' => $pull->tags->pluck('slug'),
+                    'tags' => self::getCachedTagsForPull($pull),
                     'folders' => $pull->folders->pluck('slug'),
                     'media_type' => [
                         MediaType::IMAGE->value => $pull->attachments->isEmpty(),
@@ -84,5 +84,28 @@ class Pulls extends Collection
                     ],
                 ]);
             });
+    }
+
+    private static function getCachedTagsForPull(Pull $pull): Collection
+    {
+        $groups = $pull->tags
+            ->groupBy('pivot.group')
+            ->map(fn (Collection $tags, string $key) => [
+                'name' => $key,
+                'is_main' => $tags->first()?->pivot->is_main ?? false,
+                'tags' => $tags->pluck('slug'),
+            ])
+            ->values();
+
+        $mainTags = $groups->filter(fn ($group) => $group['is_main'])->pluck('tags')->flatten();
+
+        // Add the main tags to the other groups
+        return $groups->map(function ($group) use ($mainTags) {
+            if (! $group['is_main']) {
+                $group['tags'] = $group['tags']->merge($mainTags);
+            }
+
+            return $group;
+        });
     }
 }

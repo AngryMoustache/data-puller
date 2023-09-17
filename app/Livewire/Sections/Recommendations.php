@@ -25,6 +25,7 @@ class Recommendations extends Component
 
         $related = $newestPulls
             ->map(fn (Pull $pull) => $pull->related()->take(5)->random())
+            ->unique()
             ->flatten();
 
         return view('livewire.sections.recommendations', [

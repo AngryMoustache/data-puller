@@ -4,7 +4,7 @@
     align-items: flex-end;
     position: fixed;
     bottom: 2rem;
-    right: 2rem;
+    left: 2rem;
     pointer-events: none;
     z-index: 1000000;
 }
@@ -37,7 +37,7 @@
 
 @keyframes toast-enter {
     0% {
-        transform: translate(100px, 0);
+        transform: translate(-100px, 0);
         opacity: 0;
     }
 
@@ -54,7 +54,7 @@
     }
 
     100% {
-        transform: translate(100px, 0);
+        transform: translate(-100px, 0);
         opacity: 0;
     }
 }
