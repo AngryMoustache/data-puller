@@ -25,3 +25,15 @@ Route::get('/feed', Livewire\Feed\Index::class)->name('feed.index');
 Route::get('/feed/{pull:id}', Livewire\Feed\Show::class)->name('feed.show');
 
 Route::get('/history', Livewire\History\Index::class)->name('history.index');
+
+// Route::get('/things', function () {
+//     \App\Models\Pull::with('tags')->get()->skip(1)->each(function ($pull) {
+//         $group = \App\Models\TagGroup::updateOrCreate([
+//             'pull_id' => $pull->id,
+//             'name' => 'Main tags',
+//             'is_main' => true,
+//         ]);
+
+//         $group->tags()->sync($pull->tags->pluck('id'));
+//     });
+// });

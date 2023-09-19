@@ -2,6 +2,7 @@
     'main' => $slot,
     'footer' => null,
     'disableOverlayClick' => false,
+    'fullScreen' => false,
 ])
 
 <div class="modal">
@@ -12,9 +13,12 @@
         @endif
     ></div>
 
-    <div class="modal-content">
-        <x-surface class="!p-0">
-            <div {{ $attributes->merge(['class' => 'flex flex-col gap-4 p-4']) }}>
+    <div @class([
+        'modal-content',
+        '!min-w-[90%]' => $fullScreen,
+    ])>
+        <x-surface class="!p-0" {{ $attributes->only('x-data') }}>
+            <div {{ $attributes->except('x-data')->merge(['class' => 'flex flex-col gap-4 p-4']) }}>
                 {{ $main }}
             </div>
 

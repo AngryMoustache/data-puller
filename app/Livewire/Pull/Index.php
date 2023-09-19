@@ -51,13 +51,15 @@ class Index extends Component
         $pulls = $this->filters->toPulls();
 
         return view('livewire.pull.index', [
-            'pulls' => $pulls->limit($this->page * $this->perPage)->fetch(),
             'count' => $pulls->count(),
             'hasMore' => $pulls->count() > ($this->page * $this->perPage),
             'sortOptions' => Sorting::list(),
             'origins' => Origin::get()->mapWithKeys(function ($origin) {
                 return [$origin->slug => view('components.origin', ['origin' => $origin])->render()];
             }),
+            'pulls' => $pulls->limit($this->page * $this->perPage)->fetch(
+                $this->filters
+            ),
         ]);
     }
 

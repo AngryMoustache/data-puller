@@ -28,10 +28,7 @@ class Show extends Component
     public array $fields;
 
     public array $media;
-
-    public null | string $thumbnail = null;
-
-    public int $currentTagGroup = 0;
+    public array $thumbnails;
 
     public function mount(Pull $pull)
     {
@@ -41,12 +38,12 @@ class Show extends Component
             'name' => $this->pull->name,
             'artist' => $this->pull->artist?->name ?? 'Unknown',
             'source_url' => $this->pull->source_url,
-            'tags' => $this->pull
-                ->tags
+            'tags' => $this->pull->tags
                 ->groupBy('pivot.group')
                 ->map(fn (Collection $tags, string $key) => [
                     'name' => $key,
                     'is_main' => $tags->first()?->pivot->is_main ?? false,
+                    'thumbnails' => $tags->pluck('pivot.thumbnail_url', 'id')->filter()->toArray(),
                     'tags' => $tags
                         ->pluck('id')
                         ->mapWithKeys(fn (int $id) => [$id => true])
@@ -56,11 +53,25 @@ class Show extends Component
                 ->toArray(),
         ];
 
+        if (count($this->fields['tags']) === 0) {
+            $this->fields['tags'][] = [
+                'name' => 'Main tags',
+                'is_main' => true,
+                'thumbnails' => [],
+                'tags' => [],
+            ];
+        }
+
         $this->media = $this->pull
             ->media->map->toJson()
             ->toArray();
 
-        $this->thumbnail = collect($this->media)->filter->is_thumbnail->first()['id'] ?? null;
+        $this->thumbnails = collect($this->media)
+            // ->map(function (array $thumbnail) {
+            //     dd($this->fields);
+            // })
+            ->toArray();
+        // dd($this->thumbnails);
     }
 
     public function render()
@@ -85,24 +96,17 @@ class Show extends Component
             'id' => (int) Str::after($media['id'], ':'),
             'class' => (string) Str::before($media['id'], ':'),
             'sort_order' => $key + 1000,
-            'is_thumbnail' => (bool) ($media['id'] === $this->thumbnail),
         ])->groupBy('class');
 
         $attachments = Collection::wrap($media[Attachment::class] ?? []);
         $videos = Collection::wrap($media[Video::class] ?? []);
 
         $this->pull->attachments()->sync($attachments->mapWithKeys(fn (array $media) => [
-            $media['id'] => [
-                'sort_order' => $media['sort_order'],
-                'is_thumbnail' => $media['is_thumbnail'],
-            ],
+            $media['id'] => ['sort_order' => $media['sort_order']],
         ]));
 
         $this->pull->videos()->sync($videos->mapWithKeys(fn (array $media) => [
-            $media['id'] => [
-                'sort_order' => $media['sort_order'],
-                'is_thumbnail' => $media['is_thumbnail'],
-            ],
+            $media['id'] => ['sort_order' => $media['sort_order']],
         ]));
 
         $artist = Artist::firstOrCreate([
@@ -130,6 +134,7 @@ class Show extends Component
                 'tag_id' => $tag->id,
                 'group' => $group['name'],
                 'is_main' => $group['is_main'],
+                'thumbnail_url' => $group['thumbnails'][$tag->id] ?? null,
             ]));
         }
 
@@ -163,8 +168,18 @@ class Show extends Component
     #[On('updated-tag-group')]
     public function updatedTagGroup(array $params)
     {
-        $this->fields['tags'][$params['groupKey']] = $params['group'];
-        $this->fields['tags'][$params['groupKey']]['is_main'] = (bool) $params['isMain'];
+        $this->fields['tags'][$params['groupKey']]['name'] = $params['group']['name'];
+        $this->fields['tags'][$params['groupKey']]['is_main'] = $params['group']['is_main'];
+        $this->fields['tags'][$params['groupKey']]['tags'] = $params['group']['tags'];
+    }
+
+    #[On('updated-thumbnails')]
+    public function updatedThumbnails(array $params)
+    {
+        foreach (($params['thumbnails'] ?? []) as $thumbnail) {
+            $tagGroupKey = collect($this->fields['tags'])->pluck('name')->flip()[$thumbnail['group']];
+            $this->fields['tags'][$tagGroupKey]['thumbnails'][$thumbnail['tag_id']] = $thumbnail['thumbnail_url'];
+        }
     }
 
     public function generateName()
@@ -179,6 +194,7 @@ class Show extends Component
         $this->fields['tags'][] = [
             'name' => 'Group ' . (count($this->fields['tags']) + 1),
             'is_main' => false,
+            'thumbnails' => [],
             'tags' => [],
         ];
     }

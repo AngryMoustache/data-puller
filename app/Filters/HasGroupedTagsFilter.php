@@ -13,6 +13,17 @@ class HasGroupedTagsFilter extends Filter
             $pull[FilterTypes::fromClass($this->type)] ?? []
         );
 
+        // Merge the main tags into one group
+        $groups = collect([
+            ...$groups->reject(fn ($group) => $group['is_main']),
+            [
+                'tags' => $groups->filter(fn ($group) => $group['is_main'])
+                    ->pluck('tags')
+                    ->flatten()
+                    ->unique(),
+            ],
+        ]);
+
         return $groups
             ->reject(fn ($group) => $filters->pluck('key')->diff($group['tags'])->isNotEmpty())
             ->isNotEmpty();

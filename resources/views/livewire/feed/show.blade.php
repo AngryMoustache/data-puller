@@ -19,7 +19,7 @@
             </p>
         </div>
 
-        <x-alpine.collapsible :open="true" title="General information">
+        <x-alpine.collapsible open title="General information">
             <div class="flex flex-col gap-4">
                 <div class="flex gap-2">
                     <x-form.input
@@ -49,12 +49,11 @@
             </div>
         </x-alpine.collapsible>
 
-        <x-alpine.collapsible title="Media" :open="true">
+        <x-alpine.collapsible title="Media" open>
             <div
                 class="flex flex-col gap-4"
                 x-data="{
                     list: @entangle('media'),
-                    thumbnail: @entangle('thumbnail'),
                     sortable: null,
                     config: {
                         animation: 150,
@@ -63,17 +62,13 @@
                     },
                     init () {
                         this.sortable = Sortable.create(this.$refs.items, this.config)
-                        this.thumbnail = this.list.filter(media => media.is_thumbnail)[0]?.id || null
                     },
                     removeMedia (key) {
                         this.list.splice(key, 1)
-
                         $wire.dispatch('update-media-list', [this.list])
                     },
-                    toggleThumbnail (id) {
-                        this.thumbnail = id
-
-                        $wire.dispatch('update-cropper-attachment', [this.thumbnail])
+                    addToThumbnails (key) {
+                        $wire.dispatch('add-to-thumbnails', [this.list[key]])
                     },
                     reorder (e) {
                         const list = Alpine.raw(this.sortable.toArray().splice(1))
@@ -124,19 +119,10 @@
                                 </p>
                             </div>
 
-                            <div x-show="thumbnail === media.id">
-                                <x-heroicon-o-photo
-                                    class="w-12 h-6 cursor-pointer hover:text-primary"
-                                    x-on:click="toggleThumbnail(media.id)"
-                                />
-                            </div>
-
-                            <div x-show="thumbnail !== media.id">
-                                <x-heroicon-o-photo
-                                    class="opacity-25 w-12 h-6 cursor-pointer hover:text-primary"
-                                    x-on:click="toggleThumbnail(media.id)"
-                                />
-                            </div>
+                            <x-heroicon-o-photo
+                                class="w-12 h-6 cursor-pointer hover:text-primary"
+                                x-on:click="addToThumbnails(key)"
+                            />
 
                             <x-heroicon-o-trash
                                 class="w-12 h-6 cursor-pointer hover:text-primary"
@@ -157,19 +143,65 @@
             </div>
         </x-alpine.collapsible>
 
-        @if ($pull->attachment)
-            <x-alpine.collapsible title="Thumbnail">
-                <livewire:cropper :attachment="$pull->attachment" />
-            </x-alpine.collapsible>
-        @endif
-
-        <x-alpine.collapsible title="Tags" :open="true">
+        <x-alpine.collapsible title="Thumbnails" open>
             <div
                 class="flex flex-col gap-4"
+                x-on:add-to-thumbnails.window="list.push($event.detail[0])"
                 x-data="{
-                    currentTagGroup: @entangle('currentTagGroup'),
+                    list: @entangle('thumbnails'),
+                    tagList: @entangle('fields.tags'),
+                    init () {
+                        console.log(this.list)
+                    },
                 }"
             >
+                <template x-for="(media, key) in list" :key="key + '-' + media.id">
+                    <div
+                        :data-id="'media-' + media.id"
+                        class="
+                            flex items-center gap-4
+                            p-2 border border-border rounded-lg bg-surface
+                        "
+                    >
+                        <div class="w-16 h-16">
+                            <img
+                                class="w-full bg-border rounded-lg aspect-square"
+                                :src="media.thumbnail"
+                            />
+                        </div>
+
+                        <div class="grow">
+                            <p class="line-clamp-1">
+                                <span x-text="media.name"></span>
+                            </p>
+
+                            <p class="opacity-50 text-sm">
+                                <span x-text="media.width"></span>px x
+                                <span x-text="media.height"></span>px
+                            </p>
+                        </div>
+
+                        <x-heroicon-o-link
+                            class="w-12 h-6 cursor-pointer hover:text-primary"
+                            x-on:click="window.openModal('formatter', {
+                                attachment: media.id,
+                                tagList: tagList,
+                                isMainThumbnail: media.is_main,
+                            })"
+                        />
+
+                        <x-heroicon-o-trash
+                            x-show="list.length > 1"
+                            class="w-12 h-6 cursor-pointer hover:text-primary"
+                            x-on:click="list.splice(key, 1)"
+                        />
+                    </div>
+                </template>
+            </div>
+        </x-alpine.collapsible>
+
+        <x-alpine.collapsible title="Tags" open>
+            <div class="flex flex-col gap-4">
                 @foreach (($fields['tags'] ?? []) as $key => $group)
                     <div class="
                         flex items-center gap-4
@@ -178,9 +210,7 @@
                         <div class="flex-grow flex flex-col">
                             <x-headers.h3 class="gap-2">
                                 @if ($group['is_main'])
-                                    <x-heroicon-s-bookmark
-                                        class="w-4 h-4 text-primary"
-                                    />
+                                    <x-heroicon-s-bookmark class="w-4 h-4 text-primary" />
                                 @endif
 
                                 {{ $group['name'] }}
@@ -196,7 +226,7 @@
                             x-on:click="window.openModal('tag-group-selector', {
                                 groupKey: '{{ $key }}',
                                 group: {{ json_encode($group) }},
-                                isMain: {{ (int) $group['is_main'] }},
+                                media: {{ json_encode($media) }},
                                 uniqueNames: {{ json_encode(
                                     collect($fields['tags'] ?? [])
                                         ->pluck('name')

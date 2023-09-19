@@ -2,9 +2,12 @@
 
 namespace App;
 
+use AngryMoustache\Media\Models\Attachment;
 use App\Enums\MediaType;
+use App\Livewire\Wireables\FilterBag;
 use App\Models\Origin;
 use App\Models\Pull;
+use App\Models\Tag;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -21,7 +24,7 @@ class Pulls extends Collection
         return new static(self::build()->toArray());
     }
 
-    public function fetch(): Collection
+    public function fetch(null | FilterBag $filterBag = null): Collection
     {
         $promptOrigins = Origin::prompts()->pluck('id');
 
@@ -29,7 +32,26 @@ class Pulls extends Collection
             ->orderByRaw('FIELD(id, ' . $this->pluck('id')->implode(',') . ')')
             ->when(! $this->hasPrompts(), fn ($query) => $query->whereNotIn('origin_id', $promptOrigins))
             ->unless(is_null($this->limit), fn ($query) => $query->limit($this->limit))
-            ->find($this->pluck('id'));
+            ->find($this->pluck('id'))
+            ->when($filterBag, fn (Collection $pulls) => $pulls->map(function (Pull $pull) use ($filterBag) {
+                $tags = $filterBag->filters
+                    ->filter(fn ($filter) => $filter->type === Tag::class)
+                    ->pluck('id');
+
+                $thumbnailTags = $pull->tags
+                    ->filter(fn ($tag) => isset($tag->pivot->thumbnail_url))
+                    ->pluck('pivot.thumbnail_url', 'id');
+
+                $thumnnailId = $thumbnailTags->intersectByKeys($tags->flip())->first();
+
+                if ($thumnnailId) {
+                    $pull->thumbnail = Attachment::find($thumnnailId);
+
+                    return $pull;
+                }
+
+                return $pull;
+            }));
     }
 
     public function limit(null | int $limit): self
@@ -93,6 +115,7 @@ class Pulls extends Collection
             ->map(fn (Collection $tags, string $key) => [
                 'name' => $key,
                 'is_main' => $tags->first()?->pivot->is_main ?? false,
+                'thumbnail_url' => $tags->first()?->pivot->thumbnail_url ?? null,
                 'tags' => $tags->pluck('slug'),
             ])
             ->values();

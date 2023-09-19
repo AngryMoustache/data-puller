@@ -1,5 +1,5 @@
 <x-modal>
-    <x-slot:main class="flex flex-col gap-4" x-data="{}">
+    <x-slot:main class="flex flex-col gap-4" x-data>
         <x-headers.h2 text="Deleting folder" class="p-2" />
 
         <div class="flex flex-col gap-4 px-2">

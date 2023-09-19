@@ -5,7 +5,7 @@
 
 <div>
 
-    <label for="{{ $id }}" {{ $attributes->except(['label', 'tag'])->merge([
+    <label for="{{ $id }}" {{ $attributes->except(['label', 'tag', 'value', 'x-model'])->merge([
         'class' => 'p-2 flex w-full items-center gap-4',
     ]) }}>
         <div class="relative">
@@ -13,7 +13,7 @@
                 id="{{ $id }}"
                 type="checkbox"
                 class="hidden peer"
-                {{ $attributes->whereStartsWith(['x-model', 'wire:model']) }}
+                {{ $attributes->whereStartsWith(['x-model', 'wire:model', 'value']) }}
             />
 
             <div class="

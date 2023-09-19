@@ -40,7 +40,6 @@ class PullMedia
             'width' => $this->image->width,
             'height' => $this->image->height,
             'thumbnail' => $this->image->format('thumb'),
-            'is_thumbnail' => (bool) ($this->media->pivot?->is_thumbnail ?? false),
         ];
     }
 }

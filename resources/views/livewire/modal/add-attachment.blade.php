@@ -1,4 +1,4 @@
-<x-modal class="w-screen" x-data="{
+<x-modal class="w-full" x-data="{
     selected: {{ json_encode($selected) }},
 }">
     <x-slot:main>

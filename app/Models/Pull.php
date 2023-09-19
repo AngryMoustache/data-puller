@@ -52,23 +52,25 @@ class Pull extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class)
-            ->withPivot(['group', 'is_main'])
-            ->orderByDesc('pivot_is_main')
-            ->orderBy('pivot_group');
+        return $this->belongsToMany(Tag::class);
+    }
+
+    public function tagGroups()
+    {
+        return $this->hasMany(TagGroup::class);
     }
 
     public function attachments()
     {
         return $this->morphedByMany(Attachment::class, 'media', 'media_pull')
-            ->withPivot(['sort_order', 'is_thumbnail'])
+            ->withPivot(['sort_order'])
             ->orderByPivot('sort_order');
     }
 
     public function videos()
     {
         return $this->morphedByMany(Video::class, 'media', 'media_pull')
-            ->withPivot(['sort_order', 'is_thumbnail'])
+            ->withPivot(['sort_order'])
             ->orderByPivot('sort_order');
     }
 
@@ -103,8 +105,7 @@ class Pull extends Model
 
     public function getAttachmentAttribute()
     {
-        return $this->attachments()->where('is_thumbnail', 1)->first()
-            ?? $this->attachments->first()
+        return $this->attachments->first()
             ?? $this->videos->first()?->preview;
     }
 

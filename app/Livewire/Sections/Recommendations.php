@@ -20,7 +20,7 @@ class Recommendations extends Component
 
         $newestPulls = Pulls::make()
             ->sortByDesc('verdict_at')
-            ->limit(6)
+            ->limit(12)
             ->fetch();
 
         $related = $newestPulls

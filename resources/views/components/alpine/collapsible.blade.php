@@ -19,7 +19,9 @@
             x-bind:class="{ 'transform rotate-180': open }"
         />
 
-        <x-headers.h3 :text="$title" />
+        <x-headers.h3>
+            {{ $title }}
+        </x-headers.h3>
     </div>
 
     <div class="p-4" x-bind:class="{ '!p-0 h-0 overflow-hidden': ! open }">

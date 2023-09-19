@@ -1,5 +1,6 @@
 @props([
     'pull',
+    'image' => $pull->thumbnail ?? $pull->attachment,
 ])
 
 <a
@@ -10,7 +11,8 @@
 >
     <div class="overflow-hidden rounded flex items-center" style="aspect-ratio: 3/2.5">
         <x-img
-            src="{{ $pull->attachment?->format('thumb') }}"
+            wire:key="pull-{{ $pull->id }}--{{ $image?->id }}"
+            src="{{ $image?->format('thumb') }}"
             width="3"
             height="2.5"
         />

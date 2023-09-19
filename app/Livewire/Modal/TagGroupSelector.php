@@ -15,14 +15,16 @@ class TagGroupSelector extends Component
     public array $selectedTags;
     public bool $isMain;
     public array $uniqueNames;
+    public array $media;
 
     public function mount(array $params = [])
     {
         $this->groupKey = (int) ($params['groupKey'] ?? 0);
         $this->groupName = $params['group']['name'] ?? 'Unknown group';
         $this->selectedTags = $params['group']['tags'] ?? [];
-        $this->isMain = $params['isMain'] ?? false;
+        $this->isMain = (int) $params['group']['is_main'] ?? 0;
         $this->uniqueNames = $params['uniqueNames'] ?? [];
+        $this->media = $params['media'] ?? [];
     }
 
     public function render()
@@ -44,9 +46,9 @@ class TagGroupSelector extends Component
 
         $this->dispatch('updated-tag-group', [
             'groupKey' => $this->groupKey,
-            'isMain' => $this->isMain,
             'group' => [
                 'name' => $this->groupName,
+                'is_main' => $this->isMain,
                 'tags' => $this->selectedTags,
             ],
         ]);
