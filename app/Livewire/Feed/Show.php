@@ -46,6 +46,7 @@ class Show extends Component
             'thumbnails' => $this->pull->thumbnails ?? [],
             'tagGroups' => $this->pull->tagGroups->map(fn (TagGroup $tagGroup) => [
                 'id' => $tagGroup->id,
+                'pull_id' => $tagGroup->pull_id,
                 'name' => $tagGroup->name,
                 'is_main' => $tagGroup->is_main,
                 'tags' => $tagGroup->tags

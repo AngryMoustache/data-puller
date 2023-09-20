@@ -223,6 +223,7 @@
                     addGroup () {
                         this.list.push({
                             name: 'New group ' + (this.list.length + 1),
+                            pull_id: {{ $pull->id }},
                             is_main: false,
                             deleted: false,
                             tags: [],

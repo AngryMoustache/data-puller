@@ -20,16 +20,15 @@
 
     x-bind:src="loaded ? source : '{{ asset('images/pixel.png') }}'"
 
-    x-bind:class="{
-        '!opacity-100': loaded,
-        'animate animate-pulse': ! loaded,
-    }"
-
     x-bind:style="{
         'aspect-ratio': ! loaded ? '{{ $width }} / {{ $height }}' : 'auto'
     }"
 
     {{ $attributes->except('src')->merge([
-        'class' => 'w-full opacity-0 bg-border transition-all rounded',
+        'class' => 'w-full opacity-25 bg-border transition-all rounded',
     ]) }}
+
+    x-bind:class="{
+        '!opacity-100': loaded,
+    }"
 />

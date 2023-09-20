@@ -1,7 +1,7 @@
 <x-modal disable-overlay-click>
     <x-slot:main>
         <div class="w-full flex flex-col relative md:flex-row gap-8">
-            <div class="hidden-scroll w-full md:sticky md:top-2 md:w-1/3 md:h-[80vh]">
+            <div class="hidden-scroll w-full md:sticky md:top-4 md:w-1/3 md:h-[85vh] overflow-y-scroll">
                 <livewire:feed.media-list :media="$media" />
             </div>
 

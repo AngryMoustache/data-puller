@@ -6,6 +6,7 @@ use AngryMoustache\Media\Formats\Thumb;
 use AngryMoustache\Media\Models\Attachment;
 use App\Livewire\Traits\CanToast;
 use App\Models\Tag;
+use App\Models\TagGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -55,7 +56,20 @@ class Formatter extends Component
 
         // Fill the tags array in thumbnail so that Alpine knows what to do
         $this->thumbnail['tags'] = $this->tagGroups
-            ->mapWithKeys(fn ($group) => [$group['id'] => $this->thumbnail['tags'][$group['id']] ?? []])
+            ->map(function (array $group) {
+                if (! ($group['id'] ?? false)) {
+                    $group['id'] = TagGroup::create([
+                        'pull_id' => $group['pull_id'],
+                        'name' => $group['name'],
+                        'is_main' => $group['is_main'],
+                    ])->id;
+                }
+
+                return $group;
+            })
+            ->mapWithKeys(fn (array $group) => [
+                $group['id'] => $this->thumbnail['tags'][$group['id']] ?? []
+            ])
             ->toArray();
     }
 

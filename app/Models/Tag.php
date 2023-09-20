@@ -22,10 +22,9 @@ class Tag extends Model
         'is_highlighted' => 'boolean',
     ];
 
-    public function pulls()
+    public function tagGroups()
     {
-        return $this->belongsToMany(Pull::class)
-            ->withPivot(['group', 'is_main']);
+        return $this->belongsToMany(TagGroup::class);
     }
 
     public function parent()

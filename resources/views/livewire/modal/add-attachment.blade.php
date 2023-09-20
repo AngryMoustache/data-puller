@@ -1,5 +1,5 @@
 <x-modal
-    full-screen
+    width="w-1/2"
     x-data="{
         selected: {{ json_encode($selected) }},
         multiple: {{ json_encode($multiple) }},
@@ -19,47 +19,72 @@
     }"
 >
     <x-slot:main>
-        <x-headers.h2 text="Select an attachment" class="p-2" />
-
-        <div class="flex gap-8">
-            <div class="w-1/4 flex flex-col gap-2">
-                @foreach ($pulls as $pull)
-                    <x-form.button-secondary
-                        :text="$pull->name"
-                        wire:click="selectPull({{ $pull->id }})"
-                        @class(['opacity-50' => $pull->id === $pullId])
-                    />
-                @endforeach
-
-                <div class="flex justify-between gap-4 w-full pt-4 mt-2 border-t border-border">
-                    <x-form.button-secondary text="<<" wire:click="previousPage" />
-                    <x-form.button-secondary text=">>" wire:click="nextPage" />
-                </div>
+        <div class="flex flex-col gap-8">
+            <div class="w-full">
+                <x-form.input
+                    class="!bg-background"
+                    wire:model.debounce.live="query"
+                    placeholder="Search for a pull of attachment name"
+                />
             </div>
 
             @if (! $forceLoading)
-                <div class="w-3/4" wire:key="{{ $pullId }}">
-                    <div wire:loading.flex class="w-full items-center py-8 justify-center">
-                        <x-loading />
+                <div class="w-full flex align-start items-start h-[60vh] p-1">
+                    <div class="flex items-center justify-center overflow-y-scroll w-full">
+                        <div wire:loading class="w-full items-center py-8 justify-center">
+                            <x-loading />
+                        </div>
+
+                        <div
+                            wire:loading.remove
+                            class="
+                                grid grid-cols-3 md:grid-cols-5 gap-4
+                                w-full
+                            "
+                        >
+                            @foreach ($attachments as $attachment)
+                                <div
+                                    wire:key="attachment-{{ $attachment->id }}"
+                                    class="relative rounded cursor-pointer aspect-square"
+                                    x-bind:class="{
+                                        'p-2 border border-primary': selected.includes({{ $attachment->jsonId() }}),
+                                    }"
+                                >
+                                    @if ($attachment->isVideo)
+                                        <div
+                                            class="rounded absolute top-0 left-0 p-1 bg-black bg-opacity-50"
+                                            x-bind:class="{
+                                                'top-2 left-2': selected.includes({{ $attachment->jsonId() }})
+                                            }"
+                                        >
+                                            <x-heroicon-s-play class="w-8 h-8 text-text" />
+                                        </div>
+                                    @endif
+
+                                    <x-img
+                                        class="rounded"
+                                        :src="$attachment->format('thumb')"
+                                        x-on:click="selectItem({{ $attachment->jsonId() }})"
+                                    />
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center gap-4 w-full">
+                    <x-form.button-secondary text="<<" wire:click="previousPage" />
+
+                    <div class="w-1/3">
+                        <x-form.input
+                            type="number"
+                            class="text-center"
+                            x-on:change.live="$wire.setPage($event.target.value)"
+                            value="{{ $paginators['page'] }}"
+                        />
                     </div>
 
-                    <div class="grid grid-cols-3 md:grid-cols-6 gap-4" wire:loading.remove>
-                        @foreach ($attachments as $attachment)
-                            <div
-                                wire:key="attachment-{{ $attachment->id }}"
-                                class="rounded cursor-pointer"
-                                x-bind:class="{
-                                    'p-2 border border-primary': selected.includes({{ $attachment->jsonId() }}),
-                                }"
-                            >
-                                <x-img
-                                    :src="$attachment->format('thumb')"
-                                    class="rounded"
-                                    x-on:click="selectItem({{ $attachment->jsonId() }})"
-                                />
-                            </div>
-                        @endforeach
-                    </div>
+                    <x-form.button-secondary text=">>" wire:click="nextPage" />
                 </div>
             @else
                 <div class="w-3/4 flex items-center py-8 justify-center">

@@ -2,9 +2,9 @@
 
 namespace App\Livewire\Modal;
 
-use AngryMoustache\Media\Models\Attachment;
-use App\Models\Pull;
+use App\Models\Pivot\MediaPull;
 use App\PullMedia;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -12,13 +12,13 @@ class AddAttachment extends Component
 {
     use WithPagination;
 
-    public null | int $pullId = null;
-
     public array $selected;
     public bool $multiple;
     public string $target;
 
     public bool $forceLoading = false;
+
+    public string $query = '';
 
     public function mount(array $params = [])
     {
@@ -29,22 +29,32 @@ class AddAttachment extends Component
 
     public function render()
     {
-        $pulls = Pull::whereHas('attachments')
-            ->orWhereHas('videos')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $media = MediaPull::orderByDesc('id')
+            ->whereIn('id', DB::table('media_pull')
+                ->select(DB::raw('MAX(`id`) as max_id'), 'media_type', 'media_id')
+                ->groupBy('media_type')
+                ->groupBy('media_id')
+                ->pluck('max_id')
+            )
+            ->when(filled($this->query), function ($query) {
+                $query->whereHas('media', function ($query) {
+                    $query->where('original_name', 'LIKE', "%{$this->query}%")
+                        ->orWhere('extension', 'LIKE', "%{$this->query}%");
+                });
+
+                $query->orWhereHas('pull', function ($query) {
+                    $query->where('name', 'LIKE', "%{$this->query}%");
+                });
+            })
+            ->whereHas('media')
+            ->paginate(15)
+            ->pluck('media')
+            ->filter()
+            ->mapInto(PullMedia::class);
 
         return view('livewire.modal.add-attachment', [
-            'pulls' => $pulls,
-            'attachments' => $this->pullId
-                ? Pull::find($this->pullId)?->media
-                : Attachment::latest()->take(18)->get()->mapInto(PullMedia::class),
+            'attachments' => $media,
         ]);
-    }
-
-    public function selectPull(int $id)
-    {
-        $this->pullId = $id;
     }
 
     public function addSelected(array $selected)
@@ -52,5 +62,10 @@ class AddAttachment extends Component
         // We close the modal in the target
         $this->dispatch($this->target, $selected);
         $this->forceLoading = true;
+    }
+
+    public function updatedQuery()
+    {
+        $this->resetPage();
     }
 }
