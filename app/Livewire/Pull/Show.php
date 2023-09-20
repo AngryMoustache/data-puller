@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Pull;
 
-use Api\Jobs\RebuildCache;
 use App\Enums\Status;
 use App\Livewire\Traits\CanToast;
 use App\Models\Folder;
@@ -37,14 +36,5 @@ class Show extends Component
             ->get();
 
         History::add($pull);
-    }
-
-    public function render()
-    {
-        return view('livewire.pull.show', [
-            'tagGroups' => $this->pull->tags
-                ->where('is_hidden', 0)
-                ->groupBy('pivot.group'),
-        ]);
     }
 }

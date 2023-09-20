@@ -43,20 +43,19 @@
                 class="flex flex-col gap-2 w-2/5 overflow-y-auto pb-3"
                 style="height: 80vh"
                 x-data="{
-                    isMainThumbnail: @entangle('isMainThumbnail'),
-                    thumbnailFor: @entangle('thumbnailFor'),
+                    thumbnail: @entangle('thumbnail'),
                 }"
             >
                 <x-headers.h2 text="Link thumbnail to tag(s)" />
 
                 <x-form.checkbox
                     label="This is the main thumbnail image"
-                    x-model="isMainThumbnail"
+                    x-model="thumbnail.is_main"
                 />
 
                 <div
                     class="flex flex-col gap-4 mt-4"
-                    x-show="! isMainThumbnail"
+                    x-show="! thumbnail.is_main"
                     x-transition
                 >
                     @foreach ($tagGroups as $tagGroup)
@@ -73,7 +72,7 @@
                                 <x-form.checkbox
                                     :label="$tag['name']"
                                     :value="$tag['id']"
-                                    x-model="thumbnailFor.{{ $tagGroup['slug'] }}"
+                                    x-model="thumbnail.tags[{{ $tagGroup['id'] }}]"
                                 />
                             @endforeach
                         </x-alpine.collapsible>

@@ -14,13 +14,17 @@ class AddAttachment extends Component
 
     public null | int $pullId = null;
 
-    public array $selected = [];
+    public array $selected;
+    public bool $multiple;
+    public string $target;
 
     public bool $forceLoading = false;
 
     public function mount(array $params = [])
     {
         $this->selected = $params['selected'] ?? [];
+        $this->multiple = $params['multiple'] ?? true;
+        $this->target = $params['target'] ?? 'set-media';
     }
 
     public function render()
@@ -46,7 +50,7 @@ class AddAttachment extends Component
     public function addSelected(array $selected)
     {
         // We close the modal in the target
-        $this->dispatch('set-media', $selected);
+        $this->dispatch($this->target, $selected);
         $this->forceLoading = true;
     }
 }

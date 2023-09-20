@@ -1,6 +1,23 @@
-<x-modal class="w-full" x-data="{
-    selected: {{ json_encode($selected) }},
-}">
+<x-modal
+    full-screen
+    x-data="{
+        selected: {{ json_encode($selected) }},
+        multiple: {{ json_encode($multiple) }},
+        selectItem (attachmentId) {
+            if (this.multiple) {
+                this.selected.includes(attachmentId)
+                    ? this.selected = this.selected.filter(id => id !== attachmentId)
+                    : this.selected.push(attachmentId)
+            } else {
+                this.selected = [attachmentId]
+                this.submit()
+            }
+        },
+        submit () {
+            $wire.call('addSelected', this.selected)
+        }
+    }"
+>
     <x-slot:main>
         <x-headers.h2 text="Select an attachment" class="p-2" />
 
@@ -38,9 +55,7 @@
                                 <x-img
                                     :src="$attachment->format('thumb')"
                                     class="rounded"
-                                    x-on:click="selected.includes({{ $attachment->jsonId() }})
-                                        ? selected = selected.filter(id => id !== {{ $attachment->jsonId() }})
-                                        : selected.push({{ $attachment->jsonId() }})"
+                                    x-on:click="selectItem({{ $attachment->jsonId() }})"
                                 />
                             </div>
                         @endforeach
@@ -60,9 +75,11 @@
             x-on:click="window.closeModal()"
         />
 
-        <x-form.button
-            text="Add selected attachments"
-            x-on:click="$wire.call('addSelected', selected)"
-        />
+        @if ($multiple)
+            <x-form.button
+                text="Add selected attachments"
+                x-on:click="submit()"
+            />
+        @endif
     </x-slot>
 </x-modal>

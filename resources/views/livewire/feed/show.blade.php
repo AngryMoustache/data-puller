@@ -36,15 +36,13 @@
                 <x-form.input
                     label="Artist name"
                     placeholder="Name of the artist"
-                    :value="$pull->name"
                     wire:model="fields.artist"
                 />
 
                 <x-form.input
                     label="Source URL"
                     placeholder="Source URL"
-                    :value="$pull->source_url"
-                    wire:model="fields.source_url"
+                    wire:model="fields.sourceUrl"
                 />
             </div>
         </x-alpine.collapsible>
@@ -75,10 +73,8 @@
                             .map(id => this.list.find(media => 'media-' + media.id === id))
 
                         this.list = []
-
                         window.setTimeout(() => {
                             this.list = list
-
                             $wire.dispatch('update-media-list', [list])
                         }, 0)
                     },
@@ -119,7 +115,7 @@
                                 </p>
                             </div>
 
-                            <x-heroicon-o-photo
+                            <x-heroicon-o-scissors
                                 class="w-12 h-6 cursor-pointer hover:text-primary"
                                 x-on:click="addToThumbnails(key)"
                             />
@@ -146,106 +142,138 @@
         <x-alpine.collapsible title="Thumbnails" open>
             <div
                 class="flex flex-col gap-4"
-                x-on:add-to-thumbnails.window="list.push($event.detail[0])"
+                x-on:add-to-thumbnails.window="$wire.addThumbnail($event.detail[0])"
                 x-data="{
-                    list: @entangle('thumbnails'),
-                    tagList: @entangle('fields.tags'),
-                    init () {
-                        console.log(this.list)
+                    list: @entangle('fields.thumbnails'),
+                    tagList: @entangle('fields.tagGroups'),
+                    removeThumbnail (key) {
+                        this.list.splice(key, 1)
+                    },
+                    setAsMainThumbnail (key) {
+                        this.list.forEach((thumbnail, index) => {
+                            thumbnail.is_main = index === key
+                        })
                     },
                 }"
             >
-                <template x-for="(media, key) in list" :key="key + '-' + media.id">
-                    <div
-                        :data-id="'media-' + media.id"
-                        class="
-                            flex items-center gap-4
-                            p-2 border border-border rounded-lg bg-surface
-                        "
-                    >
-                        <div class="w-16 h-16">
-                            <img
-                                class="w-full bg-border rounded-lg aspect-square"
-                                :src="media.thumbnail"
-                            />
+                <div class="w-full grid grid-cols-6 gap-4">
+                    <template x-for="(thumbnail, key) in list" :key="'thumbnail-' + key">
+                        <div class="
+                            flex flex-col items-center gap-4
+                            px-4 py-3 border border-border rounded-lg bg-surface
+                        ">
+                            <div class="w-full aspect-square">
+                                <img
+                                    class="w-full bg-border rounded-lg aspect-square"
+                                    :src="thumbnail.thumbnail_url"
+                                />
+                            </div>
+
+                            <div class="w-full flex gap-4">
+                                <x-heroicon-s-bookmark
+                                    class="w-12 h-6 cursor-pointer text-primary hover:text-primary-dark"
+                                    x-on:click="setAsMainThumbnail(key)"
+                                    x-show="thumbnail.is_main"
+                                />
+
+                                <x-heroicon-o-bookmark
+                                    class="w-12 h-6 cursor-pointer hover:text-primary"
+                                    x-on:click="setAsMainThumbnail(key)"
+                                    x-show="! thumbnail.is_main"
+                                />
+
+                                <x-heroicon-o-scissors
+                                    class="w-12 h-6 cursor-pointer hover:text-primary"
+                                    x-on:click="window.openModal('formatter', {
+                                        thumbnailKey: key,
+                                        thumbnail: thumbnail,
+                                        tagList: tagList,
+                                    })"
+                                />
+
+                                <x-heroicon-o-trash
+                                    class="w-12 h-6 cursor-pointer hover:text-primary"
+                                    x-on:click="removeThumbnail(key)"
+                                />
+                            </div>
                         </div>
+                    </template>
+                </div>
 
-                        <div class="grow">
-                            <p class="line-clamp-1">
-                                <span x-text="media.name"></span>
-                            </p>
-
-                            <p class="opacity-50 text-sm">
-                                <span x-text="media.width"></span>px x
-                                <span x-text="media.height"></span>px
-                            </p>
-                        </div>
-
-                        <x-heroicon-o-link
-                            class="w-12 h-6 cursor-pointer hover:text-primary"
-                            x-on:click="window.openModal('formatter', {
-                                attachment: media.id,
-                                tagList: tagList,
-                                isMainThumbnail: media.is_main,
-                            })"
-                        />
-
-                        <x-heroicon-o-trash
-                            x-show="list.length > 1"
-                            class="w-12 h-6 cursor-pointer hover:text-primary"
-                            x-on:click="list.splice(key, 1)"
-                        />
-                    </div>
-                </template>
+                <div class="flex gap-4">
+                    <x-form.button-secondary
+                        text="Add thumbnail"
+                        x-on:click="window.openModal('add-attachment', {
+                            multiple: false,
+                            target: 'add-thumbnail',
+                        })"
+                    />
+                </div>
             </div>
         </x-alpine.collapsible>
 
         <x-alpine.collapsible title="Tags" open>
-            <div class="flex flex-col gap-4">
-                @foreach (($fields['tags'] ?? []) as $key => $group)
-                    <div class="
-                        flex items-center gap-4
-                        px-4 py-3 border border-border rounded-lg bg-surface
-                    ">
+            <div
+                class="flex flex-col gap-4"
+                x-data="{
+                    list: @entangle('fields.tagGroups'),
+                    removeGroup (key) {
+                        this.list[key].deleted  = true
+                    },
+                    addGroup () {
+                        this.list.push({
+                            name: 'New group ' + (this.list.length + 1),
+                            is_main: false,
+                            deleted: false,
+                            tags: [],
+                        })
+                    },
+                }"
+            >
+                <template x-for="(group, key) in list" :key="'group-' + key">
+                    <div
+                        x-show="! group.deleted"
+                        class="
+                            flex items-center gap-4
+                            px-4 py-3 border border-border rounded-lg bg-surface
+                        "
+                    >
                         <div class="flex-grow flex flex-col">
                             <x-headers.h3 class="gap-2">
-                                @if ($group['is_main'])
-                                    <x-heroicon-s-bookmark class="w-4 h-4 text-primary" />
-                                @endif
+                                <x-heroicon-s-bookmark
+                                    class="w-4 h-4 text-primary"
+                                    x-show="group.is_main"
+                                />
 
-                                {{ $group['name'] }}
+                                <span x-text="group.name"></span>
                             </x-headers.h3>
 
                             <p class="opacity-50">
-                                Contains {{ collect($group['tags'])->filter()->count() }} tags
+                                Contains
+                                <span x-text="Object.values(group.tags).filter(e => e).length"></span>
+                                tags
                             </p>
                         </div>
 
                         <x-heroicon-o-pencil
                             class="w-12 h-6 cursor-pointer hover:text-primary"
                             x-on:click="window.openModal('tag-group-selector', {
-                                groupKey: '{{ $key }}',
-                                group: {{ json_encode($group) }},
+                                groupKey: key,
+                                group: group,
                                 media: {{ json_encode($media) }},
-                                uniqueNames: {{ json_encode(
-                                    collect($fields['tags'] ?? [])
-                                        ->pluck('name')
-                                        ->except($key)
-                                        ->toArray()
-                                ) }},
                             })"
                         />
 
                         <x-heroicon-o-trash
                             class="w-12 h-6 cursor-pointer hover:text-primary"
-                            x-on:click="$wire.removeTagGroup('{{ $key }}')"
+                            x-on:click="removeGroup(key)"
                         />
                     </div>
-                @endforeach
+                </template>
 
                 <div class="flex gap-4">
                     <x-form.button-secondary
-                        wire:click="addTagGroup"
+                        x-on:click="addGroup()"
                         text="Add new tag group"
                     />
                 </div>

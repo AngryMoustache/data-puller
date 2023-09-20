@@ -20,12 +20,14 @@ class Pull extends Model
         'artist_id',
         'source_url',
         'status',
+        'thumbnails',
         'views',
         'verdict_at',
     ];
 
     public $casts = [
         'status' => Enums\Status::class,
+        'thumbnails' => 'array',
         'verdict_at' => 'datetime',
     ];
 
@@ -48,11 +50,6 @@ class Pull extends Model
     public function folders()
     {
         return $this->belongsToMany(Folder::class);
-    }
-
-    public function tags()
-    {
-        return $this->belongsToMany(Tag::class);
     }
 
     public function tagGroups()
@@ -92,7 +89,12 @@ class Pull extends Model
 
     public function related(int $amount = 12)
     {
-        $tags = $this->tags->pluck('slug')->toArray();
+        $tags = $this->tagGroups
+            ->pluck('tags')
+            ->flatten(1)
+            ->pluck('slug')
+            ->unique()
+            ->toArray();
 
         return Pulls::make()
             ->where('id', '!=', $this->id)

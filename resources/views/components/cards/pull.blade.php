@@ -1,24 +1,24 @@
 @props([
     'pull',
-    'image' => $pull->thumbnail ?? $pull->attachment,
+    'image' => $pull->thumbnail ?? $pull->attachment->format('thumb'),
 ])
 
 <a
     href="{{ $pull->route() }}"
     {{ $attributes->except('pull')->merge([
-        'class' => 'bg-surface rounded p-4 pb-3 w-full flex flex-col gap-2',
+        'class' => 'bg-surface rounded p-2 pb-3 w-full flex flex-col gap-2',
     ]) }}
 >
     <div class="overflow-hidden rounded flex items-center" style="aspect-ratio: 3/2.5">
         <x-img
-            wire:key="pull-{{ $pull->id }}--{{ $image?->id }}"
-            src="{{ $image?->format('thumb') }}"
+            wire:key="pull-{{ $pull->id }}--{{ $image }}"
+            src="{{ $image }}"
             width="3"
             height="2.5"
         />
     </div>
 
-    <div class="flex flex-col p-1">
+    <div class="flex flex-col px-2 py-1">
         <div class="flex justify-between gap-1">
             <span class="font-bold line-clamp-1">
                 {{ $pull->name }}

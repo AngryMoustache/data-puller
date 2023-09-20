@@ -6,8 +6,6 @@ use AngryMoustache\Media\Formats\Thumb;
 use AngryMoustache\Media\Models\Attachment;
 use App\Livewire\Traits\CanToast;
 use App\Models\Tag;
-use App\Models\Video;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -18,6 +16,9 @@ class Formatter extends Component
 {
     use CanToast;
 
+    public int $thumbnailKey;
+    public array $thumbnail;
+
     public array $options = [];
     public array $initial = [];
     public array $formats = [];
@@ -26,12 +27,16 @@ class Formatter extends Component
 
     public Attachment $attachment;
 
-    public bool $isMainThumbnail;
-    public array $thumbnailFor = [];
-
     public function mount(array $params = [])
     {
-        $this->isMainThumbnail = $params['isMainThumbnail'] ?? false;
+        $this->thumbnailKey = $params['thumbnailKey'] ?? false;
+        $this->thumbnail = $params['thumbnail'] ?? [];
+
+        $this->thumbnail['format'] ??= 'thumb-' . Str::random(8);
+
+        $this->attachment = Attachment::find($this->thumbnail['attachment_id']);
+        $this->options = Thumb::cropperOptions();
+        $this->initial = ($this->attachment->crops ?? [])[$this->thumbnail['format']] ?? [];
 
         $this->tagGroups = collect($params['tagList'] ?? [])
             ->map(function (array $group) {
@@ -42,26 +47,16 @@ class Formatter extends Component
                     ->map(fn (Tag $tag) => [
                         'id' => $tag->id,
                         'name' => $tag->long_name,
-                        'thumbnail_url' => $tag->thumbnail_url,
                     ])
                     ->toArray();
-
-                $group['slug'] = Str::camel($group['name']);
-                $this->thumbnailFor[$group['slug']] = [];
 
                 return $group;
             });
 
-        [$class, $id] = explode(':', $params['attachment']);
-
-        if ($class === Video::class) {
-            $this->attachment = Video::find($id)->preview;
-        } else {
-            $this->attachment = Attachment::find($id);
-        }
-
-        $this->options = Thumb::cropperOptions();
-        $this->initial = ($this->attachment->crops ?? [])['thumb'] ?? [];
+        // Fill the tags array in thumbnail so that Alpine knows what to do
+        $this->thumbnail['tags'] = $this->tagGroups
+            ->mapWithKeys(fn ($group) => [$group['id'] => $this->thumbnail['tags'][$group['id']] ?? []])
+            ->toArray();
     }
 
     #[On('save-crop')]
@@ -69,59 +64,31 @@ class Formatter extends Component
     {
         $crop = $event['crop'];
         $data = $event['data'];
-        $thumbnails = [];
+        $formatName = $this->thumbnail['format'];
 
-        $thumbnailsToGenerate = ['thumb'];
-        if (! $this->isMainThumbnail){
-            $thumbnailsToGenerate = collect(Arr::dot($this->thumbnailFor))
-                ->map(fn ($value, $key) => Str::before($key, '.') . '-' . $value)
-                ->values()
-                ->toArray();
-        }
+        // Save the crop in the storage
+        $url = $this->attachment->id . '/' . $formatName . '-' . $this->attachment->original_name;
+        $crop = preg_replace('/data:image\/(.*?);base64,/' ,'', $crop);
+        $crop = str_replace(' ', '+', $crop);
 
-        foreach ($thumbnailsToGenerate as $name) {
-            $formatName = $this->getFormatName($name);
+        Storage::disk($this->attachment->disk)->put($url, base64_decode($crop));
 
-            // Save the crop in the storage
-            $url = $this->attachment->id . '/' . $formatName . '-' . $this->attachment->original_name;
-            $crop = preg_replace('/data:image\/(.*?);base64,/' ,'', $crop);
-            $crop = str_replace(' ', '+', $crop);
+        // Save the crop on the attachment, for later adjustments
+        $crops = $this->attachment->crops ?? [];
+        $crops[$formatName] = $data;
+        $this->attachment->crops = $crops;
+        $this->attachment->save();
 
-            Storage::disk($this->attachment->disk)->put($url, base64_decode($crop));
+        $this->thumbnail['thumbnail_url'] = Storage::disk($this->attachment->disk)->url($url);
 
-            // Save the crop on the attachment, for later adjustments
-            $crops = $this->attachment->crops ?? [];
-            $crops[$formatName] = $data;
-            $this->attachment->crops = $crops;
-            $this->attachment->save();
-
-            if (! $this->isMainThumbnail) {
-                $thumbnails[] = [
-                    'tag_id' => (int) Str::after($name, '-'),
-                    'group' => $this->tagGroups->firstWhere('slug', Str::before($name, '-'))['name'] ?? '',
-                    'thumbnail_url' => Storage::disk($this->attachment->disk)->url($url)
-                ];
-            }
-        }
-
-        $this->toast("Cropped successfully!");
+        $this->toast('Cropped successfully!');
 
         $this->dispatch('close-modal');
 
         // Pass the thumbnail URL to the parent component
-        $this->dispatch('updated-thumbnails', [
-            'thumbnails' => $thumbnails,
-            'isMainThumbnail' => $this->isMainThumbnail,
+        $this->dispatch('updated-thumbnail-list', [
+            'thumbnailKey' => $this->thumbnailKey,
+            'thumbnail' => $this->thumbnail,
         ]);
-    }
-
-    private function getFormatName(string $tag)
-    {
-        $formatName = 'thumb';
-        if (! $this->isMainThumbnail) {
-            $formatName .= "-{$tag}";
-        }
-
-        return $formatName;
     }
 }

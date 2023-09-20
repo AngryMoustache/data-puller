@@ -14,6 +14,15 @@ class TagGroup extends Model
         'is_main',
     ];
 
+    public $with = [
+        'pull',
+        'tags',
+    ];
+
+    public $casts = [
+        'is_main' => 'boolean',
+    ];
+
     public function pull()
     {
         return $this->belongsTo(Pull::class);

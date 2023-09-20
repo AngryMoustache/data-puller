@@ -8,6 +8,7 @@ use App\Livewire\Wireables\FilterBag;
 use App\Models\Origin;
 use App\Models\Pull;
 use App\Models\Tag;
+use App\Models\TagGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -38,16 +39,27 @@ class Pulls extends Collection
                     ->filter(fn ($filter) => $filter->type === Tag::class)
                     ->pluck('id');
 
-                $thumbnailTags = $pull->tags
-                    ->filter(fn ($tag) => isset($tag->pivot->thumbnail_url))
-                    ->pluck('pivot.thumbnail_url', 'id');
+                $thumbnailTags = collect($pull->thumbnails)
+                    ->map(fn (array $thumbnail) => collect($thumbnail['tags'])
+                        ->flatten()
+                        ->mapWithKeys(fn (int $tag) => [$tag => $thumbnail['thumbnail_url']])
+                        ->toArray()
+                    )
+                    ->mapWithKeys(fn (array $tag) => $tag);
 
-                $thumnnailId = $thumbnailTags->intersectByKeys($tags->flip())->first();
+                // Check if we are filtering for a specific thumbnail
+                foreach ($tags as $tag) {
+                    if ($thumbnailTags[$tag] ?? false) {
+                        $pull->thumbnail = $thumbnailTags[$tag];
 
-                if ($thumnnailId) {
-                    $pull->thumbnail = Attachment::find($thumnnailId);
+                        return $pull;
+                    }
+                }
 
-                    return $pull;
+                // Check if there is a main thumbnail
+                $mainThumbnail = collect($pull->thumbnails)->first(fn (array $thumbnail) => $thumbnail['is_main']);
+                if ($mainThumbnail) {
+                    $pull->thumbnail = $mainThumbnail['thumbnail_url'];
                 }
 
                 return $pull;
@@ -87,7 +99,7 @@ class Pulls extends Collection
     public static function getCacheData(): Collection
     {
         return Pull::online()
-            ->with('tags', 'origin', 'artist')
+            ->with('tagGroups.tags', 'origin', 'artist')
             ->get()
             ->filter(fn ($pull) => $pull->attachment)
             ->map(function (Pull $pull) {
@@ -99,6 +111,7 @@ class Pulls extends Collection
                     'artists' => [$pull->artist?->slug],
                     'origins' => [$pull->origin?->slug],
                     'tags' => self::getCachedTagsForPull($pull),
+                    'thumbnails' => $pull->thumbnails ?? [],
                     'folders' => $pull->folders->pluck('slug'),
                     'media_type' => [
                         MediaType::IMAGE->value => $pull->attachments->isEmpty(),
@@ -110,17 +123,16 @@ class Pulls extends Collection
 
     private static function getCachedTagsForPull(Pull $pull): Collection
     {
-        $groups = $pull->tags
-            ->groupBy('pivot.group')
-            ->map(fn (Collection $tags, string $key) => [
-                'name' => $key,
-                'is_main' => $tags->first()?->pivot->is_main ?? false,
-                'thumbnail_url' => $tags->first()?->pivot->thumbnail_url ?? null,
-                'tags' => $tags->pluck('slug'),
-            ])
-            ->values();
 
-        $mainTags = $groups->filter(fn ($group) => $group['is_main'])->pluck('tags')->flatten();
+        $groups = $pull->tagGroups->map(fn (TagGroup $group) => [
+            'id' => $group->id,
+            'is_main' => $group->is_main ?? false,
+            'tags' => $group->tags->pluck('slug', 'id'),
+        ]);
+
+        $mainTags = $groups->filter(fn ($group) => $group['is_main'])
+            ->pluck('tags')
+            ->mapWithKeys(fn ($i) => $i);
 
         // Add the main tags to the other groups
         return $groups->map(function ($group) use ($mainTags) {

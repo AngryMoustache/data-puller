@@ -20,7 +20,7 @@ class Index extends Component
             return $this->renderLoadingListContainer();
         }
 
-        $history = History::with('pull.tags')
+        $history = History::with('pull.tagGroups.tags')
             ->orderBy('last_viewed_at', 'desc')
             ->get()
             ->groupBy('viewed_on')

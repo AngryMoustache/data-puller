@@ -8,12 +8,14 @@ use Illuminate\Support\Str;
 
 class PullMedia
 {
+    public int|string $modelId;
     public string $id;
 
     public null | Attachment $image;
 
     public function __construct(public Video | Attachment $media)
     {
+        $this->modelId = $media->id;
         $this->id = $media::class . ':' . $media->id;
 
         $this->image = match (true) {
