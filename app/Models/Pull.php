@@ -7,6 +7,7 @@ use Api\Clients\OpenAI;
 use App\Enums;
 use App\PullMedia;
 use App\Pulls;
+use App\ThumbnailFaker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -107,8 +108,18 @@ class Pull extends Model
 
     public function getAttachmentAttribute()
     {
-        return $this->attachments->first()
+        return $this->mainThumbnail
+            ?? $this->attachments->first()
             ?? $this->videos->first()?->preview;
+    }
+
+    public function getMainThumbnailAttribute(): null|ThumbnailFaker
+    {
+        return collect($this->thumbnails)
+            ->filter(fn ($i) => !! ($i['is_main'] ?? false))
+            ->pluck('thumbnail_url')
+            ->mapInto(ThumbnailFaker::class)
+            ->first();
     }
 
     public function getMediaAttribute()

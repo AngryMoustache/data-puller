@@ -37,7 +37,10 @@ class Formatter extends Component
 
         $this->attachment = Attachment::find($this->thumbnail['attachment_id']);
         $this->options = Thumb::cropperOptions();
-        $this->initial = ($this->attachment->crops ?? [])[$this->thumbnail['format']] ?? [];
+
+        $this->initial = ($this->attachment->crops ?? [])[$this->thumbnail['format']]
+            ?? ($this->attachment->crops ?? [])['thumb']
+            ?? [];
 
         $this->tagGroups = collect($params['tagList'] ?? [])
             ->map(function (array $group) {

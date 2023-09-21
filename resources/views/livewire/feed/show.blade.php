@@ -62,7 +62,12 @@
                         this.sortable = Sortable.create(this.$refs.items, this.config)
                     },
                     removeMedia (key) {
-                        this.list.splice(key, 1)
+                        if (Array.isArray(this.list)) {
+                            this.list.splice(key, 1)
+                        } else {
+                            delete this.list[key]
+                        }
+
                         $wire.dispatch('update-media-list', [this.list])
                     },
                     addToThumbnails (key) {
@@ -147,7 +152,11 @@
                     list: @entangle('fields.thumbnails'),
                     tagList: @entangle('fields.tagGroups'),
                     removeThumbnail (key) {
-                        this.list.splice(key, 1)
+                        if (Array.isArray(this.list)) {
+                            this.list.splice(key, 1)
+                        } else {
+                            delete this.list[key]
+                        }
                     },
                     setAsMainThumbnail (key) {
                         this.list.forEach((thumbnail, index) => {
@@ -289,12 +298,12 @@
 
             <x-form.button-secondary
                 wire:click="save('pending')"
-                text="Save changes"
+                text="Save as draft"
             />
 
             <x-form.button
                 wire:click="save('online')"
-                text="Publish"
+                text="Save & publish"
             />
         </div>
     </div>

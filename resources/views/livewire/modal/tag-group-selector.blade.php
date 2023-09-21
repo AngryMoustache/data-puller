@@ -1,7 +1,7 @@
-<x-modal disable-overlay-click>
+<x-modal disable-overlay-click full-screen>
     <x-slot:main>
         <div class="w-full flex flex-col relative md:flex-row gap-8">
-            <div class="hidden-scroll w-full md:sticky md:top-4 md:w-1/3 md:h-[85vh] overflow-y-scroll">
+            <div class="hidden-scroll w-full md:sticky md:top-4 md:w-1/3 md:h-[80vh] overflow-y-scroll">
                 <livewire:feed.media-list :media="$media" />
             </div>
 
@@ -24,16 +24,19 @@
 
                 <x-headers.h2 text="Tags" class="p-2" />
 
-                @foreach ($tags as $tag)
-                    <x-alpine.collapsible
-                        :open="$group['tags'][$tag->id] ?? false"
-                        :title="$tag->name"
-                    >
-                        <div x-show="open" class="pt-2">
+                <x-alpine.tabs :tabs="$tags->pluck('name', 'id')">
+                    @foreach ($tags as $tag)
+                        <x-alpine.tab tab-key="{{ $tag->id }}">
                             <x-form.tag-tree :$tag />
-                        </div>
-                    </x-alpine.collapsible>
-                @endforeach
+                        </x-alpine.tab>
+                    @endforeach
+                </x-alpine.tabs>
+
+                <div class="flex">
+                    <x-form.button-secondary x-on:click="document.querySelector('.modal-content').scrollTo(0, 0)">
+                        Scroll to top
+                    </x-form.button-secondary>
+                </div>
             </div>
         </div>
     </x-slot>

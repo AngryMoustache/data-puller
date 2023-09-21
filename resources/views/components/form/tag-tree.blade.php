@@ -3,7 +3,7 @@
 }">
     <div class="flex items-center">
         <x-form.checkbox
-            :label="$tag->name"
+            :label="$tag->name . ' (' . $tag->children->count() . ')'"
             wire:model.defer="group.tags.{{ $tag->id }}"
             x-model="open{{ $tag->id }}"
         />
