@@ -62,12 +62,7 @@
                         this.sortable = Sortable.create(this.$refs.items, this.config)
                     },
                     removeMedia (key) {
-                        if (Array.isArray(this.list)) {
-                            this.list.splice(key, 1)
-                        } else {
-                            delete this.list[key]
-                        }
-
+                        this.list.splice(key, 1)
                         $wire.dispatch('update-media-list', [this.list])
                     },
                     addToThumbnails (key) {
@@ -152,11 +147,7 @@
                     list: @entangle('fields.thumbnails'),
                     tagList: @entangle('fields.tagGroups'),
                     removeThumbnail (key) {
-                        if (Array.isArray(this.list)) {
-                            this.list.splice(key, 1)
-                        } else {
-                            delete this.list[key]
-                        }
+                        this.list[key].deleted = true
                     },
                     setAsMainThumbnail (key) {
                         this.list.forEach((thumbnail, index) => {
@@ -167,10 +158,14 @@
             >
                 <div class="w-full grid grid-cols-6 gap-4">
                     <template x-for="(thumbnail, key) in list" :key="'thumbnail-' + key">
-                        <div class="
-                            flex flex-col items-center gap-4
-                            px-4 py-3 border border-border rounded-lg bg-surface
-                        ">
+                        <div
+                            x-show="! thumbnail.deleted"
+                            x-transition
+                            class="
+                                flex flex-col items-center gap-4
+                                px-4 py-3 border border-border rounded-lg bg-surface
+                            "
+                        >
                             <div class="w-full aspect-square">
                                 <img
                                     class="w-full bg-border rounded-lg aspect-square"
@@ -229,10 +224,13 @@
                     removeGroup (key) {
                         this.list[key].deleted  = true
                     },
-                    addGroup () {
+                    async addGroup () {
+                        const group = await $wire.createGroup()
+
                         this.list.push({
-                            name: 'New group ' + (this.list.length + 1),
-                            pull_id: {{ $pull->id }},
+                            id: group.id,
+                            name: group.name,
+                            pull_id: group.pull_id,
                             is_main: false,
                             deleted: false,
                             tags: [],

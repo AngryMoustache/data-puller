@@ -3,10 +3,21 @@
 }">
     <div class="flex items-center">
         <x-form.checkbox
-            :label="$tag->name . ' (' . $tag->children->count() . ')'"
             wire:model.defer="group.tags.{{ $tag->id }}"
             x-model="open{{ $tag->id }}"
-        />
+        >
+            <span class="flex flex-col">
+                <span>{{ $tag->name }}</span>
+
+                @if ($tag->children->isNotEmpty())
+                    <span class="opacity-25 text-sm -mt-1">
+                        Has
+                        {{ $tag->children->count() }}
+                        {{ Str::plural('child', $tag->children->count()) }}
+                    </span>
+                @endif
+            </span>
+        </x-form.checkbox>
 
         <span
             class="ml-2 p-2 text-xl text-primary cursor-pointer rounded hover:bg-dark-hover hover:text-text"

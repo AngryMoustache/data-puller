@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Feed;
 
+use Api\Clients\OpenAI;
 use Api\Entities\Media\Image;
 use Api\Entities\Pullable;
 use App\Enums\Origin as EnumsOrigin;
@@ -11,6 +12,7 @@ use App\Livewire\Traits\HasPreLoading;
 use App\Models\Artist;
 use App\Models\Origin;
 use App\Models\Pull;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -24,6 +26,10 @@ class Index extends Component
     public int $perPage = 6;
 
     public null | string $tweetUrl = '';
+    public array $scrape = [
+        'url' => '',
+        'limit' => 0,
+    ];
 
     public function render()
     {
@@ -96,5 +102,54 @@ class Index extends Component
         $pull->save($origin);
 
         $this->toast('Tweet has been pulled! Give it a minute to process');
+    }
+
+    public function pullScrape(
+        null|string $url = null,
+        null|Collection &$media = null,
+        int $failsafe = 0,
+    )  {
+        $url ??= $this->scrape['url'];
+        $limit = $this->scrape['limit'] ?? 0;
+        if (empty($limit)) {
+            $limit = 999;
+        }
+
+        $media ??= collect();
+
+        $html = Cache::rememberForever($url, fn () => file_get_contents($url));
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($html);
+        $xpath = new \DOMXPath($dom);
+        $image = $xpath->query('//img[@id="img"]')->item(0);
+
+        $media->push(Image::make()->source(
+            optional($image)->getAttribute('src')
+        ));
+
+        // Check for another page
+        $next = optional($xpath->query('//div[@id="i3"]//a')->item(0))->getAttribute('href');
+        if ($next === $url || $media->count() >= $limit) {
+            $name = OpenAI::translateToEnglish(
+                $xpath->query('//h1')->item(0)->textContent
+            );
+
+            $origin = Origin::where('type', EnumsOrigin::SCRAPER)->first();
+
+            // Create a pull
+            $pull = new Pullable;
+            $pull->name = $name;
+            $pull->source = $url;
+            $pull->media = $media;
+
+            $pull->save($origin);
+
+            $this->toast('E-Hentai has been pulled! Give it a minute to process');
+
+            return;
+        }
+
+        // Pull next page
+        $this->pullScrape($next, $media, $failsafe + 1);
     }
 }

@@ -4,19 +4,15 @@ namespace App\Livewire\Modal;
 
 use AngryMoustache\Media\Formats\Thumb;
 use AngryMoustache\Media\Models\Attachment;
-use App\Livewire\Traits\CanToast;
 use App\Models\Tag;
 use App\Models\TagGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
-use Livewire\Component;
 
-class Formatter extends Component
+class Formatter extends Modal
 {
-    use CanToast;
-
     public int $thumbnailKey;
     public array $thumbnail;
 
@@ -58,22 +54,9 @@ class Formatter extends Component
             });
 
         // Fill the tags array in thumbnail so that Alpine knows what to do
-        $this->thumbnail['tags'] = $this->tagGroups
-            ->map(function (array $group) {
-                if (! ($group['id'] ?? false)) {
-                    $group['id'] = TagGroup::create([
-                        'pull_id' => $group['pull_id'],
-                        'name' => $group['name'],
-                        'is_main' => $group['is_main'],
-                    ])->id;
-                }
-
-                return $group;
-            })
-            ->mapWithKeys(fn (array $group) => [
-                $group['id'] => $this->thumbnail['tags'][$group['id']] ?? []
-            ])
-            ->toArray();
+        $this->thumbnail['tags'] = $this->tagGroups->mapWithKeys(fn (array $group) => [
+            $group['id'] => $this->thumbnail['tags'][$group['id']] ?? []
+        ])->toArray();
     }
 
     #[On('save-crop')]

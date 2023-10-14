@@ -21,25 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
   })
 
   window.closeModal = () => {
-    document.querySelector('body').classList.remove('overflow-hidden')
-    document.querySelector('.modal-controller').classList.add('hidden')
-
     Livewire.dispatch('closeModal')
   }
 
   window.openModal = (modal, params) => {
-    document.querySelector('body').classList.add('overflow-hidden')
-    document.querySelector('.modal-controller').classList.remove('hidden')
-
     Livewire.dispatch('openModal', [modal, params])
   }
 
   window.addEventListener('close-modal', () => {
     window.closeModal()
-  })
-
-  Livewire.on('closeModal', () => {
-    document.querySelector('body').classList.remove('overflow-hidden')
-    document.querySelector('.modal-controller').classList.add('hidden')
   })
 })

@@ -4,15 +4,11 @@ namespace App\Livewire\Modal;
 
 use Api\Jobs\RebuildCache;
 use App\Livewire\Sections\FolderList;
-use App\Livewire\Traits\CanToast;
 use App\Models\DynamicFolder;
 use App\Models\Folder;
-use Livewire\Component;
 
-class NewFolder extends Component
+class NewFolder extends Modal
 {
-    use CanToast;
-
     public string $name = '';
 
     public null | int $pullId = null;

@@ -35,12 +35,12 @@ enum Origin: string
     public function icon()
     {
         return match ($this) {
-            self::TWITTER => 'fab fa-twitter',
+            self::TWITTER => 'fab fa-x-twitter',
             self::DEVIANTART => 'fab fa-deviantart',
             self::PIXIV => 'fab fa-pinterest-p',
             self::SCRAPER => 'fas fa-rss',
             self::PROMPT => 'fas fa-pencil-alt',
-            self::EXTERNAL => 'fab fa-discord',
+            self::EXTERNAL => 'fas fa-upload',
         };
     }
 

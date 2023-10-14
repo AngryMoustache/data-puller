@@ -3,14 +3,10 @@
 namespace App\Livewire\Modal;
 
 use App\Livewire\Feed\Show;
-use App\Livewire\Traits\CanToast;
 use App\Models\Tag;
-use Livewire\Component;
 
-class NewTag extends Component
+class NewTag extends Modal
 {
-    use CanToast;
-
     public string $name = '';
 
     public string | int $parent = '';

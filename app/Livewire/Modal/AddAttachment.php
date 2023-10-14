@@ -2,13 +2,16 @@
 
 namespace App\Livewire\Modal;
 
+use AngryMoustache\Media\Models\Attachment;
 use App\Models\Pivot\MediaPull;
+use App\Models\Video;
 use App\PullMedia;
 use Illuminate\Support\Facades\DB;
-use Livewire\Component;
+use Illuminate\Support\Str;
+use Livewire\Attributes\On;
 use Livewire\WithPagination;
 
-class AddAttachment extends Component
+class AddAttachment extends Modal
 {
     use WithPagination;
 
@@ -19,6 +22,7 @@ class AddAttachment extends Component
     public bool $forceLoading = false;
 
     public string $query = '';
+    public string $mediaClass = Attachment::class;
 
     public function mount(array $params = [])
     {
@@ -29,31 +33,43 @@ class AddAttachment extends Component
 
     public function render()
     {
-        $media = MediaPull::orderByDesc('id')
-            ->whereIn('id', DB::table('media_pull')
-                ->select(DB::raw('MAX(`id`) as max_id'), 'media_type', 'media_id')
-                ->groupBy('media_type')
-                ->groupBy('media_id')
-                ->pluck('max_id')
+        $media = DB::table('attachments')
+            ->select([
+                DB::raw('CONCAT("attachment-", `id`) as `concat_id`'),
+                'original_name',
+                'extension',
+                'created_at',
+            ])
+            ->union(
+                DB::table('videos')
+                    ->select([
+                        DB::raw('CONCAT("video-", `id`) as `concat_id`'),
+                        'original_name',
+                        'extension',
+                        'created_at',
+                    ])
+                    ->when(filled($this->query), function ($query) {
+                        $query->where('original_name', 'LIKE', "%{$this->query}%")
+                            ->orWhere('extension', 'LIKE', "%{$this->query}%");
+                    })
             )
+            ->orderByDesc('created_at')
             ->when(filled($this->query), function ($query) {
-                $query->whereHas('media', function ($query) {
-                    $query->where('original_name', 'LIKE', "%{$this->query}%")
-                        ->orWhere('extension', 'LIKE', "%{$this->query}%");
-                });
-
-                $query->orWhereHas('pull', function ($query) {
-                    $query->where('name', 'LIKE', "%{$this->query}%");
-                });
+                $query->where('original_name', 'LIKE', "%{$this->query}%")
+                    ->orWhere('extension', 'LIKE', "%{$this->query}%");
             })
-            ->whereHas('media')
-            ->paginate(15)
-            ->pluck('media')
-            ->filter()
-            ->mapInto(PullMedia::class);
+            ->paginate(15);
 
         return view('livewire.modal.add-attachment', [
-            'attachments' => $media,
+            'attachments' => optional($media)->map(function (object $media) {
+                if (Str::startsWith($media->concat_id, 'video-')) {
+                    $media = Video::find(Str::after($media->concat_id, 'video-'));
+                } else {
+                    $media = Attachment::find(Str::after($media->concat_id, 'attachment-'));
+                }
+
+                return new PullMedia($media);
+            }),
         ]);
     }
 
@@ -67,5 +83,12 @@ class AddAttachment extends Component
     public function updatedQuery()
     {
         $this->resetPage();
+    }
+
+    #[On('refresh-media')]
+    public function refreshMedia()
+    {
+        $this->resetPage();
+        $this->query = '';
     }
 }

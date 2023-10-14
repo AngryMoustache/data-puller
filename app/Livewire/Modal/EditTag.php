@@ -2,14 +2,10 @@
 
 namespace App\Livewire\Modal;
 
-use App\Livewire\Traits\CanToast;
 use App\Models\Tag;
-use Livewire\Component;
 
-class EditTag extends Component
+class EditTag extends Modal
 {
-    use CanToast;
-
     public int $tagId;
     public string $name;
     public string | int $parent = '';

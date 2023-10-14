@@ -71,6 +71,12 @@
         /> --}}
 
         <x-nav.item
+            icon="heroicon-o-document-plus"
+            label="Upload"
+            :route="route('feed.create')"
+        />
+
+        <x-nav.item
             :route="route('history.index')"
             :active="request()->routeIs('history.index')"
             icon="heroicon-o-clock"

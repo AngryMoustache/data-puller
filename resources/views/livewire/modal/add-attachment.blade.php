@@ -51,14 +51,14 @@
                                     }"
                                 >
                                     @if ($attachment->isVideo)
-                                        <div
-                                            class="rounded absolute top-0 left-0 p-1 bg-black bg-opacity-50"
+                                        <span
+                                            class="absolute top-1 right-1 bg-black bg-opacity-75 rounded px-2 py-1 text-xs"
                                             x-bind:class="{
-                                                'top-2 left-2': selected.includes({{ $attachment->jsonId() }})
+                                                'top-3 right-3': selected.includes({{ $attachment->jsonId() }})
                                             }"
                                         >
-                                            <x-heroicon-s-play class="w-8 h-8 text-text" />
-                                        </div>
+                                            <x-heroicon-s-play class="w-4 h-4 text-text" />
+                                        </span>
                                     @endif
 
                                     <x-img
@@ -87,7 +87,7 @@
                     <x-form.button-secondary text=">>" wire:click="nextPage" />
                 </div>
             @else
-                <div class="w-3/4 flex items-center py-8 justify-center">
+                <div class="w-full flex items-center py-8 justify-center">
                     <x-loading />
                 </div>
             @endif
@@ -95,6 +95,13 @@
     </x-slot>
 
     <x-slot:footer>
+        <x-form.button
+            text="Upload new"
+            x-on:click.prevent="window.openModal('upload-pull')"
+        />
+
+        <div class="grow"></div>
+
         <x-form.button-secondary
             text="Cancel"
             x-on:click="window.closeModal()"

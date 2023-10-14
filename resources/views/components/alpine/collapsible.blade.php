@@ -3,10 +3,11 @@
     'title' => 'Open me',
 ])
 
-<div x-data="{ open: @js($open) }" {{ $attributes->merge(['class' => '
+<div x-data="{ open: @js($open) }" {{ $attributes->except(['x-ref'])->merge(['class' => '
     border border-border rounded-xl overflow-hidden
 ']) }}>
     <div
+        {{ $attributes->only(['x-ref']) }}
         x-on:click="open = !open"
         x-bind:class="{ 'border-b': open }"
         class="

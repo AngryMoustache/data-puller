@@ -1,11 +1,10 @@
 @props([
     'id' => Str::random(16),
-    'label' => 'Label',
+    'label' => $slot,
 ])
 
 <div>
-
-    <label for="{{ $id }}" {{ $attributes->except(['label', 'tag', 'value', 'x-model'])->merge([
+    <label for="{{ $id }}" {{ $attributes->except(['x-on', 'x-bind:checked', 'label', 'tag', 'value', 'x-model'])->merge([
         'class' => 'p-2 flex w-full items-center gap-4',
     ]) }}>
         <div class="relative">
@@ -13,7 +12,7 @@
                 id="{{ $id }}"
                 type="checkbox"
                 class="hidden peer"
-                {{ $attributes->whereStartsWith(['x-model', 'wire:model', 'value']) }}
+                {{ $attributes->whereStartsWith(['x-on', 'x-bind:checked', 'x-model', 'wire:model', 'value']) }}
             />
 
             <div class="
@@ -27,6 +26,8 @@
             " />
         </div>
 
-        <span>{{ $label }}</span>
+        @if ((string) $label !== '')
+            <span>{{ $label }}</span>
+        @endif
     </label>
 </div>

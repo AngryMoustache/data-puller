@@ -1,14 +1,15 @@
 @props([
-    'route',
+    'route' => '#',
     'icon' => '',
     'activeIcon' => Str::replace('-o-', '-s-', $icon),
-    'active' => $route === request()->url(),
+    'active' => isset($route) && ($route === request()->url()),
     'label',
     'number' => null,
 ])
 
 <a
     href="{{ $route }}"
+    {{ $attributes->only('x-on:click.prevent') }}
     @class([
         'text-primary' => $active,
         'flex items-center p-4 text-title hover:text-primary w-full select-none transition-colors',

@@ -2,14 +2,10 @@
 
 namespace App\Livewire\Modal;
 
-use App\Livewire\Traits\CanToast;
 use App\Models\Tag;
-use Livewire\Component;
 
-class TagGroupSelector extends Component
+class TagGroupSelector extends Modal
 {
-    use CanToast;
-
     public int $groupKey;
     public array $group;
     public array $media;

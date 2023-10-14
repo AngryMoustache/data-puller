@@ -43,7 +43,7 @@ class Show extends Component
             'name' => $this->pull->name,
             'artist' => $this->pull->artist?->name ?? 'Unknown',
             'sourceUrl' => $this->pull->source_url,
-            'thumbnails' => $this->pull->thumbnails ?? [],
+            'thumbnails' => collect($this->pull->thumbnails ?? [])->values(),
             'tagGroups' => $this->pull->tagGroups->map(fn (TagGroup $tagGroup) => [
                 'id' => $tagGroup->id,
                 'pull_id' => $tagGroup->pull_id,
@@ -78,7 +78,9 @@ class Show extends Component
             'name' => $this->fields['name'],
             'status' => $status,
             'source_url' => $this->fields['sourceUrl'],
-            'thumbnails' => $this->fields['thumbnails'],
+            'thumbnails' => collect($this->fields['thumbnails'])
+                ->reject(fn (array $thumbnail) => isset($thumbnail['deleted']))
+                ->toArray(),
             'verdict_at' => $this->pull->verdict_at ?? now(),
             'artist_id' => Artist::firstOrCreate([
                 'name' => $this->fields['artist'],
@@ -148,6 +150,15 @@ class Show extends Component
         $this->fields['name'] = Pull::getAiName($tags);
     }
 
+    public function createGroup()
+    {
+        return TagGroup::create([
+            'name' => 'New group ' . count($this->fields['tagGroups']),
+            'pull_id' => $this->pull->id,
+            'is_main' => false,
+        ]);
+    }
+
     private function toJson(Attachment | Video $media)
     {
         return (new PullMedia($media))->toJson();
@@ -155,11 +166,13 @@ class Show extends Component
 
     private function saveMedia()
     {
-        $media = collect($this->media)->map(fn (array $media, int $key) => [
-            'id' => (int) Str::after($media['id'], ':'),
-            'class' => (string) Str::before($media['id'], ':'),
-            'sort_order' => $key + 1000,
-        ])->groupBy('class');
+        $media = collect($this->media)
+            ->map(fn (array $media, int $key) => [
+                'id' => (int) Str::after($media['id'], ':'),
+                'class' => (string) Str::before($media['id'], ':'),
+                'sort_order' => $key + 1000,
+            ])
+            ->groupBy('class');
 
         $attachments = Collection::wrap($media[Attachment::class] ?? []);
         $videos = Collection::wrap($media[Video::class] ?? []);

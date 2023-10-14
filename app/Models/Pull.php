@@ -100,7 +100,14 @@ class Pull extends Model
         return Pulls::make()
             ->where('id', '!=', $this->id)
             ->sortByDesc(fn (array $pull) =>
-                max(collect($pull['tags'])->pluck('tags')->flatten()->intersect($tags)->count(), 0)
+                collect($pull['tags'])
+                    ->pluck('tags')
+                    ->flatten()
+                    ->unique()
+                    ->intersect($tags)
+                    ->count()
+                +
+                (int) (collect($pull['artists'])->first() === $this->artist?->slug),
             )
             ->limit($amount)
             ->fetch();
@@ -158,6 +165,11 @@ class Pull extends Model
     public function scopeOffline($query)
     {
         return $query->where('status', Enums\Status::OFFLINE);
+    }
+
+    public function hasVideo()
+    {
+        return !! $this->media->firstWhere(fn (PullMedia $media) => $media->isVideo);
     }
 
     public function canHaveSourceUrl()

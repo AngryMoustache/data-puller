@@ -2,6 +2,10 @@
     class="flex flex-col gap-4"
     wire:loading.class="opacity-50"
 >
+    @if ($media->isEmpty())
+        <x-no-images />
+    @endif
+
     @foreach ($media as $item)
         <div class="w-full">
             @if ($item::class === \App\Models\Video::class)

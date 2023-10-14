@@ -13,18 +13,18 @@
                             window.cropper.destroy()
                         }
 
-                        window.cropper = new Cropper(
-                            document.getElementById('cropper-frame'),
-                            {
+                        let frame = document.getElementById('cropper-frame')
+                        if (frame) {
+                            window.cropper = new Cropper(frame, {
                                 ...@js($options),
                                 viewMode: 1,
                                 dragMode: 'move',
                                 ready() {
                                     this.cropper.setData(@js($initial))
                                 },
-                            }
-                        )
-                    },
+                            })
+                        }
+                    }
                 }"
             >
                 <div class="w-full flex gap-4">
@@ -44,6 +44,17 @@
                 style="height: 80vh"
                 x-data="{
                     thumbnail: @entangle('thumbnail'),
+                    toggleAllCheckboxes (key, groupId) {
+                        let areSameLength = this.thumbnail.tags[groupId].length !== $wire.get('tagGroups')[key].tags.length
+
+                        this.thumbnail.tags[groupId] = areSameLength
+                            ? $wire.get('tagGroups')[key].tags.map(tag => tag.id)
+                            : []
+
+                        if (areSameLength === false) {
+                            this.$refs[`collapsible-${key}-${groupId}`].click()
+                        }
+                    },
                 }"
             >
                 <x-headers.h2 text="Link thumbnail to tag(s)" />
@@ -58,14 +69,24 @@
                     x-show="! thumbnail.is_main"
                     x-transition
                 >
-                    @foreach ($tagGroups as $tagGroup)
-                        <x-alpine.collapsible :open="$loop->first">
+                    @foreach ($tagGroups as $key => $tagGroup)
+                        <x-alpine.collapsible
+                            :open="$loop->first || count($thumbnail['tags'][$tagGroup['id']] ?? [])"
+                            x-ref="collapsible-{{ $key }}-{{ $tagGroup['id'] }}"
+                        >
                             <x-slot:title>
-                                @if ($tagGroup['is_main'])
-                                    <x-heroicon-s-bookmark class="w-4 h-4 text-primary mr-2" />
-                                @endif
+                                <div class="flex items-center gap-2">
+                                    <x-form.checkbox
+                                        x-on:click="toggleAllCheckboxes({{ $key }}, {{ $tagGroup['id'] }})"
+                                        x-bind:checked="thumbnail.tags[{{ $tagGroup['id'] }}].length === $wire.get('tagGroups')[{{ $key }}].tags.length"
+                                    />
 
-                                {{ $tagGroup['name'] }}
+                                    @if ($tagGroup['is_main'])
+                                        <x-heroicon-s-bookmark class="w-4 h-4 text-primary" />
+                                    @endif
+
+                                    {{ $tagGroup['name'] }}
+                                </div>
                             </x-slot:title>
 
                             @foreach ($tagGroup['tags'] as $tag)

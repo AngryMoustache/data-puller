@@ -3,13 +3,9 @@
 namespace App\Livewire\Modal;
 
 use Api\Jobs\RebuildCache;
-use App\Livewire\Traits\CanToast;
-use Livewire\Component;
 
-class DeleteFolder extends Component
+class DeleteFolder extends Modal
 {
-    use CanToast;
-
     public string $folderClass;
     public int $folderId;
     public string $name;
