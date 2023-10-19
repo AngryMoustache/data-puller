@@ -15,10 +15,13 @@
         "laravel/sanctum": "^3.2",
         "laravel/scout": "^9.8",
         "laravel/tinker": "^2.7",
+        "league/flysystem-ftp": "^3.0",
+        "league/flysystem-sftp-v3": "^3.16",
         "livewire/livewire": "^3.0.5",
         "meilisearch/meilisearch-php": "^1.0",
         "openai-php/laravel": "^0.4.1",
-        "owenvoke/blade-fontawesome": "^2.2"
+        "owenvoke/blade-fontawesome": "^2.2",
+        "spatie/db-dumper": "^3.4"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.7",

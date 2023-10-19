@@ -1,7 +1,7 @@
 <x-container class="flex flex-col">
     <x-container class="flex gap-16 flex-col md:flex-row">
         <div class="flex flex-col gap-4 w-full md:w-1/2">
-            <x-headers.h2 text="Manual pull" />
+            {{-- <x-headers.h2 text="Manual pull" />
 
             <form wire:submit.prevent="pullTweet" class="flex gap-4 w-full mb-4">
                 <x-form.input
@@ -33,7 +33,7 @@
                     class="rounded-lg whitespace-nowrap"
                     wire:click="pullScrape"
                 />
-            </form>
+            </form> --}}
 
             <x-headers.h2 text="Newest pulls" />
 

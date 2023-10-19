@@ -2,7 +2,7 @@
 
 namespace App;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use App\Enums\MediaType;
 use App\Livewire\Wireables\FilterBag;
 use App\Models\Origin;

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use Api\Clients\OpenAI;
 use App\Enums;
 use App\PullMedia;

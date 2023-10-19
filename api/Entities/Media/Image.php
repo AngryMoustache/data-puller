@@ -2,7 +2,7 @@
 
 namespace Api\Entities\Media;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -15,8 +15,8 @@ class Image extends Media
         $extension = $filename->after('.');
 
         $attachment = Attachment::withoutGlobalScopes()->firstOrCreate([
-            'original_name' => $filename,
-            'extension' => $extension,
+            'original_name' => (string) $filename,
+            'extension' => (string) $extension,
             'md5' => @md5_file($this->src),
         ], [
             'alt_name' => $name,
@@ -29,29 +29,31 @@ class Image extends Media
            return $attachment;
         }
 
-        // Pixiv requires some extra authorization to download the image
-        if (Str::contains($this->src, 'i.pximg.net')) {
-            $folder = "public/attachments/{$attachment->id}";
+        $folder = "mobileart/public/attachments/{$attachment->id}";
 
+        // Pixiv requires some extra authorization to download the image
+        $context = null;
+        if (Str::contains($this->src, 'i.pximg.net')) {
             $context = stream_context_create(['http' => [
                 'method' => 'GET',
                 'header' => 'Referer: https://pixiv.net'
             ]]);
-
-            $file = file_get_contents($this->src, false, $context);
-
-            Storage::put("${folder}/{$filename}", $file);
-        } else {
-            $folder = "public/attachments/{$attachment->id}";
-            Storage::putFileAs($folder, $this->src, $filename);
         }
+
+        $file = file_get_contents($this->src, false, $context);
+
+        $tmpPath = "tmp--{$filename}";
+        file_put_contents($tmpPath, $file);
+        @Storage::disk('nas-media')->makeDirectory($folder, 'public');
+        Storage::disk('nas-media')->putFileAs($folder, $tmpPath, $filename);
+        // unlink($tmpPath);
 
         // Generate thumb format
         $attachment->format('thumb');
 
         // Fill in some extra data
-        $filesize = getimagesize(Storage::path("{$folder}/{$filename}"));
-        $response = Storage::response("${folder}/{$filename}");
+        $filesize = getimagesize($attachment->getUrl("{$attachment->id}/{$filename}"));
+        $response = Storage::disk('nas-media')->response("${folder}/{$filename}");
 
         $attachment->size = $response->headers->get('content-length');
         $attachment->mime_type = $filesize['mime'];

@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Modal;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use Livewire\WithFileUploads;
 
 class UploadPull extends Modal

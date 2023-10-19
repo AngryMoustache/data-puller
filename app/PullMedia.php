@@ -2,13 +2,14 @@
 
 namespace App;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use App\Models\Video;
 use Illuminate\Support\Str;
 
 class PullMedia
 {
     public int|string $modelId;
+    public string $name;
     public string $id;
     public bool $isVideo;
 
@@ -23,6 +24,7 @@ class PullMedia
     {
         $this->modelId = $media->id;
         $this->id = $media::class . ':' . $media->id;
+        $this->name = $media->original_name;
 
         $this->isVideo = in_array(
             $media->extension,
@@ -49,7 +51,7 @@ class PullMedia
     {
         return [
             'id' => $this->id,
-            'name' => Str::limit($this->image?->original_name ?? 'No name', 15),
+            'name' => Str::limit($this->name ?? 'No name', 15),
             'width' => $this->image?->width,
             'height' => $this->image?->height,
             'thumbnail' => $this->format('thumb'),

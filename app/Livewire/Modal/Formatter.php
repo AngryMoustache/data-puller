@@ -3,7 +3,7 @@
 namespace App\Livewire\Modal;
 
 use AngryMoustache\Media\Formats\Thumb;
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use App\Models\Tag;
 use App\Models\TagGroup;
 use Illuminate\Support\Collection;
@@ -71,7 +71,7 @@ class Formatter extends Modal
         $crop = preg_replace('/data:image\/(.*?);base64,/' ,'', $crop);
         $crop = str_replace(' ', '+', $crop);
 
-        Storage::disk($this->attachment->disk)->put($url, base64_decode($crop));
+        Storage::disk('nas-media')->put("mobileart/public/attachments/{$url}", base64_decode($crop));
 
         // Save the crop on the attachment, for later adjustments
         $crops = $this->attachment->crops ?? [];
@@ -79,7 +79,7 @@ class Formatter extends Modal
         $this->attachment->crops = $crops;
         $this->attachment->save();
 
-        $this->thumbnail['thumbnail_url'] = Storage::disk($this->attachment->disk)->url($url);
+        $this->thumbnail['thumbnail_url'] = $this->attachment->getUrl($url);
 
         $this->toast('Cropped successfully!');
 

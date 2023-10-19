@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Feed;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use Api\Jobs\RebuildCache;
 use App\Enums\Status;
 use App\Livewire\Traits\CanToast;

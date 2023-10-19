@@ -1,5 +1,7 @@
 <?php
 
+use App\Filesystem\NasAdapter;
+
 return [
 
     /*
@@ -56,6 +58,23 @@ return [
             'throw' => false,
         ],
 
+        'nas-backup' => [
+            'driver' => 'sftp',
+            'host' => env('NAS_BACKUP_HOST'),
+            'username' => env('NAS_BACKUP_USERNAME'),
+            'password' => env('NAS_BACKUP_PASSWORD'),
+            'port' => (int) env('NAS_BACKUP_PORT'),
+        ],
+
+        'nas-media' => [
+            'driver' => 'sftp',
+            'host' => env('NAS_MEDIA_HOST_FTP'),
+            'username' => env('NAS_MEDIA_USERNAME'),
+            'password' => env('NAS_MEDIA_PASSWORD'),
+            'port' => (int) env('NAS_MEDIA_PORT'),
+            'visibility' => 'public',
+            'permPublic' => 0766,
+        ],
     ],
 
     /*

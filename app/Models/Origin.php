@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use Api\Entities\Pullable;
 use App\Enums;
 use App\Enums\Origin as EnumsOrigin;

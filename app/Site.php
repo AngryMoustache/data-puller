@@ -2,7 +2,7 @@
 
 namespace App;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 
 class Site
 {

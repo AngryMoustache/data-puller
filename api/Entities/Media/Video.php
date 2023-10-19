@@ -36,10 +36,20 @@ class Video extends Media
            return $video;
         }
 
-        // Save the file on the disk
-        $path = "public/videos/{$video->id}/";
-        Storage::putFileAs($path, $this->src, (string) $filename);
-        $video->size = filesize($video->fullPath());
+        $folder = "mobileart/public/videos/{$video->id}/";
+
+        $tmpPath = "tmp--{$filename}";
+        $file = file_get_contents($this->src);
+        $tmpFile = file_put_contents($tmpPath, $file);
+
+        // Save the file on the NAS
+        Storage::disk('nas-media')->makeDirectory($folder, 'public');
+        Storage::disk('nas-media')->putFileAs($folder, $tmpPath, (string) $filename);
+
+        unlink($tmpPath);
+
+        $response = Storage::disk('nas-media')->response("${folder}/{$filename}");
+        $video->size = $response->headers->get('content-length');
         $video->saveQuietly();
 
         return $video;

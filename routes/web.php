@@ -6,6 +6,7 @@ use App\Livewire;
 use App\Models\Origin;
 use App\Models\Pull;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', Livewire\Home::class)->name('home.index');
 
@@ -50,3 +51,11 @@ Route::get('/history', Livewire\History\Index::class)->name('history.index');
 //         $group->tags()->sync($pull->tags->pluck('id'));
 //     });
 // });
+
+// Route::get('test', function () {
+//     dd(Storage::disk('nas-media')->allFiles());
+// });
+
+Route::get('storage/{file}', function (string $file) {
+    return redirect('https://media.mobileart.dev/public/' . $file);
+})->where('file', '.*');

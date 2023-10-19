@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use AngryMoustache\Media\Models\Attachment;
+use App\Models\Attachment;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,11 +27,12 @@ class Video extends Model
 
     public function fullPath()
     {
-        return Storage::path("public/videos/{$this->id}/{$this->original_name}");
+        return Storage::disk('nas-media')
+            ->path("public/videos/{$this->id}/{$this->original_name}");
     }
 
     public function path()
     {
-        return Storage::url("public/videos/{$this->id}/{$this->original_name}");
+        return env('NAS_MEDIA_HOST') . "/public/videos/{$this->id}/{$this->original_name}";
     }
 }
