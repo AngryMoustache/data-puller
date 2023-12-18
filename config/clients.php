@@ -6,6 +6,10 @@ return [
         'secret_key' => env('TWITTER_SECRET_KEY'),
         'bearer_token' => env('TWITTER_BEARER_TOKEN'),
     ],
+    'bluesky' => [
+        'username' => env('BLUESKY_USERNAME'),
+        'password' => env('BLUESKY_PASSWORD'),
+    ],
     'deviant_art' => [
         'client_id' => env('DEVIANT_ART_CLIENT_ID'),
         'client_secret' => env('DEVIANT_ART_CLIENT_SECRET'),

@@ -8,6 +8,7 @@ use App\Models\Origin as ModelsOrigin;
 enum Origin: string
 {
     case TWITTER = 'twitter';
+    case BLUESKY = 'bluesky';
     case DEVIANTART = 'deviant-art';
     case PIXIV = 'pixiv';
     case SCRAPER = 'scraper';
@@ -18,6 +19,7 @@ enum Origin: string
     {
         return match ($this) {
             self::TWITTER => 'Twitter',
+            self::BLUESKY => 'Bluesky',
             self::DEVIANTART => 'DeviantArt',
             self::PIXIV => 'Pixiv',
             self::SCRAPER => 'Scraper',
@@ -36,6 +38,7 @@ enum Origin: string
     {
         return match ($this) {
             self::TWITTER => 'fab fa-x-twitter',
+            self::BLUESKY => 'fas fa-cloud',
             self::DEVIANTART => 'fab fa-deviantart',
             self::PIXIV => 'fab fa-pinterest-p',
             self::SCRAPER => 'fas fa-rss',
@@ -48,7 +51,8 @@ enum Origin: string
     {
         return match ($this) {
             self::DEVIANTART => 'background: #00e59b !important; color: #000 !important;',
-            self::TWITTER => 'background: #1da1f2 !important; color: #fff !important;',
+            self::TWITTER => 'background: #424242 !important; color: #fff !important;',
+            self::BLUESKY => 'background: #1da1f2 !important; color: #fff !important;',
             self::PIXIV => 'background: #166392 !important; color: #fff !important;',
             self::SCRAPER => 'background: #d12b9c !important; color: #fff !important;',
             self::PROMPT => 'background: #f2d41d !important; color: #000 !important;',
@@ -60,6 +64,7 @@ enum Origin: string
     {
         return match ($this) {
             self::TWITTER => (new Clients\Twitter($origin))->likes(),
+            self::BLUESKY => (new Clients\Bluesky($origin))->likes(),
             self::DEVIANTART => (new Clients\DeviantArt($origin))->favorites(),
             self::PIXIV => (new Clients\Pixiv($origin))->bookmarks(),
             self::SCRAPER => (new Clients\Scraper($origin))->favorites(),
@@ -71,6 +76,7 @@ enum Origin: string
     {
         return match ($this) {
             self::TWITTER => true,
+            self::BLUESKY => true,
             self::DEVIANTART => true,
             self::PIXIV => true,
             self::SCRAPER => true,

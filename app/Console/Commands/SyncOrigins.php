@@ -7,10 +7,15 @@ use Illuminate\Console\Command;
 
 class SyncOrigins extends Command
 {
-    public $signature = 'sync:origins';
+    public $signature = 'sync:origins {origin?}';
 
     public function handle()
     {
-        Origin::online()->get()->each(fn (Origin $origin) => $origin->pull());
+        $origin = $this->argument('origin');
+
+        Origin::online()
+            ->when($origin, fn ($query) => $query->where('id', $origin))
+            ->get()
+            ->each(fn (Origin $origin) => $origin->pull());
     }
 }
