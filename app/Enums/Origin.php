@@ -66,4 +66,15 @@ enum Origin: string
             default => null,
         };
     }
+
+    public function canPull(): bool
+    {
+        return match ($this) {
+            self::TWITTER => true,
+            self::DEVIANTART => true,
+            self::PIXIV => true,
+            self::SCRAPER => true,
+            default => false,
+        };
+    }
 }

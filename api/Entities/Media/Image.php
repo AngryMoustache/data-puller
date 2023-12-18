@@ -2,17 +2,20 @@
 
 namespace Api\Entities\Media;
 
+use App\Filesystem\MediaServer;
 use App\Models\Attachment;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Image extends Media
 {
+    public bool $isBase64 = false;
+
     public function save()
     {
-        $filename = Str::of($this->src)->before('?')->afterLast('/');
+        $filename = $this->filename ?? Str::of($this->src)->before('?')->afterLast('/');
         $name = $this->name ?? $filename->before('.');
-        $extension = $filename->after('.');
+        $extension = $this->extension ?? $filename->after('.');
 
         $attachment = Attachment::withoutGlobalScopes()->firstOrCreate([
             'original_name' => (string) $filename,
@@ -29,8 +32,6 @@ class Image extends Media
            return $attachment;
         }
 
-        $folder = "mobileart/public/attachments/{$attachment->id}";
-
         // Pixiv requires some extra authorization to download the image
         $context = null;
         if (Str::contains($this->src, 'i.pximg.net')) {
@@ -40,27 +41,32 @@ class Image extends Media
             ]]);
         }
 
-        $file = file_get_contents($this->src, false, $context);
+        $file = $this->isBase64
+            ? base64_decode($this->src)
+            : file_get_contents($this->src, false, $context);
 
-        $tmpPath = "tmp--{$filename}";
-        file_put_contents($tmpPath, $file);
-        @Storage::disk('nas-media')->makeDirectory($folder, 'public');
-        Storage::disk('nas-media')->putFileAs($folder, $tmpPath, $filename);
-        // unlink($tmpPath);
+        // Save the file to the media server
+        MediaServer::upload($file, $attachment->uuid, $filename);
 
         // Generate thumb format
         $attachment->format('thumb');
 
         // Fill in some extra data
-        $filesize = getimagesize($attachment->getUrl("{$attachment->id}/{$filename}"));
-        $response = Storage::disk('nas-media')->response("${folder}/{$filename}");
+        $filesize = getimagesize($attachment->path());
 
-        $attachment->size = $response->headers->get('content-length');
         $attachment->mime_type = $filesize['mime'];
         $attachment->width = empty($this->width) ? $filesize[0] : $this->width;
         $attachment->height = empty($this->height) ? $filesize[1] : $this->height;
         $attachment->saveQuietly();
 
         return $attachment;
+    }
+
+    public function base64(string $base64)
+    {
+        $this->src = $base64;
+        $this->isBase64 = true;
+
+        return $this;
     }
 }

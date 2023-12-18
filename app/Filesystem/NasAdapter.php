@@ -2,6 +2,7 @@
 
 namespace App\Filesystem;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use League\Flysystem\Config;
 use League\Flysystem\FileAttributes;
@@ -11,12 +12,19 @@ class NasAdapter implements FilesystemAdapter
 {
     public function fileExists(string $path): bool
     {
-        return Storage::disk('nas-media')->exists("mobileart/public/attachments/$path");
+        $md5 = md5($path);
+        return Cache::rememberForever("nass-exists-{$md5}", function () use ($path) {
+            return true;
+            return Storage::disk('nas-media')->exists("mobileart/public/attachments/$path");
+        });
     }
 
     public function directoryExists(string $path): bool
     {
-        return Storage::disk('nas-media')->directoryExists($path);
+        return Cache::rememberForever("nas-directory-exists-{$path}", function () use ($path) {
+            return true;
+            return Storage::disk('nas-media')->directoryExists($path);
+        });
     }
 
     public function write(string $path, string $contents, Config $config): void

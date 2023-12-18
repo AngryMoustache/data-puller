@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('sync:origins')->cron('0 * * * *');
         $schedule->command('rebuild:cache')->cron('10 * * * *');
+        $schedule->command('check:attachments')->cron('30 0 * * *');
         $schedule->command('backup:db')->cron('0 0 * * *');
     }
 

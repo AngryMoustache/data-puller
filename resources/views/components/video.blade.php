@@ -1,1 +1,1 @@
-<video {{ $attributes }} controls loop></video>
+<video {{ $attributes }} controls loop crossOrigin="anonymous"></video>

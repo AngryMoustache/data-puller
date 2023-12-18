@@ -20,9 +20,9 @@ class Video extends Media
     public function save()
     {
         // Create the video itself and link the thumbnail
-        $filename = Str::of($this->src)->before('?')->afterLast('/');
-        $name = $filename->before('.');
-        $extension = $filename->afterLast('.');
+        $filename = $this->filename ?? Str::of($this->src)->before('?')->afterLast('/');
+        $name = $this->name ?? $filename->before('.');
+        $extension = $this->extension ?? $filename->afterLast('.');
 
         $video = ModelsVideo::firstOrCreate([
             'preview_id' => $this->preview->save()?->id,

@@ -1,6 +1,6 @@
 <x-container class="w-full flex flex-col relative md:flex-row gap-8">
     <div class="hidden-scroll w-full md:sticky md:top-2 md:w-1/3 md:min-h-feed">
-        <livewire:feed.media-list :media="$media" />
+        <livewire:feed.media-list :media="$media" :show-preview-generator="true" />
     </div>
 
     <div class="w-full md:w-2/3 flex flex-col gap-8 py-4">
@@ -142,7 +142,7 @@
         <x-alpine.collapsible title="Thumbnails" open>
             <div
                 class="flex flex-col gap-4"
-                x-on:add-to-thumbnails.window="$wire.addThumbnail($event.detail[0])"
+                x-on:add-to-thumbnails.window="$wire.addThumbnails([$event.detail[0]['id']])"
                 x-data="{
                     list: @entangle('fields.thumbnails'),
                     tagList: @entangle('fields.tagGroups'),
@@ -206,10 +206,10 @@
 
                 <div class="flex gap-4">
                     <x-form.button-secondary
-                        text="Add thumbnail"
+                        text="Add thumbnail(s)"
                         x-on:click="window.openModal('add-attachment', {
-                            multiple: false,
-                            target: 'add-thumbnail',
+                            multiple: true,
+                            target: 'add-thumbnails',
                         })"
                     />
                 </div>

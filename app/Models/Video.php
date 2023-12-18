@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
+use App\Filesystem\MediaServer;
 use App\Models\Attachment;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Video extends Model
 {
@@ -27,12 +28,18 @@ class Video extends Model
 
     public function fullPath()
     {
-        return Storage::disk('nas-media')
-            ->path("public/videos/{$this->id}/{$this->original_name}");
+        return MediaServer::url($this->uuid);
     }
 
     public function path()
     {
-        return env('NAS_MEDIA_HOST') . "/public/videos/{$this->id}/{$this->original_name}";
+        return MediaServer::url($this->uuid);
+    }
+
+    public static function booted()
+    {
+        static::creating(function ($video) {
+            $video->uuid = Str::uuid();
+        });
     }
 }

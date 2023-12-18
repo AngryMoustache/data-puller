@@ -17,6 +17,13 @@
                 class="!bg-background"
                 placeholder="Name of the tag"
             />
+
+            <x-form.input
+                wire:model="icon"
+                label="Icon (optional)"
+                class="!bg-background"
+                placeholder="Icon for the tag"
+            />
         </div>
 
         <div class="flex w-full mt-4 gap-4 justify-end">

@@ -13,6 +13,7 @@ class Tag extends Model
         'name',
         'slug',
         'long_name',
+        'icon',
         'is_hidden',
         'is_highlighted',
     ];

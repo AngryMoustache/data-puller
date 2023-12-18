@@ -1,6 +1,6 @@
 <div class="flex flex-col md:flex-row gap-8 p-4 md:p-8">
     <div class="w-full md:w-2/3 flex flex-col gap-4">
-        <livewire:feed.media-list :media="$pull->media->map->toJson()->toArray()" />
+        <livewire:feed.media-list :media="$pull->media->map->toJson(false)->toArray()" />
     </div>
 
     <div class="w-full md:w-1/3 flex flex-col gap-8">
@@ -46,6 +46,7 @@
                 @foreach ($group->tags as $tag)
                     <x-tag
                         :text="$tag->long_name"
+                        :icon="$tag->icon"
                         href="{{ $tag->route() }}"
                     />
                 @endforeach

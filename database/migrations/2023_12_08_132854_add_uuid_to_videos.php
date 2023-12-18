@@ -8,25 +8,21 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('folder_pull', function (Blueprint $table) {
-            $table->id()->first();
+        Schema::table('videos', function (Blueprint $table) {
+            $table->uuid('uuid')->nullable()->after('id');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('folder_pull', function (Blueprint $table) {
-            $table->dropColumn('id');
+        Schema::table('videos', function (Blueprint $table) {
+            $table->dropColumn('uuid');
         });
     }
 };

@@ -11,6 +11,8 @@ class QueryFilter extends Filter
 
     public null | int $id = null;
 
+    public null | string $icon = 'heroicon-o-magnifying-glass';
+
     public string $key;
 
     public function __construct(public string $value)

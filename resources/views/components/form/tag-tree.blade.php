@@ -24,6 +24,7 @@
             x-on:click="window.openModal('edit-tag', {
                 id: @js($tag->id),
                 name: @js($tag->name),
+                icon: @js($tag->icon),
                 parent: @js($tag->parent_id),
             })"
         >

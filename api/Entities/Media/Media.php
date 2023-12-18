@@ -5,6 +5,8 @@ namespace Api\Entities\Media;
 abstract class Media
 {
     public string $name;
+    public null|string $filename = null;
+    public null|string $extension = null;
     public string $src;
     public int $width = 0;
     public int $height = 0;
@@ -39,6 +41,20 @@ abstract class Media
     public function name(string $name)
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function filename(string $filename)
+    {
+        $this->filename = $filename;
+
+        return $this;
+    }
+
+    public function extension(string $extension)
+    {
+        $this->extension = $extension;
 
         return $this;
     }

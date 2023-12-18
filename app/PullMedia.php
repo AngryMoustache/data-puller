@@ -47,14 +47,14 @@ class PullMedia
         return json_encode($this->id);
     }
 
-    public function toJson()
+    public function toJson(bool $withThumbnail = true)
     {
         return [
             'id' => $this->id,
             'name' => Str::limit($this->name ?? 'No name', 15),
             'width' => $this->image?->width,
             'height' => $this->image?->height,
-            'thumbnail' => $this->format('thumb'),
+            'thumbnail' => $withThumbnail ? $this->format('thumb') : null,
         ];
     }
 }

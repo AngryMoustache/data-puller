@@ -14,6 +14,7 @@ class Filter
         public null | int $id = null,
         public string $value,
         public string $key,
+        public null | string $icon = null,
     ) {
         //
     }
@@ -33,11 +34,21 @@ class Filter
             default => HasOneFilter::class,
         };
 
+        $icon = match (get_class($item)) {
+            'query' => 'heroicon-o-magnifying-glass',
+            \App\Models\Artist::class => 'heroicon-o-user-group',
+            \App\Models\Folder::class => 'heroicon-o-folder-open',
+            \App\Models\Origin::class => 'heroicon-o-rss',
+            \App\Models\Tag::class => $item->icon ?? 'heroicon-o-tag',
+            default => 'heroicon-o-tag',
+        };
+
         return new $filterClass(
             get_class($item),
             $item->id,
             $item->long_name ?? $item->name,
             $item->slug ?? $item->id,
+            $icon,
         );
     }
 
@@ -48,6 +59,7 @@ class Filter
             'id' => $this->id,
             'value' => $this->value,
             'key' => $this->key,
+            'icon' => $this->icon,
         ];
     }
 }

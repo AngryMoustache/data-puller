@@ -11,6 +11,7 @@ use App\Models\Tag;
 use App\Models\TagGroup;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class Pulls extends Collection
 {

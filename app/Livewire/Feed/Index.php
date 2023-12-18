@@ -5,6 +5,7 @@ namespace App\Livewire\Feed;
 use Api\Clients\OpenAI;
 use Api\Entities\Media\Image;
 use Api\Entities\Pullable;
+use App\Console\Commands\SyncOrigins;
 use App\Enums\Origin as EnumsOrigin;
 use App\Livewire\Traits\CanToast;
 use App\Livewire\Traits\HasPagination;
@@ -39,9 +40,13 @@ class Index extends Component
             return $this->renderLoadingListContainer();
         }
 
-        $pulls = Pull::pending()->latest()->get();
+        $pulls = Pull::pending()
+            ->with('attachments', 'videos', 'artist')
+            ->latest()
+            ->get();
 
         $archived = Pull::offline()
+            ->with('attachments', 'videos', 'artist')
             ->orderBy('verdict_at', 'desc')
             ->where(fn ($query) => $query->whereHas('attachments')->orWhereHas('videos'))
             ->latest()
@@ -52,6 +57,7 @@ class Index extends Component
             'pulls' => $pulls,
             'archived' => $archived,
             'hasMore' => Pull::offline()->count() > $archived->count(),
+            'origins' => Origin::online()->get(),
         ]);
     }
 
@@ -117,7 +123,7 @@ class Index extends Component
 
         $media ??= collect();
 
-        $html = Cache::rememberForever($url, fn () => file_get_contents($url));
+        $html = Cache::rememberForever("{$url}qsfddsf", fn () => file_get_contents($url));
         $dom = new \DOMDocument();
         @$dom->loadHTML($html);
         $xpath = new \DOMXPath($dom);
@@ -130,9 +136,9 @@ class Index extends Component
         // Check for another page
         $next = optional($xpath->query('//div[@id="i3"]//a')->item(0))->getAttribute('href');
         if ($next === $url || $media->count() >= $limit) {
-            $name = OpenAI::translateToEnglish(
+            $name = Str::limit(OpenAI::translateToEnglish(
                 $xpath->query('//h1')->item(0)->textContent
-            );
+            ), 250);
 
             $origin = Origin::where('type', EnumsOrigin::SCRAPER)->first();
 
@@ -151,5 +157,18 @@ class Index extends Component
 
         // Pull next page
         $this->pullScrape($next, $media, $failsafe + 1);
+    }
+
+    public function syncOrigin(null | Origin $origin = null)
+    {
+        if (! $origin->id) {
+            Origin::online()->get()->each(fn (Origin $origin) => $origin->pull());
+            $this->toast('All origins are syncing! Check back later');
+
+            return;
+        }
+
+        $this->toast("{$origin->name} is syncing! Check back later");
+        $origin->pull();
     }
 }

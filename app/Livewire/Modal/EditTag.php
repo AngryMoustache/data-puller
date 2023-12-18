@@ -8,12 +8,14 @@ class EditTag extends Modal
 {
     public int $tagId;
     public string $name;
+    public string $icon;
     public string | int $parent = '';
 
     public function mount(array $params = [])
     {
         $this->tagId = $params['id'] ?? null;
-        $this->name = $params['name'] ?? null;
+        $this->name = $params['name'] ?? '';
+        $this->icon = $params['icon'] ?? '';
         $this->parent = $params['parent'] ?? '';
     }
 
@@ -38,6 +40,7 @@ class EditTag extends Modal
 
         $tag = Tag::find($this->tagId);
         $tag->name = $this->name;
+        $tag->icon = $this->icon;
         $tag->parent_id = filled($this->parent) ? $this->parent : null;
         $tag->save();
 

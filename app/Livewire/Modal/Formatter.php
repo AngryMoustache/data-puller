@@ -3,11 +3,10 @@
 namespace App\Livewire\Modal;
 
 use AngryMoustache\Media\Formats\Thumb;
+use App\Filesystem\MediaServer;
 use App\Models\Attachment;
 use App\Models\Tag;
-use App\Models\TagGroup;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Attributes\On;
 
@@ -66,20 +65,21 @@ class Formatter extends Modal
         $data = $event['data'];
         $formatName = $this->thumbnail['format'];
 
-        // Save the crop in the storage
-        $url = $this->attachment->id . '/' . $formatName . '-' . $this->attachment->original_name;
         $crop = preg_replace('/data:image\/(.*?);base64,/' ,'', $crop);
         $crop = str_replace(' ', '+', $crop);
 
-        Storage::disk('nas-media')->put("mobileart/public/attachments/{$url}", base64_decode($crop));
+        // Save the crop on the server
+        $this->thumbnail['thumbnail_url'] = MediaServer::uploadFormat(
+            $this->attachment,
+            $formatName,
+            $crop,
+        );
 
         // Save the crop on the attachment, for later adjustments
         $crops = $this->attachment->crops ?? [];
         $crops[$formatName] = $data;
         $this->attachment->crops = $crops;
         $this->attachment->save();
-
-        $this->thumbnail['thumbnail_url'] = $this->attachment->getUrl($url);
 
         $this->toast('Cropped successfully!');
 

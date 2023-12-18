@@ -2,7 +2,7 @@
     <x-slot:main>
         <div class="w-full flex flex-col relative md:flex-row gap-8">
             <div class="hidden-scroll w-full md:sticky md:top-4 md:w-1/3 md:h-[80vh] overflow-y-scroll">
-                <livewire:feed.media-list :media="$media" />
+                <livewire:feed.media-list :media="$media" :show-preview-generator="true" />
             </div>
 
             <div class="w-full md:w-2/3 flex flex-col gap-8 py-4">

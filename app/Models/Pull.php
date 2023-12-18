@@ -36,6 +36,7 @@ class Pull extends Model
         'origin',
         'attachments',
         'videos',
+        'tagGroups',
     ];
 
     public function origin()
@@ -167,9 +168,15 @@ class Pull extends Model
         return $query->where('status', Enums\Status::OFFLINE);
     }
 
-    public function hasVideo()
+    public function tagIcons()
     {
-        return !! $this->media->firstWhere(fn (PullMedia $media) => $media->isVideo);
+        return $this->tagGroups
+            ->pluck('tags')
+            ->flatten(1)
+            ->pluck('icon')
+            ->filter()
+            ->unique()
+            ->toArray();
     }
 
     public function canHaveSourceUrl()

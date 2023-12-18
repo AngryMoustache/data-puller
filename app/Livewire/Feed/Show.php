@@ -113,20 +113,25 @@ class Show extends Component
         $this->dispatch('update-media-list', $this->media);
     }
 
-    #[On('add-thumbnail')]
-    public function addThumbnail(array $selection)
+    #[On('refresh-media-list')]
+    public function refreshMediaList()
     {
-        $selection = Str::after(
-            $selection[0] ?? $selection['id'] ?? $selection,
-            ':'
-        );
+        $this->media = $this->pull->media->map->toJson()->toArray();
+    }
 
-        $this->fields['thumbnails'][] = [
-            'attachment_id' => $selection,
-            'thumbnail_url' => Attachment::find($selection)->format('thumb'),
-            'is_main' => count($this->fields['thumbnails']) === 0,
-            'tags' => [],
-        ];
+    #[On('add-thumbnails')]
+    public function addThumbnails(array $selections)
+    {
+        foreach ($selections as $selection) {
+            $selection = Str::after($selection, ':');
+
+            $this->fields['thumbnails'][] = [
+                'attachment_id' => $selection,
+                'thumbnail_url' => Attachment::find($selection)->format('thumb'),
+                'is_main' => count($this->fields['thumbnails']) === 0,
+                'tags' => [],
+            ];
+        }
 
         $this->dispatch('close-modal');
     }

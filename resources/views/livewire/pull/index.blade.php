@@ -100,13 +100,10 @@
                         class="flex gap-3 !py-2 !px-4 !text-base"
                         wire:click="toggleFilter({{ json_encode($filter->type) }}, {{ json_encode($filter->id) }})"
                     >
-                        @switch ($filter->type)
-                            @case (App\Models\Tag::class) <x-heroicon-o-tag class="w-5 h-5" /> @break
-                            @case (App\Models\Artist::class) <x-heroicon-o-user-group class="w-5 h-5" /> @break
-                            @case (App\Models\Folder::class) <x-heroicon-o-folder-open class="w-5 h-5" /> @break
-                            @case (App\Models\Origin::class) <x-heroicon-o-rss class="w-5 h-5" /> @break
-                            @case ('query') <x-heroicon-o-magnifying-glass class="w-5 h-5" /> @break
-                        @endswitch
+                        <x-dynamic-component
+                            :component="$filter->icon"
+                            class="w-5 h-5"
+                        />
 
                         {{ $filter->value }}
                     </x-tag>

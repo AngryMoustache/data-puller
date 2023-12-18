@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Models\Attachment;
-
 class Site
 {
     public null | string $title = null;
@@ -20,10 +18,7 @@ class Site
 
     public function randomImage()
     {
-        return 'https://mobileart.dev/storage/attachments/958/FkBqx_VXgAQdaQI.jpg';
-        // return Attachment::inRandomOrder()
-        //     ->whereRaw('height > width')
-        //     ->first();
+        return 'https://media.mobileart.dev/62cea60c-0acf-4e34-8e21-003e86db36d4/ac63dbff-062d-4ae1-9e0e-14da06d83063';
     }
 
     public static function bytesToHuman($bytes)

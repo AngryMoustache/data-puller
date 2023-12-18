@@ -15,7 +15,6 @@ class TagGroup extends Model
     ];
 
     public $with = [
-        'pull',
         'tags',
     ];
 

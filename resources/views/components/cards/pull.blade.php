@@ -12,15 +12,18 @@
 >
     <div class="relative overflow-hidden rounded flex items-center" style="aspect-ratio: 3/2.5">
         <div class="absolute top-1 right-1 text-xs flex gap-1">
-            @if ($count > 1)
+            @foreach ($pull->tagIcons() as $icon)
                 <span class="bg-black bg-opacity-75 rounded px-2 py-1">
-                    {{ $count }} <i class="text-xs fa-solid fa-layer-group ml-1"></i>
+                    <x-dynamic-component
+                        :component="$icon"
+                        class="w-4 h-4 text-text"
+                    />
                 </span>
-            @endif
+            @endforeach
 
-            @if ($pull->hasVideo())
-                <span class="bg-black bg-opacity-75 rounded px-2 py-1">
-                    <x-heroicon-s-play class="w-4 h-4 text-text" />
+            @if ($count > 1)
+                <span class="font-bold bg-black bg-opacity-75 rounded px-2 py-1">
+                    {{ $count }}
                 </span>
             @endif
         </div>
@@ -46,7 +49,6 @@
 
         <div class="text-sm flex justify-between opacity-75">
             <span>
-
                 {{ optional($pull->pulledWhen)->diffForHumans() }}
             </span>
 

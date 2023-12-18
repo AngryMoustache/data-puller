@@ -1,20 +1,24 @@
 <x-container class="flex flex-col">
     <x-container class="flex gap-16 flex-col md:flex-row">
         <div class="flex flex-col gap-4 w-full md:w-1/2">
-            {{-- <x-headers.h2 text="Manual pull" />
+            <x-headers.h2 text="Request sync" />
 
-            <form wire:submit.prevent="pullTweet" class="flex gap-4 w-full mb-4">
-                <x-form.input
-                    wire:model="tweetUrl"
-                    placeholder="Link to a tweet"
-                />
+            <div class="flex gap-2 flex-wrap mb-4">
+                <x-form.button wire:click="syncOrigin">
+                    Sync all origins
+                </x-form.button>
 
-                <x-form.button
-                    text="Pull tweet"
-                    class="rounded-lg whitespace-nowrap"
-                    wire:click="pullTweet"
-                />
-            </form>
+                @foreach ($origins as $origin)
+                    @if ($origin->type->canPull())
+                        <x-form.button-secondary wire:click="syncOrigin({{ $origin->id }})">
+                            {{ $origin->name }}
+                            <i class="ml-2 {{ $origin->type->icon() }}"></i>
+                        </x-form.button-secondary>
+                    @endif
+                @endforeach
+            </div>
+
+            <x-headers.h2 text="Manual pull" />
 
             <form wire:submit.prevent="pullScrape" class="flex gap-4 w-full mb-4">
                 <x-form.input
@@ -33,7 +37,7 @@
                     class="rounded-lg whitespace-nowrap"
                     wire:click="pullScrape"
                 />
-            </form> --}}
+            </form>
 
             <x-headers.h2 text="Newest pulls" />
 
