@@ -33,10 +33,11 @@
                     </x-form.button>
                 </div>
 
-                <x-form.input
-                    label="Artist name"
+                <x-form.autocomplete
+                    label="Artist"
                     placeholder="Name of the artist"
-                    wire:model="fields.artist"
+                    wire-model="fields.artist"
+                    :options="$artists"
                 />
 
                 <x-form.input

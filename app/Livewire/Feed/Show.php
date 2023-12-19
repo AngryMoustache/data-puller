@@ -26,6 +26,7 @@ class Show extends Component
     public Pull $pull;
     public array $fields;
     public array $media;
+    public array $artists;
 
     public function mount(Pull $pull)
     {
@@ -38,6 +39,13 @@ class Show extends Component
 
         $this->pull = $pull->refresh();
         $this->media = $this->pull->media->map->toJson()->toArray();
+
+        $this->artists = Artist::orderBy('name')
+            ->pluck('name', 'id')
+            ->filter()
+            ->map(fn ($artist, $key) => ['value' => $artist, 'key' => $key])
+            ->values()
+            ->toArray();
 
         $this->fields = [
             'name' => $this->pull->name,
