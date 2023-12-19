@@ -19,6 +19,11 @@ class Artist extends Model
         return $this->belongsTo(Artist::class);
     }
 
+    public function children()
+    {
+        return $this->hasMany(Artist::class, 'parent_id');
+    }
+
     public function pulls()
     {
         return $this->hasMany(Pull::class);
@@ -44,6 +49,10 @@ class Artist extends Model
             'slug' => Str::slug($name),
         ]);
 
-        return $artist->parent ?? $artist;
+        while ($artist->parent) {
+            $artist = $artist->parent;
+        }
+
+        return $artist;
     }
 }

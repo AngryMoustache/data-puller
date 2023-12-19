@@ -4,6 +4,7 @@
     'wireModel',
     'options',
     'placeholder' => null,
+    'selectEvent' => null,
 ])
 
 <div class="flex w-full items-center gap-4">
@@ -18,7 +19,7 @@
         x-data="{
             query: @entangle($wireModel),
             searching: false,
-            options: @entangle('artists'),
+            options: @js($options),
             highlight: -1,
             init () {
                 $watch('query', (value) => { this.highlight = -1 })
@@ -31,13 +32,17 @@
             select (option = null) {
                 const options = this.filteredOptions()
                 option = option || options[this.highlight] || options[0]
-
                 if (! option) {
                     return
                 }
 
                 this.query = option.value
                 this.searching = false
+
+                @if ($selectEvent)
+                    $wire.{{ $selectEvent }}(option)
+                    this.query = ''
+                @endif
             }
         }"
     >
@@ -49,7 +54,7 @@
             x-on:keydown.arrow-up.prevent="highlight = (highlight < 0 ? filteredOptions().length - 1 : highlight - 1)"
             x-on:keydown.arrow-down.prevent="highlight = (highlight === filteredOptions().length - 1 ? 0 : highlight + 1)"
             x-on:focus="searching = true"
-            {{-- x-on:blur="searching = false" --}}
+            {{ $attributes->only('class') }}
         />
 
         <div x-show="searching && query.length > 0 && filteredOptions().length > 0" style="display: none">

@@ -24,8 +24,7 @@ class GlobalSearch extends Component
             ->orderBy('long_name')
             ->get();
 
-        $artists = Artist::whereHas('pulls', fn ($q) => $q->online())
-            ->get();
+        $artists = Artist::whereDoesntHave('parent')->get();
 
         $folders = Folder::orderBy('name')
             ->whereHas('pulls')

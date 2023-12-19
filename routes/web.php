@@ -42,3 +42,5 @@ Route::get('/feed', Livewire\Feed\Index::class)->name('feed.index');
 Route::get('/feed/{pull:id}', Livewire\Feed\Show::class)->name('feed.show');
 
 Route::get('/history', Livewire\History\Index::class)->name('history.index');
+
+Route::get('/settings', Livewire\Settings\Index::class)->name('settings.index');

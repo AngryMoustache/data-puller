@@ -41,11 +41,11 @@ class CheckMissingAttachmentFields extends Command
                 }
 
                 if (is_null($attachment->size)) {
-                    $attachment->size = get_headers($path, true)['Content-Length'];
+                    $attachment->size = get_headers($path, true)['Content-Length'] ?? null;
                 }
 
                 if (is_null($attachment->mime_type)) {
-                    $attachment->mime_type = get_headers($path, true)['Content-Type'];
+                    $attachment->mime_type = get_headers($path, true)['Content-Type'] ?? null;
                 }
 
                 $attachment->save();

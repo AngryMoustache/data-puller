@@ -1,6 +1,6 @@
 @props([
     'tabs' => [0 => 'General'],
-    'activeTab' => $tabs->keys()->first(),
+    'activeTab' => \Illuminate\Support\Collection::wrap($tabs)->keys()->first(),
 ])
 
 <div

@@ -51,7 +51,7 @@
         <x-nav.item
             :route="route('pull.random')"
             :active="request()->routeIs('pull.random')"
-            icon="heroicon-o-question-mark-circle"
+            icon="heroicon-o-arrow-path-rounded-square"
             label="Random"
         />
 
@@ -71,16 +71,17 @@
         /> --}}
 
         <x-nav.item
-            icon="heroicon-o-document-plus"
-            label="Upload"
-            :route="route('feed.create')"
-        />
-
-        <x-nav.item
             :route="route('history.index')"
             :active="request()->routeIs('history.index')"
             icon="heroicon-o-clock"
             label="History"
+        />
+
+        <x-nav.item
+            :route="route('settings.index')"
+            :active="request()->routeIs('settings.index')"
+            icon="heroicon-o-wrench-screwdriver"
+            label="Settings"
         />
     </div>
 </div>

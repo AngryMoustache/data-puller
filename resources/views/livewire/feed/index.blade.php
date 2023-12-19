@@ -20,24 +20,35 @@
 
             <x-headers.h2 text="Manual pull" />
 
-            <form wire:submit.prevent="pullScrape" class="flex gap-4 w-full mb-4">
-                <x-form.input
-                    wire:model="scrape.url"
-                    placeholder="Link to a e-hentai first image"
-                />
+            <div class="flex flex-col gap-2">
+                <form wire:submit.prevent="pullScrape" class="flex gap-4 w-full mb-4">
+                    <x-form.input
+                        wire:model="scrape.url"
+                        placeholder="Link to a e-hentai first image"
+                    />
 
-                <x-form.input
-                    type="number"
-                    wire:model="scrape.limit"
-                    placeholder="Amount of images to pull"
-                />
+                    <x-form.input
+                        type="number"
+                        wire:model="scrape.limit"
+                        placeholder="Amount of images to pull"
+                    />
 
-                <x-form.button
-                    text="Scrape URL"
-                    class="rounded-lg whitespace-nowrap"
-                    wire:click="pullScrape"
-                />
-            </form>
+                    <x-form.button
+                        text="Scrape URL"
+                        class="rounded-lg whitespace-nowrap"
+                        wire:click="pullScrape"
+                    />
+                </form>
+
+                <div class="flex">
+                    <x-form.button-secondary :href="route('feed.create')">
+                        <div class="flex items-center gap-2">
+                            <x-heroicon-o-document-plus class="w-5 h-5" />
+                            Create from scratch
+                        </div>
+                    </x-form.button-secondary>
+                </div>
+            </div>
 
             <x-headers.h2 text="Newest pulls" />
 
