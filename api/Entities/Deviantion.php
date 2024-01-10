@@ -18,7 +18,7 @@ class Deviantion extends Pullable
             $source = collect($pull['videos'])
                 ->sortByDesc('filesize')
                 ->where('filesize', '<', 10000000)
-                ->first()['src'];
+                ->first();
 
             $thumb = Image::make()
                 ->source($pull['preview']['src'])
@@ -26,7 +26,8 @@ class Deviantion extends Pullable
 
             $this->media = Video::make()
                 ->previewImage($thumb)
-                ->source($source);
+                ->filesize($source['filesize'])
+                ->source($source['src']);
         } else {
             $this->media = Image::make()
                 ->source($pull['content']['src'])

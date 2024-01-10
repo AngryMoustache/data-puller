@@ -2,8 +2,8 @@
 
 namespace Api\Entities\Media;
 
+use App\Filesystem\MediaServer;
 use App\Models\Video as ModelsVideo;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class Video extends Media
@@ -29,6 +29,7 @@ class Video extends Media
             'alt_name' => (string) $name,
             'original_name' => (string) $filename,
             'extension' => (string) $extension,
+            'size' => $this->filesize,
         ]);
 
         // Avoid saving the video again if we already have it
@@ -36,21 +37,9 @@ class Video extends Media
            return $video;
         }
 
-        $folder = "mobileart/public/videos/{$video->id}/";
-
-        $tmpPath = "tmp--{$filename}";
+        // Save the file to the media server
         $file = file_get_contents($this->src);
-        $tmpFile = file_put_contents($tmpPath, $file);
-
-        // Save the file on the NAS
-        Storage::disk('nas-media')->makeDirectory($folder, 'public');
-        Storage::disk('nas-media')->putFileAs($folder, $tmpPath, (string) $filename);
-
-        unlink($tmpPath);
-
-        $response = Storage::disk('nas-media')->response("${folder}/{$filename}");
-        $video->size = $response->headers->get('content-length');
-        $video->saveQuietly();
+        MediaServer::upload($file, $video->uuid, $filename, 'videos');
 
         return $video;
     }

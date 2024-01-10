@@ -39,7 +39,7 @@ class Filter
             \App\Models\Artist::class => 'heroicon-o-user-group',
             \App\Models\Folder::class => 'heroicon-o-folder-open',
             \App\Models\Origin::class => 'heroicon-o-rss',
-            \App\Models\Tag::class => $item->icon ?? 'heroicon-o-tag',
+            \App\Models\Tag::class => filled($item->icon) ? $item->icon : 'heroicon-o-tag',
             default => 'heroicon-o-tag',
         };
 

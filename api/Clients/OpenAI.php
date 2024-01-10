@@ -34,15 +34,15 @@ class OpenAI
 
     private static function response(string $prompt, array $options = []): string
     {
-        $result = FacadesOpenAI::completions()->create([
-            'model' => 'text-davinci-003',
-            'prompt' => $prompt,
+        $result = FacadesOpenAI::chat()->create([
+            'model' => 'gpt-4',
+            'messages' => [['role' => 'user', 'content' => $prompt]],
             'max_tokens' => 150,
             'temperature' => 0.7,
             'top_p' => 1,
         ] + $options);
 
-        return Str::of($result['choices'][0]['text'] ?? '')
+        return Str::of($result['choices'][0]['message']['content'] ?? '')
             ->replace('"', '')
             ->trim()
             ->__toString();

@@ -10,6 +10,7 @@ abstract class Media
     public string $src;
     public int $width = 0;
     public int $height = 0;
+    public null|int $filesize = null;
 
     abstract function save();
 
@@ -55,6 +56,13 @@ abstract class Media
     public function extension(string $extension)
     {
         $this->extension = $extension;
+
+        return $this;
+    }
+
+    public function filesize(string $filesize)
+    {
+        $this->filesize = $filesize;
 
         return $this;
     }

@@ -19,7 +19,7 @@
         "league/flysystem-sftp-v3": "^3.16",
         "livewire/livewire": "^3.0.5",
         "meilisearch/meilisearch-php": "^1.0",
-        "openai-php/laravel": "^0.4.1",
+        "openai-php/laravel": "^0.8",
         "owenvoke/blade-fontawesome": "^2.2",
         "spatie/db-dumper": "^3.4"
     },

@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('related_tags', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('main_tag_id')->constrained('tags')->cascadeOnDelete();
-            $table->foreignId('related_tag_id')->constrained('tags')->cascadeOnDelete();
+        Schema::table('tag_groups', function (Blueprint $table) {
+            $table->unsignedBigInteger('pull_id')->nullable()->change();
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('related_tags');
+        Schema::table('tag_groups', function (Blueprint $table) {
+            $table->unsignedBigInteger('pull_id')->nullable(false)->change();
+        });
     }
 };

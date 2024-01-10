@@ -52,7 +52,7 @@ class Image extends Media
         $attachment->format('thumb');
 
         // Fill in some extra data
-        $filesize = getimagesize($attachment->path());
+        $filesize = $this->filesize ?? getimagesize($attachment->path());
 
         $attachment->mime_type = $filesize['mime'];
         $attachment->width = empty($this->width) ? $filesize[0] : $this->width;
