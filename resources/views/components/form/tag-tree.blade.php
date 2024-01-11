@@ -1,3 +1,11 @@
+@props([
+    'tag',
+    'shortList' => false,
+    'children' => isset($shortList) && $shortList
+        ? $tag->children->filter(fn ($t) => $shortList->contains($t->id))
+        : $tag?->children,
+])
+
 <div {{ $attributes->except('tag') }} x-data="{
     open{{ $tag->id }}: $wire.get('group.tags.{{ $tag->id }}'),
 }">
@@ -9,11 +17,11 @@
             <span class="flex flex-col">
                 <span>{{ $tag->name }}</span>
 
-                @if ($tag->children->isNotEmpty())
+                @if ($children->isNotEmpty())
                     <span class="opacity-25 text-sm -mt-1">
                         Has
-                        {{ $tag->children->count() }}
-                        {{ Str::plural('child', $tag->children->count()) }}
+                        {{ $children->count() }}
+                        {{ Str::plural('child', $children->count()) }}
                     </span>
                 @endif
             </span>
@@ -41,10 +49,13 @@
         </span>
     </div>
 
-    @if ($tag->children->isNotEmpty())
+    @if ($children->isNotEmpty())
         <div class="px-6 pt-2 flex flex-col gap-2" x-show="open{{ $tag->id }}">
-            @foreach ($tag->children as $tag)
-                <x-form.tag-tree :$tag />
+            @foreach ($children as $tag)
+                <x-form.tag-tree
+                    :$tag
+                    :short-list="$shortList"
+                />
             @endforeach
         </div>
     @endif

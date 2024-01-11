@@ -225,6 +225,21 @@
                     removeGroup (key) {
                         this.list[key].deleted  = true
                     },
+                    addExistingGroup (e) {
+                        group = e.detail[0]
+
+                        this.list.push({
+                            id: group.id,
+                            name: group.name,
+                            pull_id: group.pull_id,
+                            is_main: false,
+                            deleted: false,
+                            tags: group.tags,
+                        })
+                    },
+                    saveGroupAsTemplate (key) {
+                        $wire.call('saveGroupAsTemplate', this.list[key].id)
+                    },
                     async addGroup () {
                         const group = await $wire.createGroup()
 
@@ -238,6 +253,7 @@
                         })
                     },
                 }"
+                x-on:added-existing-group.window="(e) => addExistingGroup(e)"
             >
                 <template x-for="(group, key) in list" :key="'group-' + key">
                     <div
@@ -264,6 +280,11 @@
                             </p>
                         </div>
 
+                        <x-heroicon-o-bookmark-square
+                            class="w-12 h-6 cursor-pointer hover:text-primary"
+                            x-on:click="saveGroupAsTemplate(key)"
+                        />
+
                         <x-heroicon-o-pencil
                             class="w-12 h-6 cursor-pointer hover:text-primary"
                             x-on:click="window.openModal('tag-group-selector', {
@@ -282,8 +303,15 @@
 
                 <div class="flex gap-4">
                     <x-form.button-secondary
+                        text="Add empty group"
                         x-on:click="addGroup()"
-                        text="Add new tag group"
+                    />
+
+                    <x-form.button-secondary
+                        text="Add existing group"
+                        x-on:click.prevent="window.openModal('add-existing-tag-group', {
+                            pull_id: {{ $pull->id }},
+                        })"
                     />
                 </div>
             </div>

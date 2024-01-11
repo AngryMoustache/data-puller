@@ -172,6 +172,17 @@ class Show extends Component
         ]);
     }
 
+    public function saveGroupAsTemplate(TagGroup $tagGroup)
+    {
+        $_tagGroup = $tagGroup->replicate();
+        $_tagGroup->pull_id = null;
+        $_tagGroup->save();
+
+        $_tagGroup->tags()->sync($tagGroup->tags->pluck('id'));
+
+        $this->toast('Tag group has been saved as template');
+    }
+
     private function toJson(Attachment | Video $media)
     {
         return (new PullMedia($media))->toJson();
@@ -206,7 +217,7 @@ class Show extends Component
         foreach ($this->fields['tagGroups'] as $group) {
             // Delete group if it is marked as deleted
             if (isset($group['deleted']) && $group['deleted']) {
-                TagGroup::find($group['id'])->delete();
+                TagGroup::find($group['id'])?->delete();
 
                 continue;
             }
