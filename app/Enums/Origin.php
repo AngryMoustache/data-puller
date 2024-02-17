@@ -13,6 +13,7 @@ enum Origin: string
     case PIXIV = 'pixiv';
     case SCRAPER = 'scraper';
     case PROMPT = 'prompt';
+    case KEMENO = 'kemeno';
     case EXTERNAL = 'external';
 
     public function label()
@@ -24,6 +25,7 @@ enum Origin: string
             self::PIXIV => 'Pixiv',
             self::SCRAPER => 'Scraper',
             self::PROMPT => 'Prompt',
+            self::KEMENO => 'Kemeno',
             self::EXTERNAL => 'External',
         };
     }
@@ -43,6 +45,7 @@ enum Origin: string
             self::PIXIV => 'fab fa-pinterest-p',
             self::SCRAPER => 'fas fa-rss',
             self::PROMPT => 'fas fa-pencil-alt',
+            self::KEMENO => 'fab fa-firefox-browser',
             self::EXTERNAL => 'fas fa-upload',
         };
     }
@@ -56,6 +59,7 @@ enum Origin: string
             self::PIXIV => 'background: #166392 !important; color: #fff !important;',
             self::SCRAPER => 'background: #d12b9c !important; color: #fff !important;',
             self::PROMPT => 'background: #f2d41d !important; color: #000 !important;',
+            self::KEMENO => 'background: #ff6600 !important; color: #000 !important;',
             self::EXTERNAL => 'background: #4a5577 !important; color: #fff !important;',
         };
     }

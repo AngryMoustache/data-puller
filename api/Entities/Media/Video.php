@@ -38,8 +38,7 @@ class Video extends Media
         }
 
         // Save the file to the media server
-        $file = file_get_contents($this->src);
-        MediaServer::upload($file, $video->uuid, $filename, 'videos');
+        MediaServer::uploadFromUrl($this->src, $video->uuid, $filename, 'videos');
 
         return $video;
     }

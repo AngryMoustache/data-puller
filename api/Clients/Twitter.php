@@ -2,77 +2,51 @@
 
 namespace Api\Clients;
 
+use Api\Entities\Media\Video;
 use Api\Entities\Tweet;
 use App\Models\Origin;
+use App\Models\Pull;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class Twitter
 {
     public array $options = [];
     public string $baseUrl;
     public string $apiKey;
-    public string $secretKey;
-    public string $bearerToken;
+
+    public array $userIds = [
+        'ShibaraChan' => 1175441814171586560,
+    ];
 
     public function __construct(public Origin $origin)
     {
-        $this->baseUrl = 'https://api.twitter.com/2';
+        $this->baseUrl = 'https://twttrapi.p.rapidapi.com';
         $this->apiKey = config('clients.twitter.api_key');
-        $this->secretKey = config('clients.twitter.secret_key');
-        $this->bearerToken = config('clients.twitter.bearer_token');
-
-        $this->options = [
-            'media.fields' => 'media_key,duration_ms,width,height,preview_image_url,type,url,alt_text,variants',
-            'expansions' => 'attachments.media_keys,author_id',
-            'tweet.fields' => 'attachments,author_id,context_annotations,conversation_id,created_at,entities,geo,id,in_reply_to_user_id,lang,public_metrics,possibly_sensitive,referenced_tweets,reply_settings,source,text,withheld',
-            'user.fields' => 'username',
-        ];
     }
 
     public function call($url, $options = null)
     {
-        return Http::withToken($this->bearerToken)
-            ->baseUrl($this->baseUrl)
-            ->get($url, $options ?? $this->options)
-            ->json();
+        return Cache::remember($url . json_encode($options), now()->addDay(), function () use ($url, $options) {
+            return Http::withHeaders([
+                    'X-RapidAPI-Host' => 'twttrapi.p.rapidapi.com',
+                    'X-RapidAPI-Key' => $this->apiKey,
+                ])
+                ->baseUrl($this->baseUrl)
+                ->get($url, $options ?? $this->options)
+                ->json();
+        });
     }
 
-    public function likes($page = 1)
+    public function likes()
     {
-        // Get the user ID
-        $id = dd($this, $this->call("/users/by/username/{$this->origin->api_target}", []))['data']['id'];
+        $response = $this->call('/user-likes', ['user_id' => $this->userIds[$this->origin->api_target]], []);
+        $tweets = collect($response['data']['user_result']['result']['timeline_response']['timeline']['instructions'][0]['entries'] ?? []);
 
-        // Get the Twitter API data
-        for ($i = 0; $i < $page; $i++) {
-            if ($this->options['pagination_token'] ?? null || $i === 0) {
-                $tweets = $this->call("/users/{$id}/liked_tweets");
-                $this->options['pagination_token'] = $tweets['meta']['next_token'] ?? null;
-            }
-        }
-
-        // Remove unneeded tweets
-        $data = collect($tweets['data'] ?? [])->reject(function ($tweet) {
-            return ! isset($tweet['attachments']['media_keys']);
-        });
-
-        // Link the author to the tweets
-        $authors = collect($tweets['includes']['users'] ?? []);
-        $data = $data->map(function ($tweet) use ($authors) {
-            $tweet['author_id'] = $authors->where('id', $tweet['author_id'])->first();
-
-            return $tweet;
-        });
-
-        // Link the media to the tweets
-        $media = collect($tweets['includes']['media'] ?? []);
-        $data = $data->map(function ($tweet) use ($media) {
-            $tweet['attachments'] = collect($tweet['attachments']['media_keys'])
-                ->map(fn ($item) => $media->where('media_key', $item)->first());
-
-            return $tweet;
-        });
-
-        // Create entities and return them
-        return $data->mapInto(Tweet::class);
+        return collect($tweets)
+            ->pluck('content.content.tweetResult.result')
+            ->filter(fn (null | array $tweet) => count($tweet['legacy']['extended_entities']['media'] ?? []) > 0)
+            ->mapInto(Tweet::class);
     }
 }

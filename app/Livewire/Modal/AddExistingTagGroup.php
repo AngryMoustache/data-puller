@@ -64,7 +64,9 @@ class AddExistingTagGroup extends Modal
             'is_main' => false,
         ]);
 
-        $group->tags()->sync(collect($this->group['tags'])->filter()->keys());
+        $tags = Tag::checkOrphans(collect($this->group['tags'])->filter()->keys());
+
+        $group->tags()->sync($tags);
 
         $this->dispatch('close-modal');
         $this->dispatch('refresh');

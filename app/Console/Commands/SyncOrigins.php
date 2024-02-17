@@ -16,6 +16,7 @@ class SyncOrigins extends Command
         Origin::online()
             ->when($origin, fn ($query) => $query->where('id', $origin))
             ->get()
+            ->filter(fn (Origin $origin) => $origin->type->canPull())
             ->each(fn (Origin $origin) => $origin->pull());
     }
 }

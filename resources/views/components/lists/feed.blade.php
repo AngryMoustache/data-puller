@@ -27,9 +27,10 @@
                 <span class="opacity-50">by</span>
                 <x-origin
                     class="mx-2"
-                    href="{{ $pull->source_url }}"
+                    :href="$pull->artist?->route()"
                     :origin="$pull->origin"
                     :label="$pull->artist?->name"
+                    :source-url="$pull->source_url"
                 />
             </p>
         </div>

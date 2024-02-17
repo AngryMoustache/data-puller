@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Api\Jobs\RebuildTagNames;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class Tag extends Model
@@ -70,6 +71,24 @@ class Tag extends Model
     public function getRouteKeyName()
     {
         return 'slug';
+    }
+
+    public static function checkOrphans(iterable $tags)
+    {
+        $tags = self::with('parent.parent.parent')->find($tags);
+
+        return $tags->filter(function (Tag $tag) use ($tags) {
+            $check = $tag;
+            while ($check?->parent) {
+                $check = $check->parent;
+
+                if (! $tags->pluck('id')->contains($check->id)) {
+                    return false;
+                }
+            }
+
+            return true;
+        })->pluck('id');
     }
 
     public static function boot()

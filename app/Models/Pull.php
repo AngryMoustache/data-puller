@@ -151,6 +151,14 @@ class Pull extends Model
         ])->filter()->join(' - ');
     }
 
+    public function scopeSimpleSearch($query, string $search)
+    {
+        return $query->where(function ($query) use ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('id', $search);
+        });
+    }
+
     public function scopePending($query)
     {
         return $query->where('status', Enums\Status::PENDING)->where(function ($query) {

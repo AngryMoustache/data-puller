@@ -31,11 +31,13 @@ class Show extends Component
     public function mount(Pull $pull)
     {
         // Check if the pull has a main tag group
-        TagGroup::updateOrCreate([
-            'pull_id' => $pull->id,
-            'name' => 'Main tags',
-            'is_main' => true,
-        ]);
+        if (! $this->pull->tagGroups->pluck('is_main')->contains(true)) {
+            TagGroup::updateOrCreate([
+                'pull_id' => $pull->id,
+                'name' => 'Main tags',
+                'is_main' => true,
+            ]);
+        }
 
         $this->pull = $pull->refresh();
         $this->media = $this->pull->media->map->toJson()->toArray();
@@ -52,16 +54,20 @@ class Show extends Component
             'artist' => $this->pull->artist?->name ?? 'Unknown',
             'sourceUrl' => $this->pull->source_url,
             'thumbnails' => collect($this->pull->thumbnails ?? [])->values(),
-            'tagGroups' => $this->pull->tagGroups->map(fn (TagGroup $tagGroup) => [
-                'id' => $tagGroup->id,
-                'pull_id' => $tagGroup->pull_id,
-                'name' => $tagGroup->name,
-                'is_main' => $tagGroup->is_main,
-                'tags' => $tagGroup->tags
-                    ->pluck('id')
-                    ->mapWithKeys(fn (int $id) => [$id => true])
-                    ->toArray(),
-            ])->toArray(),
+            'tagGroups' => $this->pull->tagGroups
+                ->sortBy([['is_main', 'desc'], ['name', 'asc']])
+                ->values()
+                ->map(fn (TagGroup $tagGroup) => [
+                    'id' => $tagGroup->id,
+                    'pull_id' => $tagGroup->pull_id,
+                    'name' => $tagGroup->name,
+                    'is_main' => $tagGroup->is_main,
+                    'tags' => $tagGroup->tags
+                        ->pluck('id')
+                        ->mapWithKeys(fn (int $id) => [$id => true])
+                        ->toArray(),
+                ])
+                ->toArray(),
         ];
     }
 
@@ -172,9 +178,12 @@ class Show extends Component
         ]);
     }
 
-    public function saveGroupAsTemplate(TagGroup $tagGroup)
+    public function saveGroupAsTemplate(array $data)
     {
+        $tagGroup = TagGroup::find($data['id']);
+
         $_tagGroup = $tagGroup->replicate();
+        $_tagGroup->name = $data['name'];
         $_tagGroup->pull_id = null;
         $_tagGroup->save();
 

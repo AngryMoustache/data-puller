@@ -25,19 +25,8 @@
                     :origin="$pull->origin"
                     :href="$pull->artist?->route()"
                     :label="$pull->artist?->name"
+                    :source-url="$pull->canHaveSourceUrl() ? $pull->source_url : null"
                 />
-
-                @if ($pull->source_url && $pull->canHaveSourceUrl())
-                    <a
-                        href="{{ $pull->source_url }}"
-                        target="_blank"
-                    >
-                        <x-heroicon-o-link
-                            class="w-4 h-4"
-                            href="{{ $pull->source_url }}"
-                        />
-                    </a>
-                @endif
             </p>
         </div>
 

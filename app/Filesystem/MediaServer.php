@@ -28,6 +28,23 @@ class MediaServer
         return $response->collect()[0] ?? null;
     }
 
+    public static function uploadFromUrl(string $url, string $uuid, string $filename, string $disk = 'attachments')
+    {
+        $response = Http::post(self::$baseUrl . '/api/upload/url', [
+            'project_id' => self::$project,
+            'uuid' => $uuid,
+            'url' => $url,
+            'filename' => $filename,
+            'disk' => $disk,
+        ]);
+
+        if ($response->failed()) {
+            return null;
+        }
+
+        return $response->collect()[0] ?? null;
+    }
+
     public static function uploadFromLivewire(TemporaryUploadedFile $file): null | Attachment | Video
     {
         $original = $file->getClientOriginalName();
