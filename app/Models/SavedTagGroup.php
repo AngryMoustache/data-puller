@@ -5,26 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class TagGroup extends Model
+class SavedTagGroup extends Model
 {
     protected $fillable = [
-        'pull_id',
         'name',
         'slug',
-        'is_main',
+        'attachment_id',
     ];
 
     public $with = [
+        'attachment',
         'tags',
     ];
 
-    public $casts = [
-        'is_main' => 'boolean',
-    ];
-
-    public function pull()
+    public function attachment()
     {
-        return $this->belongsTo(Pull::class);
+        return $this->belongsTo(Attachment::class);
     }
 
     public function tags()

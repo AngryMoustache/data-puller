@@ -37,7 +37,8 @@
         <x-nav.item
             :route="route('pull.index')"
             :active="request()->routeIs('pull.index')"
-            icon="heroicon-o-inbox-arrow-down"
+            icon="ri-gallery-line"
+            active-icon="ri-gallery-fill"
             label="Pulls"
         />
 
@@ -51,7 +52,7 @@
         <x-nav.item
             :route="route('pull.random')"
             :active="request()->routeIs('pull.random')"
-            icon="heroicon-o-arrow-path-rounded-square"
+            icon="zondicon-shuffle"
             label="Random"
         />
 
@@ -75,6 +76,14 @@
             :active="request()->routeIs('history.index')"
             icon="heroicon-o-clock"
             label="History"
+        />
+
+        <x-nav.item
+            :route="route('tag-group.index')"
+            :active="request()->routeIs('tag-group.index')"
+            icon="clarity-objects-line"
+            active-icon="clarity-objects-solid"
+            label="Tag groups"
         />
 
         <x-nav.item

@@ -12,9 +12,9 @@ class GlobalSearch extends Component
 {
     public bool $isPullIndex = false;
 
-    public function mount()
+    public function mount(null | bool $isPullIndex = null)
     {
-        $this->isPullIndex = request()->routeIs('pull.index');
+        $this->isPullIndex = is_null($isPullIndex) ? request()->routeIs('pull.index') : $isPullIndex;
     }
 
     public function fetchOptions()

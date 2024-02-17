@@ -239,9 +239,6 @@
                             tags: group.tags,
                         })
                     },
-                    saveGroupAsTemplate (key) {
-                        $wire.call('saveGroupAsTemplate', this.list[key])
-                    },
                     async addGroup () {
                         const group = await $wire.createGroup()
 
@@ -282,11 +279,6 @@
                             </p>
                         </div>
 
-                        <x-heroicon-o-bookmark-square
-                            class="w-12 h-6 cursor-pointer hover:text-primary"
-                            x-on:click="saveGroupAsTemplate(key)"
-                        />
-
                         <x-heroicon-o-pencil
                             class="w-12 h-6 cursor-pointer hover:text-primary"
                             x-on:click="window.openModal('tag-group-selector', {
@@ -311,7 +303,7 @@
 
                     <x-form.button-secondary
                         text="Add existing group"
-                        x-on:click.prevent="window.openModal('add-existing-tag-group', {
+                        x-on:click.prevent="window.openModal('pick-existing-tag-group', {
                             pull_id: {{ $pull->id }},
                         })"
                     />

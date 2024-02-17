@@ -32,6 +32,17 @@ class TagGroup extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function toJavascript()
+    {
+        return [
+            'id' => $this->id,
+            'pull_id' => $this->pull_id,
+            'name' => $this->name,
+            'is_main' => $this->is_main,
+            'tags' => $this->tags->pluck('id')->mapWithKeys(fn (int $id) => [$id => true])->toArray(),
+        ];
+    }
+
     public static function booted()
     {
         static::saving(function (self $group) {

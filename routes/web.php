@@ -45,4 +45,6 @@ Route::get('/archive', Livewire\Archive\Index::class)->name('archive.index');
 
 Route::get('/history', Livewire\History\Index::class)->name('history.index');
 
+Route::get('/tag-groups', Livewire\TagGroup\Index::class)->name('tag-group.index');
+
 Route::get('/settings', Livewire\Settings\Index::class)->name('settings.index');

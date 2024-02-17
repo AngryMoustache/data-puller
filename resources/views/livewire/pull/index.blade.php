@@ -91,35 +91,7 @@
         </div>
     </div>
 
-    @if ($filters->filters->isNotEmpty())
-        <div class="pb-4 md:pb-0 md:flex justify-between gap-4 pl-4 pr-2">
-            <div class="w-full md:w-fit flex flex-wrap gap-4">
-                @foreach ($filters->filters as $filter)
-                    <x-tag
-                        wire:key="enabled-tag-{{ $filter->key }}"
-                        class="flex gap-3 !py-2 !px-4 !text-base"
-                        wire:click="toggleFilter({{ json_encode($filter->type) }}, {{ json_encode($filter->id) }})"
-                    >
-                        <x-dynamic-component
-                            :component="$filter->icon"
-                            class="w-5 h-5"
-                        />
-
-                        {{ $filter->value }}
-                    </x-tag>
-                @endforeach
-            </div>
-
-            <div class="w-fit mt-4 md:w-auto md:mt-0">
-                <x-form.button
-                    text="Save as dynamic folder"
-                    x-on:click="window.openModal('new-folder', {
-                        filters: '{{ $filters->buildQueryString() }}',
-                    })"
-                />
-            </div>
-        </div>
-    @endif
+    <x-form.selected-filters :$filters class="pl-4 pr-2 pb-4 md:pb-0" />
 
     <div wire:loading.remove wire:target="setFilterValues, toggleFilter">
         <x-alpine.infinite-scroll :enabled="$hasMore">

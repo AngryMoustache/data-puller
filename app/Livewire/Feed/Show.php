@@ -57,16 +57,7 @@ class Show extends Component
             'tagGroups' => $this->pull->tagGroups
                 ->sortBy([['is_main', 'desc'], ['name', 'asc']])
                 ->values()
-                ->map(fn (TagGroup $tagGroup) => [
-                    'id' => $tagGroup->id,
-                    'pull_id' => $tagGroup->pull_id,
-                    'name' => $tagGroup->name,
-                    'is_main' => $tagGroup->is_main,
-                    'tags' => $tagGroup->tags
-                        ->pluck('id')
-                        ->mapWithKeys(fn (int $id) => [$id => true])
-                        ->toArray(),
-                ])
+                ->map->toJavascript()
                 ->toArray(),
         ];
     }
@@ -176,20 +167,6 @@ class Show extends Component
             'pull_id' => $this->pull->id,
             'is_main' => false,
         ]);
-    }
-
-    public function saveGroupAsTemplate(array $data)
-    {
-        $tagGroup = TagGroup::find($data['id']);
-
-        $_tagGroup = $tagGroup->replicate();
-        $_tagGroup->name = $data['name'];
-        $_tagGroup->pull_id = null;
-        $_tagGroup->save();
-
-        $_tagGroup->tags()->sync($tagGroup->tags->pluck('id'));
-
-        $this->toast('Tag group has been saved as template');
     }
 
     private function toJson(Attachment | Video $media)

@@ -25,7 +25,7 @@ class FilterBag implements Wireable
 
     public null | int $randomizerSeed = null;
 
-    public function __construct(array|string $filters)
+    public function __construct(array|string $filters = '')
     {
         if (is_string($filters)) {
             $filters = explode('/', $filters);
