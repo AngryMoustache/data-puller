@@ -17,7 +17,7 @@ class UpdateTagGroup extends Modal
             $this->group = [
                 'id' => $group->id,
                 'name' => $group->name,
-                'tags' => $group->tags->pluck('id')->toArray(),
+                'tags' => $group->tags->pluck('id')->mapWithKeys(fn (int $id) => [$id => true])->toArray(),
             ];
         }
     }

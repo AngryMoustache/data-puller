@@ -10,14 +10,13 @@
                 wire:model="group.name"
             />
 
-            <div class="border border-border rounded-xl p-4">
-                @foreach ($groupModel->tags->unique()->filter(fn ($t) => ! $t->parent_id) as $tag)
-                    <x-form.tag-tree
-                        :$tag
-                        :short-list="$groupModel->tags->pluck('id')"
-                    />
+            <x-alpine.tabs :tabs="$tags->pluck('name', 'id')">
+                @foreach ($tags as $tag)
+                    <x-alpine.tab tab-key="{{ $tag->id }}">
+                        <x-form.tag-tree :$tag />
+                    </x-alpine.tab>
                 @endforeach
-            </div>
+            </x-alpine.tabs>
         </div>
 
         <div class="flex justify-between">

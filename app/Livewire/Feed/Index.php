@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Feed;
 
+use Api\Clients\Kemeno;
 use Api\Clients\OpenAI;
 use Api\Entities\Media\Image;
 use Api\Entities\Pullable;
@@ -9,7 +10,6 @@ use App\Enums\Origin as EnumsOrigin;
 use App\Livewire\Traits\CanToast;
 use App\Livewire\Traits\HasPagination;
 use App\Livewire\Traits\HasPreLoading;
-use App\Models\Artist;
 use App\Models\Origin;
 use App\Models\Pull;
 use Illuminate\Support\Collection;
@@ -29,6 +29,10 @@ class Index extends Component
     public array $scrape = [
         'url' => '',
         'limit' => 0,
+    ];
+
+    public array $kemeno = [
+        'url' => '',
     ];
 
     public function render()
@@ -100,6 +104,21 @@ class Index extends Component
 
         // Pull next page
         $this->pullScrape($next, $media, $failsafe + 1);
+    }
+
+    public function pullKemeno()
+    {
+        $url = $this->kemeno['url'] ?? null;
+
+        if (blank($url)) {
+            return;
+        }
+
+        $origin = Origin::where('type', EnumsOrigin::KEMENO)->first();
+        Kemeno::fromUrl($url)?->save($origin);
+
+        $this->toast('Kemeno has been pulled! Give it a minute to process');
+        $this->kemeno['url'] = '';
     }
 
     public function syncOrigin(null | Origin $origin = null)

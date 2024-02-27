@@ -9,7 +9,7 @@
         </div>
 
         <div class="w-full">
-            <x-alpine.collapsible class="w-full" title="Artists">
+            <x-alpine.collapsible class="w-full" title="Artists" open>
                 <livewire:settings.artist-settings />
             </x-alpine.collapsible>
         </div>

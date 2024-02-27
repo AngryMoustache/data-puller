@@ -37,8 +37,7 @@
         <x-nav.item
             :route="route('pull.index')"
             :active="request()->routeIs('pull.index')"
-            icon="ri-gallery-line"
-            active-icon="ri-gallery-fill"
+            icon="heroicon-o-inbox-arrow-down"
             label="Pulls"
         />
 

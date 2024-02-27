@@ -65,6 +65,19 @@
                         />
                     </form>
 
+                    <form wire:submit.prevent="pullKemeno" class="flex gap-4 w-full mb-4">
+                        <x-form.input
+                            wire:model="kemeno.url"
+                            placeholder="Link to a kemeno post"
+                        />
+
+                        <x-form.button
+                            text="Pull URL"
+                            class="rounded-lg whitespace-nowrap"
+                            wire:click="pullKemeno"
+                        />
+                    </form>
+
                     <div class="flex">
                         <x-form.button-secondary :href="route('feed.create')">
                             <div class="flex items-center gap-2">

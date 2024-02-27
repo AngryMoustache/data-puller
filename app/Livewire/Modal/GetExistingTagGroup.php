@@ -59,7 +59,11 @@ class GetExistingTagGroup extends Modal
 
     public function renderStep3()
     {
-        return view(self::$view . $this->step);
+        return view(self::$view . $this->step, [
+            'tags' => Tag::whereDoesntHave('parent')
+                ->with('children.children.children.children.children')
+                ->get(),
+        ]);
     }
 
     #[On('toggleFilter')]

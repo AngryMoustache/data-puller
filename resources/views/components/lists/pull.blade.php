@@ -1,5 +1,6 @@
 @props([
     'pull',
+    'count' => $pull->media->count(),
 ])
 
 <a
@@ -8,7 +9,24 @@
         'class' => 'w-full flex gap-1 md:gap-4 flex-col md:flex-row',
     ]) }}
 >
-    <div class="w-full md:w-64 overflow-hidden rounded" style="aspect-ratio: 3/2.5">
+    <div class="relative w-full md:w-64 overflow-hidden rounded" style="aspect-ratio: 3/2.5">
+        <div class="absolute top-1 right-1 text-xs flex gap-1">
+            @foreach ($pull->tagIcons() as $icon)
+                <span class="bg-black bg-opacity-75 rounded px-2 py-1">
+                    <x-dynamic-component
+                        :component="$icon"
+                        class="w-4 h-4 text-text"
+                    />
+                </span>
+            @endforeach
+
+            @if ($count > 1)
+                <span class="font-bold bg-black bg-opacity-75 rounded px-2 py-1">
+                    {{ $count }}
+                </span>
+            @endif
+        </div>
+
         <x-img
             src="{{ $pull->attachment?->format('thumb') }}"
             :width="3"
