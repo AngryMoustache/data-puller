@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind utilities;
+@tailwind components;
+
+@import 'cropperjs/dist/cropper.min.css';
+
+@font-face {
+    font-family: 'Outfit';
+    src: url('./fonts/outfit.ttf');
+}
+
+:root {
+    --color-primary-light: #FF5C8D;
+    --color-primary: #db2769;
+    --color-primary-dark: #A00037;
+    --color-primary-dark-hover: #730028;
+    --color-background: #121212;
+    --color-surface: #1C1C1C;
+    --color-text: #D3D3D3;
+    --color-border: #4b4b4b;
+    --color-dark-border: #292929;
+    --color-error: #B00020;
+}
+
+@import 'loading';
+@import 'modal';
+@import 'toasts';
+
+@layer components {
+    .min-h-feed {
+        max-height: calc(100vh - 1rem);
+        overflow-y: auto;
+    }
+}
+
+html {
+    font-family: 'Outfit', sans-serif;
+    color: var(--color-text);
+    min-height: 100vh;
+}
+
+.draggable-source--is-dragging,
+.draggable-source--placed,
+.draggable--over,
+.draggable--original,
+.draggable--original {
+    opacity: .5;
+}
+
+.hidden-scroll {
+    // Hide scrollbar for IE, Edge and Firefox
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+    // Hide scrollbar for Chrome, Safari and Opera
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}

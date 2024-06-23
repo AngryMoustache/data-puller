@@ -1,0 +1,21 @@
+[2024-06-18 00:30:05] production.ERROR: Trying to access array offset on value of type bool {"exception":"[object] (ErrorException(code: 0): Trying to access array offset on value of type bool at /volume1/web/nsfw.mobileart.dev/app/Console/Commands/CheckMissingAttachmentFields.php:39)
+[stacktrace]
+#0 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleError(2, 'Trying to acces...', '/volume1/web/ns...', 39)
+#1 /volume1/web/nsfw.mobileart.dev/app/Console/Commands/CheckMissingAttachmentFields.php(39): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}(2, 'Trying to acces...', '/volume1/web/ns...', 39)
+#2 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Collections/Traits/EnumeratesValues.php(240): App\\Console\\Commands\\CheckMissingAttachmentFields->App\\Console\\Commands\\{closure}(Object(App\\Models\\Attachment), 14)
+#3 /volume1/web/nsfw.mobileart.dev/app/Console/Commands/CheckMissingAttachmentFields.php(24): Illuminate\\Support\\Collection->each(Object(Closure))
+#4 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): App\\Console\\Commands\\CheckMissingAttachmentFields->handle()
+#5 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#6 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#7 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#8 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#9 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate\\Container\\Container->call(Array)
+#10 /volume1/web/nsfw.mobileart.dev/vendor/symfony/console/Command/Command.php(326): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#11 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#12 /volume1/web/nsfw.mobileart.dev/vendor/symfony/console/Application.php(1096): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#13 /volume1/web/nsfw.mobileart.dev/vendor/symfony/console/Application.php(324): Symfony\\Component\\Console\\Application->doRunCommand(Object(App\\Console\\Commands\\CheckMissingAttachmentFields), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#14 /volume1/web/nsfw.mobileart.dev/vendor/symfony/console/Application.php(175): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#15 /volume1/web/nsfw.mobileart.dev/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#16 /volume1/web/nsfw.mobileart.dev/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#17 {main}
+"} 
